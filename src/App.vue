@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import QuizCard from './components/Card.vue'
+import { useGameStore } from '@/stores/game'
+
+// Store
+const gameStore = useGameStore()
+
+// Инициализируем игру при загрузке компонента
+onMounted(() => {
+  gameStore.initializeGame()
+})
 
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
@@ -8,6 +18,15 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 <template>
   <div class="app">
     <h1>Baza Quiz</h1>
+
+    <!-- Информация о состоянии игры -->
+    <div class="game-info" v-if="gameStore.isGameStarted">
+      <p>
+        Карточек перевернуто: {{ gameStore.flippedCardsCount }} из {{ gameStore.totalCardsCount }}
+      </p>
+      <button @click="gameStore.resetGame" class="reset-btn">Сбросить игру</button>
+    </div>
+
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
         <QuizCard :card-number="card" />
@@ -28,6 +47,38 @@ h1 {
   color: #2c3e50;
   margin-bottom: 30px;
   font-size: 2.5rem;
+}
+
+.game-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-info p {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.reset-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.reset-btn:hover {
+  background-color: #c0392b;
 }
 
 .grid-container {

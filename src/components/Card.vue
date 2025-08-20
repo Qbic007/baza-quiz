@@ -1,6 +1,6 @@
 <template>
   <div class="card" @click="toggleCard" @mousedown="onMouseDown">
-    <div class="card-inner" :class="{ 'is-flipped': isFlipped }">
+    <div class="card-inner" :class="{ 'is-flipped': card?.isFlipped }">
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
         <div class="card-content">
@@ -12,8 +12,8 @@
       <div class="card-face card-front">
         <div class="card-content">
           <h3>Вопрос {{ props.cardNumber }}</h3>
-          <p>Состояние: {{ isFlipped ? 'Перевернута' : 'Не перевернута' }}</p>
-          <p>Здесь будет содержимое вопроса</p>
+          <p>{{ card?.content || 'Загрузка...' }}</p>
+          <p>Состояние: {{ card?.isFlipped ? 'Перевернута' : 'Не перевернута' }}</p>
         </div>
       </div>
     </div>
@@ -21,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useGameStore } from '@/stores/game'
 
 // Респонсивный компонент карточки с соотношением сторон 4:3
 defineOptions({
@@ -35,13 +36,16 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Состояние карточки
-const isFlipped = ref(false)
+// Store
+const gameStore = useGameStore()
+
+// Получаем данные карточки из store
+const card = computed(() => gameStore.getCard(props.cardNumber))
 
 // Функция переворота карточки
 const toggleCard = () => {
   console.log(`Карточка ${props.cardNumber} кликнута!`)
-  isFlipped.value = !isFlipped.value
+  gameStore.flipCard(props.cardNumber)
 }
 
 // Дополнительная отладка
