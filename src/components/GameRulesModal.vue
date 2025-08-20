@@ -1,11 +1,11 @@
 <template>
   <Transition name="modal">
-    <div v-if="isVisible" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
+    <div v-if="isVisible" class="modal-overlay">
+      <div class="modal-content">
         <!-- Заголовок -->
         <div class="modal-header">
           <h2>Конкурс {{ cardId }}</h2>
-          <button class="close-btn" @click="closeModal" aria-label="Закрыть">×</button>
+          <!-- Убираем кнопку закрытия -->
         </div>
 
         <!-- Содержимое -->
@@ -40,7 +40,6 @@
 
         <!-- Кнопки -->
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModal">Закрыть</button>
           <button class="btn btn-primary" @click="startContest">Начать конкурс</button>
         </div>
       </div>
@@ -66,15 +65,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Emits
 const emit = defineEmits<{
-  close: []
   startContest: [cardId: number]
 }>()
 
 // Методы
-const closeModal = () => {
-  emit('close')
-}
-
 const startContest = () => {
   emit('startContest', props.cardId)
 }
@@ -118,27 +112,6 @@ const startContest = () => {
   color: #2c3e50;
   font-size: 1.8rem;
   font-weight: 600;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: #6c757d;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background-color: #f8f9fa;
-  color: #495057;
 }
 
 .modal-body {
@@ -202,15 +175,6 @@ const startContest = () => {
 
 .btn-primary:hover {
   background-color: #0056b3;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #545b62;
 }
 
 /* Анимации */

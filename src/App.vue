@@ -68,16 +68,10 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   <div class="app">
     <h1>Baza Quiz</h1>
 
-    <!-- Информация о состоянии игры -->
-    <div class="game-info" v-if="gameStore.isGameStarted">
-      <p>
-        Карточек перевернуто: {{ gameStore.flippedCardsCount }} из {{ gameStore.totalCardsCount }}
-      </p>
-      <div class="game-controls">
-        <button @click="showRulesModal = true" class="btn btn-info">📖 Правила</button>
-        <button @click="gameStore.resetGame" class="reset-btn">Сбросить игру</button>
-      </div>
-    </div>
+    <!-- Кнопка перезапуска игры (отладочная) -->
+    <button v-if="gameStore.isGameStarted" @click="gameStore.resetGame" class="debug-reset-btn">
+      🔄
+    </button>
 
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
@@ -122,63 +116,26 @@ h1 {
   font-size: 2.5rem;
 }
 
-.game-info {
-  margin-bottom: 20px;
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.game-info p {
-  margin: 0 0 15px 0;
-  font-size: 1.1rem;
-  color: #2c3e50;
-}
-
-.game-controls {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 10px 20px;
+/* Отладочная кнопка перезапуска */
+.debug-reset-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #6c757d;
+  color: white;
   border: none;
-  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: all 0.2s;
-  text-decoration: none;
-  display: inline-block;
+  z-index: 100;
 }
 
-.btn-info {
-  background-color: #17a2b8;
-  color: white;
-}
-
-.btn-info:hover {
-  background-color: #138496;
-}
-
-.reset-btn {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.reset-btn:hover {
-  background-color: #c0392b;
+.debug-reset-btn:hover {
+  background-color: #495057;
+  transform: scale(1.1);
 }
 
 .grid-container {
