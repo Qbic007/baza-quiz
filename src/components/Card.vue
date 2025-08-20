@@ -1,5 +1,10 @@
 <template>
-  <div class="card" @click="toggleCard" @mousedown="onMouseDown">
+  <div
+    class="card"
+    :class="{ 'is-flipped': card?.isFlipped }"
+    @click="toggleCard"
+    @mousedown="onMouseDown"
+  >
     <div class="card-inner" :class="{ 'is-flipped': card?.isFlipped }">
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
@@ -62,14 +67,17 @@ const card = computed(() => gameStore.getCard(props.cardNumber))
 
 // Функция переворота карточки
 const toggleCard = () => {
+  // Карточка может быть перевернута только один раз
+  if (card.value?.isFlipped) {
+    console.log(`Карточка ${props.cardNumber} уже открыта, повторный клик игнорируется`)
+    return
+  }
+
   console.log(`Карточка ${props.cardNumber} кликнута!`)
-  const wasFlipped = card.value?.isFlipped || false
   gameStore.flipCard(props.cardNumber)
 
-  // Если карточка была перевернута в состояние "открыта", эмитим событие
-  if (!wasFlipped) {
-    emit('cardFlipped', props.cardNumber)
-  }
+  // Эмитим событие переворота
+  emit('cardFlipped', props.cardNumber)
 }
 
 // Дополнительная отладка
@@ -85,6 +93,10 @@ const onMouseDown = () => {
   perspective: 1000px;
   cursor: pointer;
   position: relative;
+}
+
+.card.is-flipped {
+  cursor: default;
 }
 
 .card-inner {

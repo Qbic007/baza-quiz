@@ -48,8 +48,9 @@ export const useGameStore = defineStore('game', () => {
 
   function flipCard(cardId: number) {
     const card = cards.value.find((c) => c.id === cardId)
-    if (card) {
-      card.isFlipped = !card.isFlipped
+    if (card && !card.isFlipped) {
+      // Карточка может перевернуться только один раз - из закрытого в открытое состояние
+      card.isFlipped = true
       lastPlayed.value = Date.now()
 
       // Сохраняем обновленное состояние
@@ -61,7 +62,7 @@ export const useGameStore = defineStore('game', () => {
       }
       saveGameState(currentState)
 
-      console.log(`Карточка ${cardId} ${card.isFlipped ? 'перевернута' : 'возвращена'}`)
+      console.log(`Карточка ${cardId} открыта`)
     }
   }
 
