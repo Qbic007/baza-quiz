@@ -1,8 +1,24 @@
+// Типы вопросов
+export type QuestionType = 'image' | 'audio' | 'video' | 'text'
+
+// Базовый интерфейс для данных вопроса
+export interface QuestionData {
+  type: QuestionType
+}
+
+// Данные для изображения
+export interface ImageQuestionData extends QuestionData {
+  type: 'image'
+  imageUrl: string
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number
   content: string
   isFlipped: boolean
+  questionType: QuestionType
+  questionData: QuestionData
 }
 
 // Тип для состояния игры

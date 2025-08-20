@@ -1,4 +1,4 @@
-import type { GameState, Card } from '@/types/card'
+import type { GameState, Card, ImageQuestionData } from '@/types/card'
 
 const STORAGE_KEY = 'baza-quiz-game-state'
 
@@ -8,6 +8,11 @@ export function createInitialGameState(): GameState {
     id: index + 1,
     content: `Вопрос ${index + 1}`,
     isFlipped: false,
+    questionType: 'image' as const,
+    questionData: {
+      type: 'image',
+      imageUrl: '/images/i.webp',
+    } as ImageQuestionData,
   }))
 
   return {

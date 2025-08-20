@@ -18,21 +18,18 @@
 
         <!-- Основной контент -->
         <div class="contest-body">
-          <div class="contest-description">
-            <h3>🎯 Задание</h3>
-            <p>
-              Здесь будет размещено задание для конкурса {{ cardId }}. У вас есть
-              {{ timeLeft }} секунд на выполнение!
-            </p>
-
-            <div class="task-content">
-              <h4>📝 Что нужно сделать:</h4>
-              <ul>
-                <li>Внимательно прочитайте задание</li>
-                <li>Выполните все требования</li>
-                <li>Уложитесь в отведённое время</li>
-                <li>Получите максимальное количество очков</li>
-              </ul>
+          <!-- Отображение изображения -->
+          <div class="image-container">
+            <img
+              :src="imageUrl"
+              :alt="`Задание для конкурса ${cardId}`"
+              class="contest-image"
+              @error="handleImageError"
+              @load="handleImageLoad"
+            />
+            <div v-if="imageError" class="image-error">
+              <p>⚠️ Ошибка загрузки изображения</p>
+              <p>Попробуйте обновить страницу</p>
             </div>
           </div>
         </div>
@@ -76,6 +73,7 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId: number
+  imageUrl: string
   duration?: number // длительность в секундах
 }
 
@@ -93,6 +91,7 @@ const emit = defineEmits<{
 // Состояние
 const isStarted = ref(false)
 const timeLeft = ref(props.duration)
+const imageError = ref(false)
 let timerInterval: number | null = null
 
 // Методы
@@ -130,6 +129,16 @@ const handleFailure = () => {
   closeModal()
 }
 
+const handleImageError = () => {
+  console.log(`Ошибка загрузки изображения для конкурса ${props.cardId}`)
+  imageError.value = true
+}
+
+const handleImageLoad = () => {
+  console.log(`Изображение для конкурса ${props.cardId} успешно загружено`)
+  imageError.value = false
+}
+
 const closeModal = () => {
   if (timerInterval) {
     clearInterval(timerInterval)
@@ -147,6 +156,7 @@ watch(
     if (!newValue) {
       isStarted.value = false
       timeLeft.value = props.duration
+      imageError.value = false
       if (timerInterval) {
         clearInterval(timerInterval)
         timerInterval = null
@@ -262,49 +272,39 @@ onUnmounted(() => {
 }
 
 .contest-body {
-  padding: 32px;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 0;
+  height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.contest-description h3 {
-  margin: 0 0 20px 0;
-  color: #2c3e50;
-  font-size: 1.8rem;
-  font-weight: 600;
+.image-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
 }
 
-.contest-description p {
-  margin: 0 0 24px 0;
-  color: #495057;
-  line-height: 1.7;
+.contest-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.image-error {
+  text-align: center;
+  color: #e74c3c;
+  padding: 20px;
+}
+
+.image-error p {
+  margin: 8px 0;
   font-size: 1.1rem;
-}
-
-.task-content {
-  background-color: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.task-content h4 {
-  margin: 0 0 16px 0;
-  color: #2c3e50;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.task-content ul {
-  margin: 0;
-  padding-left: 20px;
-  color: #495057;
-}
-
-.task-content li {
-  margin-bottom: 12px;
-  line-height: 1.6;
-  font-size: 1rem;
 }
 
 /* Таймер */
@@ -381,7 +381,7 @@ onUnmounted(() => {
   }
 
   .contest-body {
-    padding: 24px 20px;
+    padding: 0;
   }
 
   .start-btn {
