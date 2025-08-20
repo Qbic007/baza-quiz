@@ -18,6 +18,18 @@ export interface VideoQuestionData extends QuestionData {
   videoUrl: string
 }
 
+// Данные для аудио
+export interface AudioQuestionData extends QuestionData {
+  type: 'audio'
+  audioUrl: string
+}
+
+// Данные для текста
+export interface TextQuestionData extends QuestionData {
+  type: 'text'
+  textContent: string
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number

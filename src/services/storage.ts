@@ -1,35 +1,37 @@
-import type { GameState, Card, ImageQuestionData, VideoQuestionData } from '@/types/card'
+import type { GameState, Card } from '@/types/card'
 
 const STORAGE_KEY = 'baza-quiz-game-state'
 
 // Создание начального состояния игры
 export function createInitialGameState(): GameState {
+  // Создаем карточки на основе JSON конфигурации
   const cards: Card[] = Array.from({ length: 40 }, (_, index) => {
-    const isEven = (index + 1) % 2 === 0
+    const questionId = index + 1
+    const isEven = questionId % 2 === 0
 
     if (isEven) {
       // Чётные вопросы - видео
       return {
-        id: index + 1,
-        content: `Вопрос ${index + 1}`,
+        id: questionId,
+        content: `Вопрос ${questionId}`,
         isFlipped: false,
         questionType: 'video' as const,
         questionData: {
           type: 'video',
           videoUrl: '/videos/sample-5s.mp4',
-        } as VideoQuestionData,
+        },
       }
     } else {
       // Нечётные вопросы - изображения
       return {
-        id: index + 1,
-        content: `Вопрос ${index + 1}`,
+        id: questionId,
+        content: `Вопрос ${questionId}`,
         isFlipped: false,
         questionType: 'image' as const,
         questionData: {
           type: 'image',
           imageUrl: '/images/i.webp',
-        } as ImageQuestionData,
+        },
       }
     }
   })
