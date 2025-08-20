@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Card from './components/Card.vue'
+import QuizCard from './components/Card.vue'
 
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
@@ -10,7 +10,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <h1>Baza Quiz</h1>
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
-        <Card />
+        <QuizCard :card-number="card" />
       </div>
     </div>
   </div>
