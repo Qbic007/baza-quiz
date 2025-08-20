@@ -14,6 +14,16 @@
           <h3>Вопрос {{ props.cardNumber }}</h3>
           <p>{{ card?.content || 'Загрузка...' }}</p>
           <p>Состояние: {{ card?.isFlipped ? 'Перевернута' : 'Не перевернута' }}</p>
+
+          <!-- Результат конкурса -->
+          <div v-if="props.contestResult" class="contest-result">
+            <span v-if="props.contestResult === 'success'" class="result-success">
+              ✅ Успешно пройдено
+            </span>
+            <span v-else-if="props.contestResult === 'failure'" class="result-failure">
+              ❌ Провалено
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -32,9 +42,12 @@ defineOptions({
 // Props
 interface Props {
   cardNumber: number
+  contestResult?: 'success' | 'failure' | null
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  contestResult: null,
+})
 
 // Emits
 const emit = defineEmits<{
@@ -143,6 +156,28 @@ const onMouseDown = () => {
   font-size: 0.9rem;
   color: #666;
   line-height: 1.4;
+}
+
+/* Результат конкурса */
+.contest-result {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.result-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.result-failure {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 
 /* Убираем hover эффект который может мешать анимации */

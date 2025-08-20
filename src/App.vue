@@ -2,13 +2,15 @@
 import { onMounted, ref } from 'vue'
 import QuizCard from './components/Card.vue'
 import GameRulesModal from './components/GameRulesModal.vue'
+import ContestModal from './components/ContestModal.vue'
 import { useGameStore } from '@/stores/game'
 
 // Store
 const gameStore = useGameStore()
 
-// Состояние модального окна
+// Состояние модальных окон
 const showRulesModal = ref(false)
+const showContestModal = ref(false)
 const currentCardId = ref<number | null>(null)
 
 // Инициализируем игру при загрузке компонента
@@ -16,14 +18,15 @@ onMounted(() => {
   gameStore.initializeGame()
 })
 
-// Обработчики модального окна
+// Обработчики модального окна с правилами
 const closeRulesModal = () => {
   showRulesModal.value = false
   currentCardId.value = null
 }
 
-const startGame = () => {
-  showRulesModal.value = false
+// Обработчики модального окна конкурса
+const closeContestModal = () => {
+  showContestModal.value = false
   currentCardId.value = null
 }
 
@@ -32,6 +35,29 @@ const handleCardFlipped = (cardId: number) => {
   console.log(`Карточка ${cardId} перевернута, показываем модальное окно`)
   currentCardId.value = cardId
   showRulesModal.value = true
+}
+
+// Обработчик начала конкурса
+const handleStartContest = (cardId: number) => {
+  console.log(`Начинаем конкурс ${cardId}`)
+  showRulesModal.value = false
+  currentCardId.value = cardId
+  showContestModal.value = true
+}
+
+// Обработчики результата конкурса
+const handleContestSuccess = (cardId: number) => {
+  console.log(`Конкурс ${cardId} успешно завершён`)
+  gameStore.setContestResult(cardId, 'success')
+  showContestModal.value = false
+  currentCardId.value = null
+}
+
+const handleContestFailure = (cardId: number) => {
+  console.log(`Конкурс ${cardId} провален`)
+  gameStore.setContestResult(cardId, 'failure')
+  showContestModal.value = false
+  currentCardId.value = null
 }
 
 // Создаем массив из 40 элементов для сетки 8x5
@@ -55,7 +81,11 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
-        <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
+        <QuizCard
+          :card-number="card"
+          :contest-result="gameStore.getContestResult(card)"
+          @card-flipped="handleCardFlipped"
+        />
       </div>
     </div>
 
@@ -64,7 +94,16 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       :is-visible="showRulesModal"
       :card-id="currentCardId || 0"
       @close="closeRulesModal"
-      @start-game="startGame"
+      @start-contest="handleStartContest"
+    />
+
+    <!-- Модальное окно конкурса -->
+    <ContestModal
+      :is-visible="showContestModal"
+      :card-id="currentCardId || 0"
+      @close="closeContestModal"
+      @success="handleContestSuccess"
+      @failure="handleContestFailure"
     />
   </div>
 </template>

@@ -41,7 +41,7 @@
         <!-- Кнопки -->
         <div class="modal-footer">
           <button class="btn btn-secondary" @click="closeModal">Закрыть</button>
-          <button class="btn btn-primary" @click="startGame">Начать конкурс</button>
+          <button class="btn btn-primary" @click="startContest">Начать конкурс</button>
         </div>
       </div>
     </div>
@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
 // Emits
 const emit = defineEmits<{
   close: []
-  startGame: []
+  startContest: [cardId: number]
 }>()
 
 // Методы
@@ -75,8 +75,8 @@ const closeModal = () => {
   emit('close')
 }
 
-const startGame = () => {
-  emit('startGame')
+const startContest = () => {
+  emit('startContest', props.cardId)
 }
 </script>
 

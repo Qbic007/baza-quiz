@@ -10,6 +10,7 @@ export interface GameState {
   cards: Card[]
   createdAt: number
   lastPlayed: number
+  contestResults?: Record<number, 'success' | 'failure'>
 }
 
 // Тип для создания новой карточки
