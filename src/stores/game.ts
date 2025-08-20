@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Card, GameState } from '@/types/card'
+import type { Card, GameState, BoostOrTrap } from '@/types/card'
 import { createInitialGameState, saveGameState, loadGameState } from '@/services/storage'
 
 export const useGameStore = defineStore('game', () => {
@@ -9,6 +9,7 @@ export const useGameStore = defineStore('game', () => {
   const createdAt = ref<number>(0)
   const lastPlayed = ref<number>(0)
   const contestResults = ref<Record<number, 'success' | 'failure'>>({})
+  const boostsAndTraps = ref<BoostOrTrap[]>([])
 
   // Геттеры
   const isGameStarted = computed(() => cards.value.length > 0)
@@ -17,7 +18,7 @@ export const useGameStore = defineStore('game', () => {
   const getContestResult = computed(() => (cardId: number) => contestResults.value[cardId] || null)
 
   // Действия
-  function initializeGame() {
+  async function initializeGame() {
     console.log('Инициализация игры...')
 
     // Пытаемся загрузить существующее состояние
@@ -29,14 +30,16 @@ export const useGameStore = defineStore('game', () => {
       createdAt.value = savedState.createdAt
       lastPlayed.value = savedState.lastPlayed
       contestResults.value = savedState.contestResults || {}
+      boostsAndTraps.value = savedState.boostsAndTraps || []
     } else {
       console.log('Создание нового состояния игры')
       // Создаем новое состояние
-      const initialState = createInitialGameState()
+      const initialState = await createInitialGameState()
       cards.value = initialState.cards
       createdAt.value = initialState.createdAt
       lastPlayed.value = initialState.lastPlayed
       contestResults.value = initialState.contestResults || {}
+      boostsAndTraps.value = initialState.boostsAndTraps || []
 
       // Сохраняем в localStorage
       saveGameState(initialState)
@@ -54,6 +57,7 @@ export const useGameStore = defineStore('game', () => {
         cards: cards.value,
         createdAt: createdAt.value,
         lastPlayed: lastPlayed.value,
+        boostsAndTraps: boostsAndTraps.value,
       }
       saveGameState(currentState)
 
@@ -61,13 +65,14 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function resetGame() {
+  async function resetGame() {
     console.log('Сброс игры')
-    const initialState = createInitialGameState()
+    const initialState = await createInitialGameState()
     cards.value = initialState.cards
     createdAt.value = initialState.createdAt
     lastPlayed.value = initialState.lastPlayed
     contestResults.value = initialState.contestResults || {}
+    boostsAndTraps.value = initialState.boostsAndTraps || []
 
     // Сохраняем новое состояние
     saveGameState(initialState)
@@ -87,10 +92,54 @@ export const useGameStore = defineStore('game', () => {
       createdAt: createdAt.value,
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
     }
     saveGameState(currentState)
 
     console.log(`Результат конкурса ${cardId}: ${result}`)
+  }
+
+  function addBoostOrTrap(type: 'boost' | 'trap', content: string, cardId: number) {
+    const newBoostOrTrap: BoostOrTrap = {
+      id: `${type}-${Date.now()}-${Math.random()}`,
+      type,
+      content,
+      cardId,
+    }
+
+    boostsAndTraps.value.push(newBoostOrTrap)
+    lastPlayed.value = Date.now()
+
+    // Сохраняем обновленное состояние
+    const currentState: GameState = {
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+    }
+    saveGameState(currentState)
+
+    console.log(`Добавлен ${type}: ${content}`)
+  }
+
+  function removeBoostOrTrap(id: string) {
+    const index = boostsAndTraps.value.findIndex((item) => item.id === id)
+    if (index !== -1) {
+      boostsAndTraps.value.splice(index, 1)
+
+      // Сохраняем обновленное состояние
+      const currentState: GameState = {
+        cards: cards.value,
+        createdAt: createdAt.value,
+        lastPlayed: lastPlayed.value,
+        contestResults: contestResults.value,
+        boostsAndTraps: boostsAndTraps.value,
+      }
+      saveGameState(currentState)
+
+      console.log(`Удален буст/трэп: ${id}`)
+    }
   }
 
   return {
@@ -99,6 +148,7 @@ export const useGameStore = defineStore('game', () => {
     createdAt,
     lastPlayed,
     contestResults,
+    boostsAndTraps,
 
     // Геттеры
     isGameStarted,
@@ -107,10 +157,12 @@ export const useGameStore = defineStore('game', () => {
     getContestResult,
 
     // Действия
-    initializeGame,
+    initializeGame: initializeGame as () => Promise<void>,
     flipCard,
-    resetGame,
+    resetGame: resetGame as () => Promise<void>,
     getCard,
     setContestResult,
+    addBoostOrTrap,
+    removeBoostOrTrap,
   }
 })

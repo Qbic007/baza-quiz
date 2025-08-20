@@ -96,7 +96,7 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId: number
-  questionType: 'image' | 'video' | 'audio' | 'text'
+  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap'
   imageUrl?: string
   videoUrl?: string
   duration?: number // длительность в секундах

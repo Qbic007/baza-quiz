@@ -10,7 +10,20 @@
 
         <!-- Содержимое -->
         <div class="modal-body">
-          <div class="rules-section">
+          <!-- Буст -->
+          <div v-if="questionType === 'boost'" class="boost-section">
+            <h3>Охуеть! ВОТ ЭТО ДА!</h3>
+            <p>{{ questionData?.content || 'Это буст!' }}</p>
+          </div>
+
+          <!-- Трэп (ловушка) -->
+          <div v-else-if="questionType === 'trap'" class="trap-section">
+            <h3>Блять! Ну нахуя?!</h3>
+            <p>{{ questionData?.content || 'Это ловушка!' }}</p>
+          </div>
+
+          <!-- Обычный конкурс -->
+          <div v-else class="rules-section">
             <h3>🎯 Описание конкурса</h3>
             <p>
               Это описание конкурса для карточки {{ cardId }}. Здесь будет размещена подробная
@@ -19,7 +32,8 @@
             </p>
           </div>
 
-          <div class="rules-section">
+          <!-- Условия участия только для обычных конкурсов -->
+          <div v-if="questionType !== 'boost' && questionType !== 'trap'" class="rules-section">
             <h3>📋 Условия участия</h3>
             <ul>
               <li>Внимательно изучите задание</li>
@@ -29,7 +43,8 @@
             </ul>
           </div>
 
-          <div class="rules-section">
+          <!-- Награды только для обычных конкурсов -->
+          <div v-if="questionType !== 'boost' && questionType !== 'trap'" class="rules-section">
             <h3>🏆 Награды</h3>
             <p>
               За успешное выполнение задания вы получите очки и сможете продолжить игру. Чем лучше
@@ -40,7 +55,18 @@
 
         <!-- Кнопки -->
         <div class="modal-footer">
-          <button class="btn btn-primary" @click="startContest">Начать конкурс</button>
+          <!-- Кнопка для буста -->
+          <button v-if="questionType === 'boost'" class="btn btn-boost" @click="activateBoost">
+            ЕБАТЬ Я СЧАСТЛИФФФ!
+          </button>
+
+          <!-- Кнопка для трэпа -->
+          <button v-else-if="questionType === 'trap'" class="btn btn-trap" @click="activateTrap">
+            ПУ-ПУ-ПУ!
+          </button>
+
+          <!-- Кнопка для обычного конкурса -->
+          <button v-else class="btn btn-primary" @click="startContest">Начать конкурс</button>
         </div>
       </div>
     </div>
@@ -57,6 +83,15 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId?: number
+  questionType?: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap'
+  questionData?: {
+    type: string
+    content?: string
+    imageUrl?: string
+    videoUrl?: string
+    audioUrl?: string
+    textContent?: string
+  }
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -66,11 +101,21 @@ const props = withDefaults(defineProps<Props>(), {
 // Emits
 const emit = defineEmits<{
   startContest: [cardId: number]
+  activateBoost: [cardId: number, content: string]
+  activateTrap: [cardId: number, content: string]
 }>()
 
 // Методы
 const startContest = () => {
   emit('startContest', props.cardId)
+}
+
+const activateBoost = () => {
+  emit('activateBoost', props.cardId, props.questionData?.content || '')
+}
+
+const activateTrap = () => {
+  emit('activateTrap', props.cardId, props.questionData?.content || '')
 }
 </script>
 
@@ -175,6 +220,64 @@ const startContest = () => {
 
 .btn-primary:hover {
   background-color: #0056b3;
+}
+
+/* Стили для бустов */
+.boost-section h3 {
+  color: #28a745;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.boost-section p {
+  color: #28a745;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-boost {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 16px 32px;
+}
+
+.btn-boost:hover {
+  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+  transform: translateY(-2px);
+}
+
+/* Стили для трэпов */
+.trap-section h3 {
+  color: #dc3545;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.trap-section p {
+  color: #dc3545;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-trap {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 16px 32px;
+}
+
+.btn-trap:hover {
+  background: linear-gradient(135deg, #c82333 0%, #e55a00 100%);
+  transform: translateY(-2px);
 }
 
 /* Анимации */

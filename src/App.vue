@@ -14,8 +14,8 @@ const showContestModal = ref(false)
 const currentCardId = ref<number | null>(null)
 
 // Инициализируем игру при загрузке компонента
-onMounted(() => {
-  gameStore.initializeGame()
+onMounted(async () => {
+  await gameStore.initializeGame()
 })
 
 // Обработчики модального окна с правилами
@@ -60,6 +60,26 @@ const handleContestFailure = (cardId: number) => {
   currentCardId.value = null
 }
 
+// Обработчики бустов и трэпов
+const handleActivateBoost = (cardId: number, content: string) => {
+  console.log(`Активирован буст ${cardId}: ${content}`)
+  gameStore.addBoostOrTrap('boost', content, cardId)
+  showRulesModal.value = false
+  currentCardId.value = null
+}
+
+const handleActivateTrap = (cardId: number, content: string) => {
+  console.log(`Активирован трэп ${cardId}: ${content}`)
+  gameStore.addBoostOrTrap('trap', content, cardId)
+  showRulesModal.value = false
+  currentCardId.value = null
+}
+
+// Удаление буста или трэпа
+const removeBoostOrTrap = (id: string) => {
+  gameStore.removeBoostOrTrap(id)
+}
+
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 </script>
@@ -69,9 +89,32 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <h1>Baza Quiz</h1>
 
     <!-- Кнопка перезапуска игры (отладочная) -->
-    <button v-if="gameStore.isGameStarted" @click="gameStore.resetGame" class="debug-reset-btn">
+    <button
+      v-if="gameStore.isGameStarted"
+      @click="async () => await gameStore.resetGame()"
+      class="debug-reset-btn"
+    >
       🔄
     </button>
+
+    <!-- Блок бустов и трэпов -->
+    <div v-if="gameStore.boostsAndTraps.length > 0" class="boosts-traps-container">
+      <h3>🎯 Бусты и трэпы</h3>
+      <div class="boosts-traps-grid">
+        <div
+          v-for="item in gameStore.boostsAndTraps"
+          :key="item.id"
+          class="boost-trap-item"
+          :class="item.type"
+          @click="removeBoostOrTrap(item.id)"
+        >
+          <div class="boost-trap-content">
+            <span class="boost-trap-type">{{ item.type === 'boost' ? '🚀' : '💀' }}</span>
+            <p class="boost-trap-text">{{ item.content }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
@@ -87,8 +130,12 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <GameRulesModal
       :is-visible="showRulesModal"
       :card-id="currentCardId || 0"
+      :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
+      :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
       @close="closeRulesModal"
       @start-contest="handleStartContest"
+      @activate-boost="handleActivateBoost"
+      @activate-trap="handleActivateTrap"
     />
 
     <!-- Модальное окно конкурса -->
@@ -173,6 +220,68 @@ h1 {
   }
 }
 
+/* Блок бустов и трэпов */
+.boosts-traps-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.boosts-traps-container h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.boosts-traps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.boost-trap-item {
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.boost-trap-item.boost {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-color: #28a745;
+}
+
+.boost-trap-item.trap {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  border-color: #dc3545;
+}
+
+.boost-trap-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.boost-trap-content {
+  text-align: center;
+}
+
+.boost-trap-type {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.boost-trap-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #495057;
+}
+
 /* Для мобильных устройств */
 @media (max-width: 767px) {
   .grid-container {
@@ -184,6 +293,10 @@ h1 {
   h1 {
     font-size: 2rem;
     margin-bottom: 20px;
+  }
+
+  .boosts-traps-grid {
+    grid-template-columns: 1fr;
   }
 }
 

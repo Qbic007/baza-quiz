@@ -3,43 +3,53 @@ import type { GameState, Card } from '@/types/card'
 const STORAGE_KEY = 'baza-quiz-game-state'
 
 // Создание начального состояния игры
-export function createInitialGameState(): GameState {
-  // Создаем карточки на основе JSON конфигурации
-  const cards: Card[] = Array.from({ length: 40 }, (_, index) => {
-    const questionId = index + 1
-    const isEven = questionId % 2 === 0
+export async function createInitialGameState(): Promise<GameState> {
+  // Загружаем конфигурацию из JSON файла
+  const questionsConfig = await loadQuestionsConfig()
 
-    if (isEven) {
-      // Чётные вопросы - видео
-      return {
-        id: questionId,
-        content: `Вопрос ${questionId}`,
-        isFlipped: false,
-        questionType: 'video' as const,
-        questionData: {
-          type: 'video',
-          videoUrl: '/videos/sample-5s.mp4',
-        },
-      }
-    } else {
-      // Нечётные вопросы - изображения
-      return {
-        id: questionId,
-        content: `Вопрос ${questionId}`,
-        isFlipped: false,
-        questionType: 'image' as const,
-        questionData: {
-          type: 'image',
-          imageUrl: '/images/i.webp',
-        },
-      }
-    }
-  })
+  // Создаем карточки на основе конфигурации
+  const cards: Card[] = questionsConfig.map((question) => ({
+    id: question.id,
+    content: question.content,
+    isFlipped: false,
+    questionType: question.questionType,
+    questionData: question.questionData,
+  }))
 
   return {
     cards,
     createdAt: Date.now(),
     lastPlayed: Date.now(),
+    boostsAndTraps: [],
+  }
+}
+
+// Загрузка конфигурации вопросов из JSON файла
+async function loadQuestionsConfig(): Promise<
+  Array<{
+    id: number
+    content: string
+    questionType: 'image' | 'video' | 'boost' | 'trap'
+    questionData: {
+      type: 'image' | 'video' | 'boost' | 'trap'
+      content?: string
+      imageUrl?: string
+      videoUrl?: string
+    }
+  }>
+> {
+  try {
+    // Читаем JSON файл из public/config/questions.json
+    const response = await fetch('/config/questions.json')
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    return data.questions || []
+  } catch (error) {
+    console.error('Ошибка загрузки конфигурации вопросов:', error)
+    // Возвращаем пустой массив в случае ошибки
+    return []
   }
 }
 

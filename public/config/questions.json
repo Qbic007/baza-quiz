@@ -20,20 +20,20 @@
     },
     {
       "id": 3,
-      "content": "Вопрос 3",
-      "questionType": "image",
+      "content": "Буст 3",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 3! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 4,
-      "content": "Вопрос 4",
-      "questionType": "video",
+      "content": "Трэп 4",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 4! Будьте осторожны!"
       }
     },
     {
@@ -56,20 +56,20 @@
     },
     {
       "id": 7,
-      "content": "Вопрос 7",
-      "questionType": "image",
+      "content": "Буст 7",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 7! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 8,
-      "content": "Вопрос 8",
-      "questionType": "video",
+      "content": "Трэп 8",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 8! Будьте осторожны!"
       }
     },
     {
@@ -92,20 +92,20 @@
     },
     {
       "id": 11,
-      "content": "Вопрос 11",
-      "questionType": "image",
+      "content": "Буст 11",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 11! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 12,
-      "content": "Вопрос 12",
-      "questionType": "video",
+      "content": "Трэп 12",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 12! Будьте осторожны!"
       }
     },
     {
@@ -128,20 +128,20 @@
     },
     {
       "id": 15,
-      "content": "Вопрос 15",
-      "questionType": "image",
+      "content": "Буст 15",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 15! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 16,
-      "content": "Вопрос 16",
-      "questionType": "video",
+      "content": "Трэп 16",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 16! Будьте осторожны!"
       }
     },
     {
@@ -164,20 +164,20 @@
     },
     {
       "id": 19,
-      "content": "Вопрос 19",
-      "questionType": "image",
+      "content": "Буст 19",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 19! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 20,
-      "content": "Вопрос 20",
-      "questionType": "video",
+      "content": "Трэп 20",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 20! Будьте осторожны!"
       }
     },
     {
@@ -200,20 +200,20 @@
     },
     {
       "id": 23,
-      "content": "Вопрос 23",
-      "questionType": "image",
+      "content": "Буст 23",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 23! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 24,
-      "content": "Вопрос 24",
-      "questionType": "video",
+      "content": "Трэп 24",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 24! Будьте осторожны!"
       }
     },
     {
@@ -236,20 +236,20 @@
     },
     {
       "id": 27,
-      "content": "Вопрос 27",
-      "questionType": "image",
+      "content": "Буст 27",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 27! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 28,
-      "content": "Вопрос 28",
-      "questionType": "video",
+      "content": "Трэп 28",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 28! Будьте осторожны!"
       }
     },
     {
@@ -272,20 +272,20 @@
     },
     {
       "id": 31,
-      "content": "Вопрос 31",
-      "questionType": "image",
+      "content": "Буст 31",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 31! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 32,
-      "content": "Вопрос 32",
-      "questionType": "video",
+      "content": "Трэп 32",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 32! Будьте осторожны!"
       }
     },
     {
@@ -308,20 +308,20 @@
     },
     {
       "id": 35,
-      "content": "Вопрос 35",
-      "questionType": "image",
+      "content": "Буст 35",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 35! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 36,
-      "content": "Вопрос 36",
-      "questionType": "video",
+      "content": "Трэп 36",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 36! Будьте осторожны!"
       }
     },
     {
@@ -344,20 +344,20 @@
     },
     {
       "id": 39,
-      "content": "Вопрос 39",
-      "questionType": "image",
+      "content": "Буст 39",
+      "questionType": "boost",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "boost",
+        "content": "Это буст для вопроса 39! Он улучшит ваш следующий ход!"
       }
     },
     {
       "id": 40,
-      "content": "Вопрос 40",
-      "questionType": "video",
+      "content": "Трэп 40",
+      "questionType": "trap",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "trap",
+        "content": "Это ловушка для вопроса 40! Будьте осторожны!"
       }
     }
   ]

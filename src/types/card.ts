@@ -1,5 +1,5 @@
 // Типы вопросов
-export type QuestionType = 'image' | 'audio' | 'video' | 'text'
+export type QuestionType = 'image' | 'audio' | 'video' | 'text' | 'boost' | 'trap'
 
 // Базовый интерфейс для данных вопроса
 export interface QuestionData {
@@ -30,6 +30,18 @@ export interface TextQuestionData extends QuestionData {
   textContent: string
 }
 
+// Данные для буста
+export interface BoostQuestionData extends QuestionData {
+  type: 'boost'
+  content: string
+}
+
+// Данные для трэпа (ловушки)
+export interface TrapQuestionData extends QuestionData {
+  type: 'trap'
+  content: string
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number
@@ -39,12 +51,21 @@ export interface Card {
   questionData: QuestionData
 }
 
+// Тип для буста или трэпа
+export interface BoostOrTrap {
+  id: string
+  type: 'boost' | 'trap'
+  content: string
+  cardId: number
+}
+
 // Тип для состояния игры
 export interface GameState {
   cards: Card[]
   createdAt: number
   lastPlayed: number
   contestResults?: Record<number, 'success' | 'failure'>
+  boostsAndTraps: BoostOrTrap[]
 }
 
 // Тип для создания новой карточки
