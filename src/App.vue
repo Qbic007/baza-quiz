@@ -1,11 +1,30 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Card from './components/Card.vue'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="app">
+    <h1>Baza Quiz</h1>
+    <div class="card-container">
+      <Card />
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app {
+  padding: 20px;
+  text-align: center;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+</style>
