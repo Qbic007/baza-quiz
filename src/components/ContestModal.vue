@@ -19,7 +19,7 @@
         <!-- Основной контент -->
         <div class="contest-body">
           <!-- Отображение изображения -->
-          <div class="image-container">
+          <div v-if="questionType === 'image'" class="image-container">
             <img
               :src="imageUrl"
               :alt="`Задание для конкурса ${cardId}`"
@@ -29,6 +29,22 @@
             />
             <div v-if="imageError" class="image-error">
               <p>⚠️ Ошибка загрузки изображения</p>
+              <p>Попробуйте обновить страницу</p>
+            </div>
+          </div>
+
+          <!-- Отображение видео -->
+          <div v-else-if="questionType === 'video'" class="video-container">
+            <video
+              ref="videoRef"
+              :src="videoUrl"
+              class="contest-video"
+              @error="handleVideoError"
+              @ended="handleVideoEnded"
+              @loadeddata="handleVideoLoaded"
+            />
+            <div v-if="videoError" class="video-error">
+              <p>⚠️ Ошибка загрузки видео</p>
               <p>Попробуйте обновить страницу</p>
             </div>
           </div>
@@ -43,6 +59,13 @@
               <button class="btn btn-success" @click="handleSuccess">🎉 УСПЕХ</button>
               <button class="btn btn-failure" @click="handleFailure">❌ ПРОВАЛ</button>
             </div>
+          </div>
+        </div>
+
+        <!-- Сообщение "ВРЕМЯ ПОШЛО!" -->
+        <div v-if="showTimeStartedMessage" class="time-started-message">
+          <div class="time-started-content">
+            <h1>ВРЕМЯ ПОШЛО!</h1>
           </div>
         </div>
 
@@ -73,7 +96,9 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId: number
-  imageUrl: string
+  questionType: 'image' | 'video' | 'audio' | 'text'
+  imageUrl?: string
+  videoUrl?: string
   duration?: number // длительность в секундах
 }
 
@@ -92,13 +117,21 @@ const emit = defineEmits<{
 const isStarted = ref(false)
 const timeLeft = ref(props.duration)
 const imageError = ref(false)
+const videoError = ref(false)
+const videoRef = ref<HTMLVideoElement>()
+const showTimeStartedMessage = ref(false)
 let timerInterval: number | null = null
 
 // Методы
 const startContest = () => {
   console.log(`Запуск конкурса ${props.cardId}`)
   isStarted.value = true
-  startTimer()
+
+  // Для видео таймер запускается после окончания видео
+  // Для изображений таймер запускается сразу
+  if (props.questionType === 'image') {
+    startTimer()
+  }
 }
 
 const startTimer = () => {
@@ -139,6 +172,40 @@ const handleImageLoad = () => {
   imageError.value = false
 }
 
+const handleVideoError = () => {
+  console.log(`Ошибка загрузки видео для конкурса ${props.cardId}`)
+  videoError.value = true
+}
+
+const handleVideoLoaded = () => {
+  console.log(`Видео для конкурса ${props.cardId} успешно загружено`)
+  videoError.value = false
+
+  // Устанавливаем максимальную громкость
+  if (videoRef.value) {
+    videoRef.value.volume = 1.0
+  }
+
+  // Автоматически запускаем видео после загрузки
+  if (videoRef.value) {
+    videoRef.value.play().catch((error) => {
+      console.log('Автовоспроизведение заблокировано браузером:', error)
+    })
+  }
+}
+
+const handleVideoEnded = () => {
+  console.log(`Видео для конкурса ${props.cardId} закончилось, показываем сообщение`)
+  // Показываем сообщение "ВРЕМЯ ПОШЛО!"
+  showTimeStartedMessage.value = true
+
+  // Через 2 секунды скрываем сообщение и запускаем таймер
+  setTimeout(() => {
+    showTimeStartedMessage.value = false
+    startTimer()
+  }, 2000)
+}
+
 const closeModal = () => {
   if (timerInterval) {
     clearInterval(timerInterval)
@@ -146,6 +213,7 @@ const closeModal = () => {
   }
   isStarted.value = false
   timeLeft.value = props.duration
+  showTimeStartedMessage.value = false
   emit('close')
 }
 
@@ -157,9 +225,25 @@ watch(
       isStarted.value = false
       timeLeft.value = props.duration
       imageError.value = false
+      videoError.value = false
+      showTimeStartedMessage.value = false
       if (timerInterval) {
         clearInterval(timerInterval)
         timerInterval = null
+      }
+    } else {
+      // Если модалка открылась и это видео, запускаем его автоматически
+      if (props.questionType === 'video' && videoRef.value) {
+        // Небольшая задержка для корректной инициализации
+        setTimeout(() => {
+          if (videoRef.value) {
+            // Устанавливаем максимальную громкость
+            videoRef.value.volume = 1.0
+            videoRef.value.play().catch((error) => {
+              console.log('Автовоспроизведение заблокировано браузером:', error)
+            })
+          }
+        }, 100)
       }
     }
   },
@@ -303,6 +387,71 @@ onUnmounted(() => {
 }
 
 .image-error p {
+  margin: 8px 0;
+  font-size: 1.1rem;
+}
+
+/* Сообщение "ВРЕМЯ ПОШЛО!" */
+.time-started-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2500;
+}
+
+.time-started-content h1 {
+  color: #ff6b6b;
+  font-size: 4rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+  animation: timeStartedPulse 1s infinite;
+}
+
+@keyframes timeStartedPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Стили для видео */
+.video-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.contest-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.video-error {
+  text-align: center;
+  color: #e74c3c;
+  padding: 20px;
+}
+
+.video-error p {
   margin: 8px 0;
   font-size: 1.1rem;
 }

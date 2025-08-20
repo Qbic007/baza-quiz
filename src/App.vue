@@ -95,9 +95,15 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <ContestModal
       :is-visible="showContestModal"
       :card-id="currentCardId || 0"
+      :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
       :image-url="
         gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
           ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
+          : ''
+      "
+      :video-url="
+        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'video'
+          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
           : ''
       "
       @close="closeContestModal"

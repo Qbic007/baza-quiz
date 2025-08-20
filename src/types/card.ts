@@ -12,6 +12,12 @@ export interface ImageQuestionData extends QuestionData {
   imageUrl: string
 }
 
+// Данные для видео
+export interface VideoQuestionData extends QuestionData {
+  type: 'video'
+  videoUrl: string
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number
