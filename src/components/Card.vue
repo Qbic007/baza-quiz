@@ -36,6 +36,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// Emits
+const emit = defineEmits<{
+  cardFlipped: [cardId: number]
+}>()
+
 // Store
 const gameStore = useGameStore()
 
@@ -45,7 +50,13 @@ const card = computed(() => gameStore.getCard(props.cardNumber))
 // Функция переворота карточки
 const toggleCard = () => {
   console.log(`Карточка ${props.cardNumber} кликнута!`)
+  const wasFlipped = card.value?.isFlipped || false
   gameStore.flipCard(props.cardNumber)
+
+  // Если карточка была перевернута в состояние "открыта", эмитим событие
+  if (!wasFlipped) {
+    emit('cardFlipped', props.cardNumber)
+  }
 }
 
 // Дополнительная отладка

@@ -1,15 +1,38 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import QuizCard from './components/Card.vue'
+import GameRulesModal from './components/GameRulesModal.vue'
 import { useGameStore } from '@/stores/game'
 
 // Store
 const gameStore = useGameStore()
 
+// Состояние модального окна
+const showRulesModal = ref(false)
+const currentCardId = ref<number | null>(null)
+
 // Инициализируем игру при загрузке компонента
 onMounted(() => {
   gameStore.initializeGame()
 })
+
+// Обработчики модального окна
+const closeRulesModal = () => {
+  showRulesModal.value = false
+  currentCardId.value = null
+}
+
+const startGame = () => {
+  showRulesModal.value = false
+  currentCardId.value = null
+}
+
+// Обработчик переворота карточки
+const handleCardFlipped = (cardId: number) => {
+  console.log(`Карточка ${cardId} перевернута, показываем модальное окно`)
+  currentCardId.value = cardId
+  showRulesModal.value = true
+}
 
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
@@ -24,14 +47,25 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       <p>
         Карточек перевернуто: {{ gameStore.flippedCardsCount }} из {{ gameStore.totalCardsCount }}
       </p>
-      <button @click="gameStore.resetGame" class="reset-btn">Сбросить игру</button>
+      <div class="game-controls">
+        <button @click="showRulesModal = true" class="btn btn-info">📖 Правила</button>
+        <button @click="gameStore.resetGame" class="reset-btn">Сбросить игру</button>
+      </div>
     </div>
 
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
-        <QuizCard :card-number="card" />
+        <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
       </div>
     </div>
+
+    <!-- Модальное окно с правилами -->
+    <GameRulesModal
+      :is-visible="showRulesModal"
+      :card-id="currentCardId || 0"
+      @close="closeRulesModal"
+      @start-game="startGame"
+    />
   </div>
 </template>
 
@@ -55,7 +89,7 @@ h1 {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -64,6 +98,33 @@ h1 {
   margin: 0 0 15px 0;
   font-size: 1.1rem;
   color: #2c3e50;
+}
+
+.game-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: #138496;
 }
 
 .reset-btn {
