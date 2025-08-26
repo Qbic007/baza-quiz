@@ -135,13 +135,13 @@ const activateTrap = () => {
 }
 
 .modal-content {
-  background-color: white;
-  border-radius: 12px;
+  background-color: #ffffff;
+  border: none;
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
@@ -149,14 +149,14 @@ const activateTrap = () => {
   justify-content: space-between;
   align-items: center;
   padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid #e1e5e9;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .modal-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #495057;
   font-size: 1.8rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .modal-body {
@@ -173,14 +173,14 @@ const activateTrap = () => {
 
 .rules-section h3 {
   margin: 0 0 12px 0;
-  color: #2c3e50;
+  color: #495057;
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .rules-section p {
   margin: 0 0 12px 0;
-  color: #495057;
+  color: #6c757d;
   line-height: 1.6;
 }
 
@@ -206,7 +206,6 @@ const activateTrap = () => {
 .btn {
   padding: 12px 24px;
   border: none;
-  border-radius: 6px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -214,7 +213,7 @@ const activateTrap = () => {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #6c757d;
   color: white;
 }
 
@@ -226,7 +225,7 @@ const activateTrap = () => {
 .boost-section h3 {
   color: #28a745;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -239,15 +238,15 @@ const activateTrap = () => {
 }
 
 .btn-boost {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background-color: #28a745;
   color: white;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.1rem;
   padding: 16px 32px;
 }
 
 .btn-boost:hover {
-  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+  background-color: #218838;
   transform: translateY(-2px);
 }
 
@@ -255,7 +254,7 @@ const activateTrap = () => {
 .trap-section h3 {
   color: #dc3545;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -268,15 +267,15 @@ const activateTrap = () => {
 }
 
 .btn-trap {
-  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+  background-color: #dc3545;
   color: white;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.1rem;
   padding: 16px 32px;
 }
 
 .btn-trap:hover {
-  background: linear-gradient(135deg, #c82333 0%, #e55a00 100%);
+  background-color: #c82333;
   transform: translateY(-2px);
 }
 

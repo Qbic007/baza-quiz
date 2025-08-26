@@ -92,6 +92,9 @@ defineOptions({
   name: 'ContestModal',
 })
 
+// Константы
+const CONTEST_DURATION = 3 // Время конкурса в секундах (для разработки)
+
 // Props
 interface Props {
   isVisible: boolean
@@ -103,7 +106,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  duration: 30,
+  duration: CONTEST_DURATION,
 })
 
 // Emits
@@ -274,7 +277,7 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -285,21 +288,20 @@ onUnmounted(() => {
 }
 
 .start-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #6c757d;
   color: white;
   border: none;
   padding: 20px 40px;
   font-size: 1.5rem;
   font-weight: 600;
-  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .start-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 
 .start-btn:active {
@@ -322,16 +324,16 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 24px 32px;
-  background-color: white;
-  border-bottom: 1px solid #e1e5e9;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .contest-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #495057;
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .close-btn {
@@ -346,12 +348,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   transition: all 0.2s;
 }
 
 .close-btn:hover {
-  background-color: #f8f9fa;
+  background-color: #e9ecef;
   color: #495057;
 }
 
@@ -406,13 +407,13 @@ onUnmounted(() => {
 }
 
 .time-started-content h1 {
-  color: #ff6b6b;
+  color: #495057;
   font-size: 4rem;
-  font-weight: 900;
+  font-weight: 700;
   text-align: center;
   margin: 0;
-  text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
   animation: timeStartedPulse 1s infinite;
+  font-family: 'Arial', sans-serif;
 }
 
 @keyframes timeStartedPulse {
@@ -465,15 +466,15 @@ onUnmounted(() => {
 }
 
 .timer {
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
+  background-color: #ffffff;
+  color: #495057;
   padding: 16px 24px;
-  border-radius: 12px;
+  border: none;
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .timer-label {
@@ -593,32 +594,31 @@ onUnmounted(() => {
 .btn {
   padding: 20px 40px;
   font-size: 1.3rem;
-  font-weight: 700;
-  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   min-width: 160px;
 }
 
 .btn-success {
-  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
-  color: white;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .btn-success:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 
 .btn-failure {
-  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-  color: white;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 .btn-failure:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 </style>

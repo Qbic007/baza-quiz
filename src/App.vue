@@ -165,13 +165,16 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   padding: 20px;
   text-align: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
+  font-family: 'Arial', sans-serif;
+  color: #495057;
 }
 
 h1 {
-  color: #2c3e50;
+  color: #495057;
   margin-bottom: 30px;
   font-size: 2.5rem;
+  font-weight: 300;
 }
 
 /* Отладочная кнопка перезапуска */
@@ -179,12 +182,11 @@ h1 {
   position: absolute;
   top: 20px;
   left: 20px;
-  background-color: #6c757d;
-  color: white;
+  background-color: #e9ecef;
+  color: #495057;
   border: none;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   cursor: pointer;
   font-size: 1.2rem;
   transition: all 0.2s;
@@ -192,7 +194,7 @@ h1 {
 }
 
 .debug-reset-btn:hover {
-  background-color: #495057;
+  background-color: #dee2e6;
   transform: scale(1.1);
 }
 
@@ -224,16 +226,16 @@ h1 {
 .boosts-traps-container {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background-color: #f1f3f4;
+  box-shadow: none;
 }
 
 .boosts-traps-container h3 {
-  color: #2c3e50;
+  color: #495057;
   margin-bottom: 20px;
   font-size: 1.5rem;
   text-align: center;
+  font-weight: 400;
 }
 
 .boosts-traps-grid {
@@ -244,25 +246,22 @@ h1 {
 
 .boost-trap-item {
   padding: 15px;
-  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: none;
 }
 
 .boost-trap-item.boost {
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  border-color: #28a745;
+  background-color: #d4edda;
 }
 
 .boost-trap-item.trap {
-  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-  border-color: #dc3545;
+  background-color: #f8d7da;
 }
 
 .boost-trap-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
 }
 
 .boost-trap-content {
@@ -280,6 +279,7 @@ h1 {
   font-size: 0.9rem;
   line-height: 1.4;
   color: #495057;
+  font-family: 'Arial', sans-serif;
 }
 
 /* Для мобильных устройств */

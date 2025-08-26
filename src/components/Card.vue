@@ -120,24 +120,23 @@ const onMouseDown = () => {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border: 2px solid #333;
-  border-radius: 8px;
+  border: none;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-back {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: #e9ecef;
+  color: #495057;
   transform: rotateY(0deg);
 }
 
 .card-front {
-  background-color: #fff;
-  color: #333;
+  background-color: #f8f9fa;
+  color: #495057;
   transform: rotateY(180deg);
 }
 
@@ -160,13 +159,14 @@ const onMouseDown = () => {
 .card-front h3 {
   margin: 0 0 10px 0;
   font-size: 1.2rem;
-  color: #2c3e50;
+  color: #495057;
+  font-weight: 500;
 }
 
 .card-front p {
   margin: 0;
   font-size: 0.9rem;
-  color: #666;
+  color: #6c757d;
   line-height: 1.4;
 }
 
@@ -174,7 +174,6 @@ const onMouseDown = () => {
 .contest-result {
   margin-top: 12px;
   padding: 8px 12px;
-  border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   text-align: center;
@@ -183,13 +182,13 @@ const onMouseDown = () => {
 .result-success {
   background-color: #d4edda;
   color: #155724;
-  border: 1px solid #c3e6cb;
+  border: none;
 }
 
 .result-failure {
   background-color: #f8d7da;
   color: #721c24;
-  border: 1px solid #f5c6cb;
+  border: none;
 }
 
 /* Убираем hover эффект который может мешать анимации */
