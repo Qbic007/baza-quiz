@@ -32,9 +32,14 @@ const closeContestModal = () => {
 
 // Обработчик переворота карточки
 const handleCardFlipped = (cardId: number) => {
-  console.log(`Карточка ${cardId} перевернута, показываем модальное окно`)
+  console.log(`Карточка ${cardId} перевернута, ждем завершения анимации переворота`)
   currentCardId.value = cardId
-  showRulesModal.value = true
+
+  // Задержка для завершения анимации переворота карточки (0.6s + небольшой буфер)
+  setTimeout(() => {
+    console.log(`Показываем модальное окно для карточки ${cardId}`)
+    showRulesModal.value = true
+  }, 700) // 700ms = 600ms анимация + 100ms буфер
 }
 
 // Обработчик начала конкурса
