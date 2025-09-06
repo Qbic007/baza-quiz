@@ -51,7 +51,13 @@
 
           <!-- Отображение Code Names -->
           <div v-else-if="questionType === 'codenames'" class="codenames-container">
-            <div class="codenames-grid">
+            <div
+              class="codenames-grid"
+              :style="{
+                gridTemplateColumns: `repeat(${codenamesWidth || 3}, 1fr)`,
+                gridTemplateRows: `repeat(${codenamesHeight || 3}, 1fr)`,
+              }"
+            >
               <div
                 v-for="(card, index) in codenamesCards"
                 :key="index"
@@ -61,6 +67,7 @@
                   blue: card.isFlipped && card.color === 'blue',
                   red: card.isFlipped && card.color === 'red',
                   black: card.isFlipped && card.color === 'black',
+                  white: card.isFlipped && card.color === 'white',
                   neutral: card.isFlipped && card.color === 'neutral',
                 }"
                 @click="flipCodenamesCard(index)"
@@ -71,7 +78,6 @@
                   </div>
                   <div class="codenames-card-front">
                     <span class="word">{{ card.word }}</span>
-                    <div class="color-indicator" :class="card.color"></div>
                   </div>
                 </div>
               </div>
@@ -122,6 +128,7 @@
 
 <script setup lang="ts">
 import { ref, onUnmounted, watch } from 'vue'
+import { sendCodeNamesLayout } from '@/services/telegram'
 
 // Компонент полноэкранной модалки для конкурса
 defineOptions({
@@ -134,7 +141,7 @@ const CONTEST_DURATION = 3 // Время конкурса в секундах (�
 // Интерфейс для карточки Code Names
 interface CodenamesCard {
   word: string
-  color: 'blue' | 'red' | 'black' | 'neutral'
+  color: 'blue' | 'red' | 'black' | 'white' | 'neutral'
   isFlipped: boolean
 }
 
@@ -146,7 +153,8 @@ interface Props {
   imageUrl?: string
   videoUrl?: string
   duration?: number // длительность в секундах
-  codenamesColors?: ('red' | 'blue' | 'black')[]
+  codenamesWidth?: number
+  codenamesHeight?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -260,46 +268,102 @@ const handleVideoEnded = () => {
   }, 2000)
 }
 
+// Функция для генерации цветов по правилам
+const generateColors = (totalCards: number): string[] => {
+  const colors: string[] = []
+
+  if (totalCards % 2 === 1) {
+    // Нечётное количество: поровну красных и синих + одна чёрная
+    const teamCards = Math.floor(totalCards / 2)
+    const redCards = teamCards
+    const blueCards = teamCards
+
+    // Добавляем красные карточки
+    for (let i = 0; i < redCards; i++) {
+      colors.push('red')
+    }
+
+    // Добавляем синие карточки
+    for (let i = 0; i < blueCards; i++) {
+      colors.push('blue')
+    }
+
+    // Добавляем чёрную карточку
+    colors.push('black')
+  } else {
+    // Чётное количество: поровну красных и синих + 1 чёрная + одна белая (ничья)
+    const teamCards = (totalCards - 2) / 2
+    const redCards = teamCards
+    const blueCards = teamCards
+
+    // Добавляем красные карточки
+    for (let i = 0; i < redCards; i++) {
+      colors.push('red')
+    }
+
+    // Добавляем синие карточки
+    for (let i = 0; i < blueCards; i++) {
+      colors.push('blue')
+    }
+
+    // Добавляем чёрную карточку
+    colors.push('black')
+
+    // Добавляем белую карточку (ничья)
+    colors.push('white')
+  }
+
+  // Перемешиваем цвета
+  for (let i = colors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[colors[i], colors[j]] = [colors[j], colors[i]]
+  }
+
+  return colors
+}
+
 // Методы для Code Names
 const initializeCodenamesCards = async () => {
   try {
+    // Получаем размеры поля из конфигурации или используем по умолчанию
+    const width = props.codenamesWidth || 3
+    const height = props.codenamesHeight || 3
+    const totalCards = width * height
+
     // Загружаем слова из отдельного файла
     const response = await fetch('/config/codenames-words.json')
     const data = await response.json()
     const allWords = data.words
 
-    // Случайно выбираем 9 слов без повторов
+    // Случайно выбираем нужное количество слов без повторов
     const selectedWords = []
     const availableWords = [...allWords]
 
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < totalCards; i++) {
       const randomIndex = Math.floor(Math.random() * availableWords.length)
       selectedWords.push(availableWords[randomIndex])
       availableWords.splice(randomIndex, 1) // Убираем выбранное слово
     }
 
-    // Используем цвета из конфигурации или значения по умолчанию
-    const colors = props.codenamesColors || [
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'black',
-    ]
+    // Генерируем цвета автоматически по правилам
+    const colors = generateColors(totalCards)
 
     // Создаем карточки
     codenamesCards.value = selectedWords.map((word, index) => ({
       word,
-      color: colors[index] as 'blue' | 'red' | 'black' | 'neutral',
+      color: colors[index] as 'blue' | 'red' | 'black' | 'white' | 'neutral',
       isFlipped: false,
     }))
+
+    // Отправляем раскладку в Telegram
+    await sendCodeNamesLayout(selectedWords, colors, props.cardId, width, height)
   } catch (error) {
     console.error('Ошибка загрузки слов для Code Names:', error)
     // Fallback на слова по умолчанию
+    const width = props.codenamesWidth || 3
+    const height = props.codenamesHeight || 3
+    const totalCards = width * height
+
     const fallbackWords = [
       'КОТ',
       'ДОМ',
@@ -310,24 +374,18 @@ const initializeCodenamesCards = async () => {
       'ВОЗДУХ',
       'ДЕРЕВО',
       'ЦВЕТОК',
-    ]
-    const colors = props.codenamesColors || [
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'red',
-      'blue',
-      'black',
-    ]
+    ].slice(0, totalCards)
+
+    const colors = generateColors(totalCards)
 
     codenamesCards.value = fallbackWords.map((word, index) => ({
       word,
-      color: colors[index] as 'blue' | 'red' | 'black' | 'neutral',
+      color: colors[index] as 'blue' | 'red' | 'black' | 'white' | 'neutral',
       isFlipped: false,
     }))
+
+    // Отправляем раскладку в Telegram (fallback)
+    await sendCodeNamesLayout(fallbackWords, colors, props.cardId, width, height)
   }
 }
 
@@ -768,17 +826,17 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 100px;
+  box-sizing: border-box;
 }
 
 .codenames-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 15px;
+  gap: 20px;
   width: 100%;
-  max-width: 600px;
-  aspect-ratio: 1;
+  height: 100%;
+  max-width: none;
+  max-height: none;
 }
 
 .codenames-card {
@@ -833,32 +891,7 @@ onUnmounted(() => {
 .word {
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 8px;
   text-align: center;
-}
-
-.color-indicator {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.color-indicator.blue {
-  background-color: #007bff;
-}
-
-.color-indicator.red {
-  background-color: #dc3545;
-}
-
-.color-indicator.black {
-  background-color: #000000;
-}
-
-.color-indicator.neutral {
-  background-color: #6c757d;
 }
 
 /* Цвета для перевернутых карточек */
@@ -880,6 +913,11 @@ onUnmounted(() => {
 .codenames-card.neutral .codenames-card-front {
   background-color: #f8f9fa;
   border-color: #6c757d;
+}
+
+.codenames-card.white .codenames-card-front {
+  background-color: #f5f5dc !important;
+  border-color: #d4af37 !important;
 }
 
 /* Кнопка завершения игры для Code Names */
@@ -915,17 +953,16 @@ onUnmounted(() => {
 
 /* Адаптивность для Code Names */
 @media (max-width: 768px) {
+  .codenames-container {
+    padding: 20px;
+  }
+
   .codenames-grid {
     gap: 10px;
   }
 
   .word {
     font-size: 1rem;
-  }
-
-  .color-indicator {
-    width: 16px;
-    height: 16px;
   }
 
   .codenames-controls {
@@ -936,6 +973,20 @@ onUnmounted(() => {
   .btn-finish-game {
     padding: 12px 20px;
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .codenames-container {
+    padding: 10px;
+  }
+
+  .codenames-grid {
+    gap: 8px;
+  }
+
+  .word {
+    font-size: 0.9rem;
   }
 }
 </style>

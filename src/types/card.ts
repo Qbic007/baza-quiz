@@ -46,7 +46,8 @@ export interface TrapQuestionData extends QuestionData {
 export interface CodenamesQuestionData extends QuestionData {
   type: 'codenames'
   content: string
-  colors: ('red' | 'blue' | 'black')[]
+  width: number
+  height: number
 }
 
 // Тип для отдельной карточки

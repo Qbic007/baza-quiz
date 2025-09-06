@@ -158,9 +158,14 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
           ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
           : ''
       "
-      :codenames-colors="
+      :codenames-width="
         gameStore.getCard(currentCardId || 0)?.questionData?.type === 'codenames'
-          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.colors
+          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.width
+          : undefined
+      "
+      :codenames-height="
+        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'codenames'
+          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.height
           : undefined
       "
       @close="closeContestModal"

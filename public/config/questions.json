@@ -7,7 +7,8 @@
       "questionData": {
         "type": "codenames",
         "content": "Игра в кодовые имена! Назовите слова, связанные с заданной темой.",
-        "colors": ["red", "blue", "red", "blue", "red", "blue", "red", "blue", "black"]
+        "width": 4,
+        "height": 3
       }
     },
     {
