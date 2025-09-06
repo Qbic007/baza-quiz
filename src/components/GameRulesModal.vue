@@ -22,6 +22,23 @@
             <p>{{ questionData?.content || 'Это ловушка!' }}</p>
           </div>
 
+          <!-- Code Names -->
+          <div v-else-if="questionType === 'codenames'" class="codenames-section">
+            <h3>🎯 Code Names</h3>
+            <p>{{ questionData?.content || 'Игра в кодовые имена!' }}</p>
+            <div class="codenames-rules">
+              <h4>Правила игры:</h4>
+              <ul>
+                <li>На поле 3x3 расположены 9 карточек со словами</li>
+                <li>4 карточки принадлежат синей команде</li>
+                <li>4 карточки принадлежат красной команде</li>
+                <li>1 карточка - черная (проигрышная)</li>
+                <li>Кликайте на карточки, чтобы перевернуть их и увидеть цвет</li>
+                <li>Цель: найти все карточки своей команды</li>
+              </ul>
+            </div>
+          </div>
+
           <!-- Обычный конкурс -->
           <div v-else class="rules-section">
             <h3>🎯 Описание конкурса</h3>
@@ -33,7 +50,12 @@
           </div>
 
           <!-- Условия участия только для обычных конкурсов -->
-          <div v-if="questionType !== 'boost' && questionType !== 'trap'" class="rules-section">
+          <div
+            v-if="
+              questionType !== 'boost' && questionType !== 'trap' && questionType !== 'codenames'
+            "
+            class="rules-section"
+          >
             <h3>📋 Условия участия</h3>
             <ul>
               <li>Внимательно изучите задание</li>
@@ -44,7 +66,12 @@
           </div>
 
           <!-- Награды только для обычных конкурсов -->
-          <div v-if="questionType !== 'boost' && questionType !== 'trap'" class="rules-section">
+          <div
+            v-if="
+              questionType !== 'boost' && questionType !== 'trap' && questionType !== 'codenames'
+            "
+            class="rules-section"
+          >
             <h3>🏆 Награды</h3>
             <p>
               За успешное выполнение задания вы получите очки и сможете продолжить игру. Чем лучше
@@ -83,7 +110,7 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId?: number
-  questionType?: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap'
+  questionType?: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames'
   questionData?: {
     type: string
     content?: string
@@ -264,6 +291,50 @@ const activateTrap = () => {
   font-size: 1.2rem;
   text-align: center;
   font-weight: 500;
+}
+
+/* Стили для Code Names */
+.codenames-section h3 {
+  color: #007bff;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.codenames-section p {
+  color: #007bff;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.codenames-rules {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  margin-top: 20px;
+}
+
+.codenames-rules h4 {
+  color: #495057;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.codenames-rules ul {
+  color: #495057;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.codenames-rules li {
+  margin-bottom: 8px;
 }
 
 .btn-trap {

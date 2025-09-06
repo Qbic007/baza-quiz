@@ -158,6 +158,11 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
           ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
           : ''
       "
+      :codenames-colors="
+        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'codenames'
+          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.colors
+          : undefined
+      "
       @close="closeContestModal"
       @success="handleContestSuccess"
       @failure="handleContestFailure"

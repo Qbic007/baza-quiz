@@ -2,11 +2,12 @@
   "questions": [
     {
       "id": 1,
-      "content": "Вопрос 1",
-      "questionType": "image",
+      "content": "Code Names",
+      "questionType": "codenames",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "codenames",
+        "content": "Игра в кодовые имена! Назовите слова, связанные с заданной темой.",
+        "colors": ["red", "blue", "red", "blue", "red", "blue", "red", "blue", "black"]
       }
     },
     {

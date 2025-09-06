@@ -18,7 +18,6 @@
         <div class="card-content">
           <h3>Вопрос {{ props.cardNumber }}</h3>
           <p>{{ card?.content || 'Загрузка...' }}</p>
-          <p>Состояние: {{ card?.isFlipped ? 'Перевернута' : 'Не перевернута' }}</p>
 
           <!-- Результат конкурса -->
           <div v-if="props.contestResult" class="contest-result">

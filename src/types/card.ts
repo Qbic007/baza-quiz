@@ -1,5 +1,5 @@
 // Типы вопросов
-export type QuestionType = 'image' | 'audio' | 'video' | 'text' | 'boost' | 'trap'
+export type QuestionType = 'image' | 'audio' | 'video' | 'text' | 'boost' | 'trap' | 'codenames'
 
 // Базовый интерфейс для данных вопроса
 export interface QuestionData {
@@ -40,6 +40,13 @@ export interface BoostQuestionData extends QuestionData {
 export interface TrapQuestionData extends QuestionData {
   type: 'trap'
   content: string
+}
+
+// Данные для Code Names
+export interface CodenamesQuestionData extends QuestionData {
+  type: 'codenames'
+  content: string
+  colors: ('red' | 'blue' | 'black')[]
 }
 
 // Тип для отдельной карточки

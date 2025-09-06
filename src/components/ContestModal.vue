@@ -48,10 +48,39 @@
               <p>Попробуйте обновить страницу</p>
             </div>
           </div>
+
+          <!-- Отображение Code Names -->
+          <div v-else-if="questionType === 'codenames'" class="codenames-container">
+            <div class="codenames-grid">
+              <div
+                v-for="(card, index) in codenamesCards"
+                :key="index"
+                class="codenames-card"
+                :class="{
+                  'is-flipped': card.isFlipped,
+                  blue: card.isFlipped && card.color === 'blue',
+                  red: card.isFlipped && card.color === 'red',
+                  black: card.isFlipped && card.color === 'black',
+                  neutral: card.isFlipped && card.color === 'neutral',
+                }"
+                @click="flipCodenamesCard(index)"
+              >
+                <div class="codenames-card-inner">
+                  <div class="codenames-card-back">
+                    <span class="word">{{ card.word }}</span>
+                  </div>
+                  <div class="codenames-card-front">
+                    <span class="word">{{ card.word }}</span>
+                    <div class="color-indicator" :class="card.color"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Оверлей с результатом (показывается когда время истекло) -->
-        <div v-if="timeLeft <= 0" class="result-overlay">
+        <!-- Оверлей с результатом (показывается когда время истекло, но не для Code Names) -->
+        <div v-if="timeLeft <= 0 && questionType !== 'codenames'" class="result-overlay">
           <div class="result-content">
             <h2>⏰ Время истекло!</h2>
             <p>Выберите результат выполнения задания:</p>
@@ -70,7 +99,7 @@
         </div>
 
         <!-- Таймер -->
-        <div class="timer-container">
+        <div v-if="questionType !== 'codenames'" class="timer-container">
           <div class="timer">
             <span class="timer-label">⏱️ Время:</span>
             <span class="timer-value" :class="{ warning: timeLeft <= 10 }">
@@ -78,6 +107,13 @@
             </span>
             <span class="timer-unit">сек</span>
           </div>
+        </div>
+
+        <!-- Кнопка завершения игры для Code Names -->
+        <div v-if="questionType === 'codenames'" class="codenames-controls">
+          <button class="btn btn-finish-game" @click="finishCodenamesGame">
+            🏁 Завершить игру
+          </button>
         </div>
       </div>
     </div>
@@ -95,14 +131,22 @@ defineOptions({
 // Константы
 const CONTEST_DURATION = 3 // Время конкурса в секундах (для разработки)
 
+// Интерфейс для карточки Code Names
+interface CodenamesCard {
+  word: string
+  color: 'blue' | 'red' | 'black' | 'neutral'
+  isFlipped: boolean
+}
+
 // Props
 interface Props {
   isVisible: boolean
   cardId: number
-  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap'
+  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames'
   imageUrl?: string
   videoUrl?: string
   duration?: number // длительность в секундах
+  codenamesColors?: ('red' | 'blue' | 'black')[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -123,15 +167,22 @@ const imageError = ref(false)
 const videoError = ref(false)
 const videoRef = ref<HTMLVideoElement>()
 const showTimeStartedMessage = ref(false)
+const codenamesCards = ref<CodenamesCard[]>([])
 let timerInterval: number | null = null
 
 // Методы
-const startContest = () => {
+const startContest = async () => {
   console.log(`Запуск конкурса ${props.cardId}`)
   isStarted.value = true
 
+  // Инициализируем Code Names карточки если это Code Names
+  if (props.questionType === 'codenames') {
+    await initializeCodenamesCards()
+  }
+
   // Для видео таймер запускается после окончания видео
   // Для изображений таймер запускается сразу
+  // Для Code Names таймер не нужен
   if (props.questionType === 'image') {
     startTimer()
   }
@@ -209,6 +260,92 @@ const handleVideoEnded = () => {
   }, 2000)
 }
 
+// Методы для Code Names
+const initializeCodenamesCards = async () => {
+  try {
+    // Загружаем слова из отдельного файла
+    const response = await fetch('/config/codenames-words.json')
+    const data = await response.json()
+    const allWords = data.words
+
+    // Случайно выбираем 9 слов без повторов
+    const selectedWords = []
+    const availableWords = [...allWords]
+
+    for (let i = 0; i < 9; i++) {
+      const randomIndex = Math.floor(Math.random() * availableWords.length)
+      selectedWords.push(availableWords[randomIndex])
+      availableWords.splice(randomIndex, 1) // Убираем выбранное слово
+    }
+
+    // Используем цвета из конфигурации или значения по умолчанию
+    const colors = props.codenamesColors || [
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'black',
+    ]
+
+    // Создаем карточки
+    codenamesCards.value = selectedWords.map((word, index) => ({
+      word,
+      color: colors[index] as 'blue' | 'red' | 'black' | 'neutral',
+      isFlipped: false,
+    }))
+  } catch (error) {
+    console.error('Ошибка загрузки слов для Code Names:', error)
+    // Fallback на слова по умолчанию
+    const fallbackWords = [
+      'КОТ',
+      'ДОМ',
+      'СОЛНЦЕ',
+      'ВОДА',
+      'ОГОНЬ',
+      'ЗЕМЛЯ',
+      'ВОЗДУХ',
+      'ДЕРЕВО',
+      'ЦВЕТОК',
+    ]
+    const colors = props.codenamesColors || [
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'red',
+      'blue',
+      'black',
+    ]
+
+    codenamesCards.value = fallbackWords.map((word, index) => ({
+      word,
+      color: colors[index] as 'blue' | 'red' | 'black' | 'neutral',
+      isFlipped: false,
+    }))
+  }
+}
+
+const flipCodenamesCard = (index: number) => {
+  if (codenamesCards.value[index].isFlipped) return
+
+  codenamesCards.value[index].isFlipped = true
+  console.log(
+    `Перевернута карточка ${index + 1}: ${codenamesCards.value[index].word} (${codenamesCards.value[index].color})`,
+  )
+}
+
+const finishCodenamesGame = () => {
+  console.log(`Code Names игра ${props.cardId} завершена`)
+  // Для Code Names сразу считаем успешным завершением
+  handleSuccess()
+}
+
 const closeModal = () => {
   if (timerInterval) {
     clearInterval(timerInterval)
@@ -217,6 +354,7 @@ const closeModal = () => {
   isStarted.value = false
   timeLeft.value = props.duration
   showTimeStartedMessage.value = false
+  codenamesCards.value = []
   emit('close')
 }
 
@@ -230,6 +368,7 @@ watch(
       imageError.value = false
       videoError.value = false
       showTimeStartedMessage.value = false
+      codenamesCards.value = []
       if (timerInterval) {
         clearInterval(timerInterval)
         timerInterval = null
@@ -620,5 +759,183 @@ onUnmounted(() => {
 .btn-failure:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для Code Names */
+.codenames-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.codenames-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1;
+}
+
+.codenames-card {
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.codenames-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.codenames-card.is-flipped .codenames-card-inner {
+  transform: rotateY(180deg);
+}
+
+.codenames-card-back,
+.codenames-card-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.codenames-card-back {
+  background-color: #f8f9fa;
+  color: #495057;
+  transform: rotateY(0deg);
+}
+
+.codenames-card-front {
+  background-color: #ffffff;
+  color: #495057;
+  transform: rotateY(180deg);
+}
+
+.word {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.color-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.color-indicator.blue {
+  background-color: #007bff;
+}
+
+.color-indicator.red {
+  background-color: #dc3545;
+}
+
+.color-indicator.black {
+  background-color: #000000;
+}
+
+.color-indicator.neutral {
+  background-color: #6c757d;
+}
+
+/* Цвета для перевернутых карточек */
+.codenames-card.blue .codenames-card-front {
+  background-color: #e3f2fd;
+  border-color: #007bff;
+}
+
+.codenames-card.red .codenames-card-front {
+  background-color: #ffebee;
+  border-color: #dc3545;
+}
+
+.codenames-card.black .codenames-card-front {
+  background-color: #f5f5f5;
+  border-color: #000000;
+}
+
+.codenames-card.neutral .codenames-card-front {
+  background-color: #f8f9fa;
+  border-color: #6c757d;
+}
+
+/* Кнопка завершения игры для Code Names */
+.codenames-controls {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 10;
+}
+
+.btn-finish-game {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.btn-finish-game:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-finish-game:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность для Code Names */
+@media (max-width: 768px) {
+  .codenames-grid {
+    gap: 10px;
+  }
+
+  .word {
+    font-size: 1rem;
+  }
+
+  .color-indicator {
+    width: 16px;
+    height: 16px;
+  }
+
+  .codenames-controls {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .btn-finish-game {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
 }
 </style>
