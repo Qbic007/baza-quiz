@@ -122,6 +122,37 @@ export const sendCodeNamesLayout = async (
       message += `⚫ Черная карточка (${colorCounts.black} карточка - проигрышная)\n`
     if (colorCounts.white) message += `⚪ Белая карточка (${colorCounts.white} карточка - ничья)\n`
 
+    // Добавляем сгруппированные списки слов для каждой команды
+    message += `\n🎯 <b>Слова для загадывания:</b>\n\n`
+
+    // Красная команда
+    if (colorCounts.red) {
+      const redWords = words.filter((_, index) => colors[index] === 'red')
+      message += `🔴 <b>Красная команда (${redWords.length} слов):</b>\n`
+      message += redWords.join(', ') + '\n\n'
+    }
+
+    // Синяя команда
+    if (colorCounts.blue) {
+      const blueWords = words.filter((_, index) => colors[index] === 'blue')
+      message += `🔵 <b>Синяя команда (${blueWords.length} слов):</b>\n`
+      message += blueWords.join(', ') + '\n\n'
+    }
+
+    // Черная карточка
+    if (colorCounts.black) {
+      const blackWords = words.filter((_, index) => colors[index] === 'black')
+      message += `⚫ <b>Черная карточка (${blackWords.length} слов):</b>\n`
+      message += blackWords.join(', ') + '\n\n'
+    }
+
+    // Белая карточка
+    if (colorCounts.white) {
+      const whiteWords = words.filter((_, index) => colors[index] === 'white')
+      message += `⚪ <b>Белая карточка (${whiteWords.length} слов):</b>\n`
+      message += whiteWords.join(', ') + '\n\n'
+    }
+
     return await sendTelegramMessage(message)
   } catch (error) {
     console.error('Ошибка при создании сообщения Code Names:', error)
