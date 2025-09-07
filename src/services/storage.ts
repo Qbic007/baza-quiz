@@ -29,12 +29,14 @@ async function loadQuestionsConfig(): Promise<
   Array<{
     id: number
     content: string
-    questionType: 'image' | 'video' | 'boost' | 'trap'
+    questionType: 'image' | 'video' | 'boost' | 'trap' | 'codenames'
     questionData: {
-      type: 'image' | 'video' | 'boost' | 'trap'
+      type: 'image' | 'video' | 'boost' | 'trap' | 'codenames'
       content?: string
       imageUrl?: string
       videoUrl?: string
+      width?: number
+      height?: number
     }
   }>
 > {
@@ -45,6 +47,19 @@ async function loadQuestionsConfig(): Promise<
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     const data = await response.json()
+    console.log('=== ЗАГРУЗКА КОНФИГУРАЦИИ ===')
+    console.log('Загруженные вопросы:', data.questions)
+    const codenamesQuestion = data.questions.find((q: any) => q.questionType === 'codenames')
+    if (codenamesQuestion) {
+      console.log('Code Names вопрос:', codenamesQuestion)
+      console.log(
+        'Размеры поля:',
+        codenamesQuestion.questionData?.width,
+        'x',
+        codenamesQuestion.questionData?.height,
+      )
+    }
+    console.log('================================')
     return data.questions || []
   } catch (error) {
     console.error('Ошибка загрузки конфигурации вопросов:', error)
@@ -89,4 +104,11 @@ export function clearGameState(): void {
   } catch (error) {
     console.error('Ошибка очистки состояния игры:', error)
   }
+}
+
+// Принудительное обновление конфигурации
+export async function forceUpdateConfig(): Promise<GameState> {
+  console.log('Принудительное обновление конфигурации...')
+  clearGameState()
+  return await createInitialGameState()
 }

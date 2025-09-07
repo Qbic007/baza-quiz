@@ -47,6 +47,11 @@ export const sendCodeNamesLayout = async (
   width: number = 3,
   height: number = 3,
 ): Promise<boolean> => {
+  console.log('=== TELEGRAM SEND ===')
+  console.log('width:', width, 'height:', height)
+  console.log('words:', words)
+  console.log('colors:', colors)
+  console.log('=====================')
   try {
     // Создаем сообщение с раскладкой Code Names
     let message = `🎯 <b>Code Names - Карточка ${cardId}</b>\n`

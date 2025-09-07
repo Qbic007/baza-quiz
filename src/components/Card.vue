@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="card"
-    :class="{ 'is-flipped': card?.isFlipped }"
-    @click="toggleCard"
-    @mousedown="onMouseDown"
-  >
+  <div class="card" :class="{ 'is-flipped': card?.isFlipped }" @click="toggleCard">
     <div class="card-inner" :class="{ 'is-flipped': card?.isFlipped }">
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
@@ -16,8 +11,7 @@
       <!-- Лицевая сторона карточки -->
       <div class="card-face card-front">
         <div class="card-content">
-          <h3>Вопрос {{ props.cardNumber }}</h3>
-          <p>{{ card?.content || 'Загрузка...' }}</p>
+          <h2 class="card-title">{{ card?.content || 'Загрузка...' }}</h2>
 
           <!-- Результат конкурса -->
           <div v-if="props.contestResult" class="contest-result">
@@ -68,20 +62,13 @@ const card = computed(() => gameStore.getCard(props.cardNumber))
 const toggleCard = () => {
   // Карточка может быть перевернута только один раз
   if (card.value?.isFlipped) {
-    console.log(`Карточка ${props.cardNumber} уже открыта, повторный клик игнорируется`)
     return
   }
 
-  console.log(`Карточка ${props.cardNumber} кликнута!`)
   gameStore.flipCard(props.cardNumber)
 
   // Эмитим событие переворота
   emit('cardFlipped', props.cardNumber)
-}
-
-// Дополнительная отладка
-const onMouseDown = () => {
-  console.log(`MouseDown на карточке ${props.cardNumber}`)
 }
 </script>
 
@@ -92,6 +79,11 @@ const onMouseDown = () => {
   perspective: 1000px;
   cursor: pointer;
   position: relative;
+  transition: transform 0.2s ease;
+}
+
+.card:hover:not(.is-flipped) {
+  transform: translateY(-4px);
 }
 
 .card.is-flipped {
@@ -151,22 +143,20 @@ const onMouseDown = () => {
 }
 
 .card-number {
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.card-front h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.2rem;
+  font-size: 2.5rem;
+  font-weight: 800;
   color: #495057;
-  font-weight: 500;
 }
 
-.card-front p {
+.card-title {
   margin: 0;
-  font-size: 0.9rem;
-  color: #6c757d;
-  line-height: 1.4;
+  font-size: 1.4rem;
+  color: #212529;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Результат конкурса */

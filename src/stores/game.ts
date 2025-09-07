@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Card, GameState, BoostOrTrap } from '@/types/card'
-import { createInitialGameState, saveGameState, loadGameState } from '@/services/storage'
+import {
+  createInitialGameState,
+  saveGameState,
+  loadGameState,
+  forceUpdateConfig,
+} from '@/services/storage'
 
 export const useGameStore = defineStore('game', () => {
   // Состояние
@@ -143,6 +148,29 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  // Принудительное обновление конфигурации
+  async function forceUpdateGameConfig() {
+    console.log('Принудительное обновление конфигурации...')
+    const newState = await forceUpdateConfig()
+    console.log('Новое состояние загружено:', newState)
+
+    // Находим Code Names карточку и выводим её конфигурацию
+    const codenamesCard = newState.cards.find((card) => card.questionType === 'codenames')
+    if (codenamesCard) {
+      console.log('Code Names карточка:', codenamesCard)
+      console.log('Размеры поля:', codenamesCard.questionData)
+    }
+
+    cards.value = newState.cards
+    createdAt.value = newState.createdAt
+    lastPlayed.value = newState.lastPlayed
+    contestResults.value = newState.contestResults || {}
+    boostsAndTraps.value = newState.boostsAndTraps || []
+    saveGameState(newState)
+
+    console.log('Конфигурация обновлена успешно!')
+  }
+
   return {
     // Состояние
     cards,
@@ -165,5 +193,6 @@ export const useGameStore = defineStore('game', () => {
     setContestResult,
     addBoostOrTrap,
     removeBoostOrTrap,
+    forceUpdateConfig: forceUpdateGameConfig as () => Promise<void>,
   }
 })

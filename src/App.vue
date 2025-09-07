@@ -32,19 +32,16 @@ const closeContestModal = () => {
 
 // Обработчик переворота карточки
 const handleCardFlipped = (cardId: number) => {
-  console.log(`Карточка ${cardId} перевернута, ждем завершения анимации переворота`)
   currentCardId.value = cardId
 
   // Задержка для завершения анимации переворота карточки (0.6s + небольшой буфер)
   setTimeout(() => {
-    console.log(`Показываем модальное окно для карточки ${cardId}`)
     showRulesModal.value = true
   }, 700) // 700ms = 600ms анимация + 100ms буфер
 }
 
 // Обработчик начала конкурса
 const handleStartContest = (cardId: number) => {
-  console.log(`Начинаем конкурс ${cardId}`)
   showRulesModal.value = false
   currentCardId.value = cardId
   showContestModal.value = true
@@ -93,14 +90,16 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   <div class="app">
     <h1>Baza Quiz</h1>
 
-    <!-- Кнопка перезапуска игры (отладочная) -->
-    <button
-      v-if="gameStore.isGameStarted"
-      @click="async () => await gameStore.resetGame()"
-      class="debug-reset-btn"
-    >
-      🔄
-    </button>
+    <!-- Кнопки отладки -->
+    <div v-if="gameStore.isGameStarted" class="debug-buttons">
+      <button
+        @click="async () => await gameStore.resetGame()"
+        class="debug-reset-btn"
+        title="Перезапустить игру"
+      >
+        🔄
+      </button>
+    </div>
 
     <!-- Блок бустов и трэпов -->
     <div v-if="gameStore.boostsAndTraps.length > 0" class="boosts-traps-container">
@@ -159,13 +158,13 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
           : ''
       "
       :codenames-width="
-        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'codenames'
-          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.width
+        currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+          ? (gameStore.getCard(currentCardId)?.questionData as any)?.width
           : undefined
       "
       :codenames-height="
-        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'codenames'
-          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.height
+        currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+          ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
           : undefined
       "
       @close="closeContestModal"
@@ -192,11 +191,17 @@ h1 {
   font-weight: 300;
 }
 
-/* Отладочная кнопка перезапуска */
-.debug-reset-btn {
+/* Отладочные кнопки */
+.debug-buttons {
   position: absolute;
   top: 20px;
   left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.debug-reset-btn {
   background-color: #e9ecef;
   color: #495057;
   border: none;
@@ -205,7 +210,7 @@ h1 {
   cursor: pointer;
   font-size: 1.2rem;
   transition: all 0.2s;
-  z-index: 100;
+  border-radius: 4px;
 }
 
 .debug-reset-btn:hover {
