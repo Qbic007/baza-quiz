@@ -3,12 +3,14 @@ import { onMounted, ref } from 'vue'
 import QuizCard from './components/Card.vue'
 import GameRulesModal from './components/GameRulesModal.vue'
 import ContestModal from './components/ContestModal.vue'
+import TeamSelectionModal from './components/TeamSelectionModal.vue'
 import { useGameStore } from '@/stores/game'
 
 // Store
 const gameStore = useGameStore()
 
 // Состояние модальных окон
+const showTeamSelectionModal = ref(false)
 const showRulesModal = ref(false)
 const showContestModal = ref(false)
 const currentCardId = ref<number | null>(null)
@@ -16,7 +18,17 @@ const currentCardId = ref<number | null>(null)
 // Инициализируем игру при загрузке компонента
 onMounted(async () => {
   await gameStore.initializeGame()
+  // Показываем модалку выбора команд если команды не выбраны
+  if (!gameStore.isTeamsSelected) {
+    showTeamSelectionModal.value = true
+  }
 })
+
+// Обработчики модального окна выбора команд
+const handleTeamsSelected = (leftTeam: string, rightTeam: string) => {
+  gameStore.setTeams(leftTeam, rightTeam)
+  showTeamSelectionModal.value = false
+}
 
 // Обработчики модального окна с правилами
 const closeRulesModal = () => {
@@ -82,6 +94,13 @@ const removeBoostOrTrap = (id: string) => {
   gameStore.removeBoostOrTrap(id)
 }
 
+// Сброс игры с выбором команд
+const resetGame = async () => {
+  await gameStore.resetGame()
+  gameStore.resetTeams()
+  showTeamSelectionModal.value = true
+}
+
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 </script>
@@ -90,15 +109,16 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   <div class="app">
     <h1>Baza Quiz</h1>
 
+    <!-- Отображение команд -->
+    <div v-if="gameStore.teams" class="teams-display">
+      <div class="team team-left">{{ gameStore.teams.leftTeam }}</div>
+      <div class="vs">VS</div>
+      <div class="team team-right">{{ gameStore.teams.rightTeam }}</div>
+    </div>
+
     <!-- Кнопки отладки -->
     <div v-if="gameStore.isGameStarted" class="debug-buttons">
-      <button
-        @click="async () => await gameStore.resetGame()"
-        class="debug-reset-btn"
-        title="Перезапустить игру"
-      >
-        🔄
-      </button>
+      <button @click="resetGame" class="debug-reset-btn" title="Перезапустить игру">🔄</button>
     </div>
 
     <!-- Блок бустов и трэпов -->
@@ -125,6 +145,12 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
         <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
       </div>
     </div>
+
+    <!-- Модальное окно выбора команд -->
+    <TeamSelectionModal
+      :is-visible="showTeamSelectionModal"
+      @teams-selected="handleTeamsSelected"
+    />
 
     <!-- Модальное окно с правилами -->
     <GameRulesModal
@@ -185,6 +211,49 @@ h1 {
   margin-bottom: 30px;
   font-size: 2.5rem;
   font-weight: 300;
+}
+
+/* Отображение команд */
+.teams-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.team-left {
+  background-color: #dc3545;
+  color: white;
+}
+
+.team-right {
+  background-color: #007bff;
+  color: white;
+}
+
+.vs {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #495057;
+  padding: 8px 16px;
+  background-color: #e9ecef;
+  border-radius: 50%;
+  min-width: 40px;
+  text-align: center;
 }
 
 /* Отладочные кнопки */

@@ -15,9 +15,11 @@ export const useGameStore = defineStore('game', () => {
   const lastPlayed = ref<number>(0)
   const contestResults = ref<Record<number, 'success' | 'failure'>>({})
   const boostsAndTraps = ref<BoostOrTrap[]>([])
+  const teams = ref<{ leftTeam: string; rightTeam: string } | null>(null)
 
   // Геттеры
   const isGameStarted = computed(() => cards.value.length > 0)
+  const isTeamsSelected = computed(() => teams.value !== null)
   const flippedCardsCount = computed(() => cards.value.filter((card) => card.isFlipped).length)
   const totalCardsCount = computed(() => cards.value.length)
   const getContestResult = computed(() => (cardId: number) => contestResults.value[cardId] || null)
@@ -148,6 +150,16 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  function setTeams(leftTeam: string, rightTeam: string) {
+    teams.value = { leftTeam, rightTeam }
+    console.log(`Команды выбраны: ${leftTeam} vs ${rightTeam}`)
+  }
+
+  function resetTeams() {
+    teams.value = null
+    console.log('Команды сброшены')
+  }
+
   // Принудительное обновление конфигурации
   async function forceUpdateGameConfig() {
     console.log('Принудительное обновление конфигурации...')
@@ -178,9 +190,11 @@ export const useGameStore = defineStore('game', () => {
     lastPlayed,
     contestResults,
     boostsAndTraps,
+    teams,
 
     // Геттеры
     isGameStarted,
+    isTeamsSelected,
     flippedCardsCount,
     totalCardsCount,
     getContestResult,
@@ -193,6 +207,8 @@ export const useGameStore = defineStore('game', () => {
     setContestResult,
     addBoostOrTrap,
     removeBoostOrTrap,
+    setTeams,
+    resetTeams,
     forceUpdateConfig: forceUpdateGameConfig as () => Promise<void>,
   }
 })
