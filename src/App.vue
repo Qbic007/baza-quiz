@@ -18,7 +18,7 @@ const currentCardId = ref<number | null>(null)
 // Инициализируем игру при загрузке компонента
 onMounted(async () => {
   await gameStore.initializeGame()
-  // Показываем модалку выбора команд если команды не выбраны
+  // Показываем модалку выбора команд только если команды не выбраны
   if (!gameStore.isTeamsSelected) {
     showTeamSelectionModal.value = true
   }
@@ -59,17 +59,10 @@ const handleStartContest = (cardId: number) => {
   showContestModal.value = true
 }
 
-// Обработчики результата конкурса
-const handleContestSuccess = (cardId: number) => {
-  console.log(`Конкурс ${cardId} успешно завершён`)
-  gameStore.setContestResult(cardId, 'success')
-  showContestModal.value = false
-  currentCardId.value = null
-}
-
-const handleContestFailure = (cardId: number) => {
-  console.log(`Конкурс ${cardId} провален`)
-  gameStore.setContestResult(cardId, 'failure')
+// Обработчик результата конкурса
+const handleContestResult = (cardId: number, result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw') => {
+  console.log(`Конкурс ${cardId} - результат: ${result}`)
+  gameStore.setContestResult(cardId, result)
   showContestModal.value = false
   currentCardId.value = null
 }
@@ -189,9 +182,10 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
           ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
           : undefined
       "
+      :left-team-name="gameStore.teams?.leftTeam"
+      :right-team-name="gameStore.teams?.rightTeam"
       @close="closeContestModal"
-      @success="handleContestSuccess"
-      @failure="handleContestFailure"
+      @contest-result="handleContestResult"
     />
   </div>
 </template>

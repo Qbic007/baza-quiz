@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Card, GameState, BoostOrTrap } from '@/types/card'
+import type { Card, GameState, BoostOrTrap, ContestResult } from '@/types/card'
+import { RESULT_COLORS } from '@/constants/colors'
 import {
   createInitialGameState,
   saveGameState,
@@ -13,7 +14,7 @@ export const useGameStore = defineStore('game', () => {
   const cards = ref<Card[]>([])
   const createdAt = ref<number>(0)
   const lastPlayed = ref<number>(0)
-  const contestResults = ref<Record<number, 'success' | 'failure'>>({})
+  const contestResults = ref<Record<number, ContestResult>>({})
   const boostsAndTraps = ref<BoostOrTrap[]>([])
   const teams = ref<{ leftTeam: string; rightTeam: string } | null>(null)
 
@@ -23,6 +24,14 @@ export const useGameStore = defineStore('game', () => {
   const flippedCardsCount = computed(() => cards.value.filter((card) => card.isFlipped).length)
   const totalCardsCount = computed(() => cards.value.length)
   const getContestResult = computed(() => (cardId: number) => contestResults.value[cardId] || null)
+  
+  // Функция для получения цвета карточки на основе результата конкурса
+  const getCardColor = (cardId: number): string | null => {
+    const result = contestResults.value[cardId]
+    if (!result) return null
+    
+    return RESULT_COLORS[result] || null
+  }
 
   // Действия
   async function initializeGame() {
@@ -38,6 +47,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed.value = savedState.lastPlayed
       contestResults.value = savedState.contestResults || {}
       boostsAndTraps.value = savedState.boostsAndTraps || []
+      teams.value = savedState.teams || null
     } else {
       console.log('Создание нового состояния игры')
       // Создаем новое состояние
@@ -47,6 +57,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed.value = initialState.lastPlayed
       contestResults.value = initialState.contestResults || {}
       boostsAndTraps.value = initialState.boostsAndTraps || []
+      teams.value = null
 
       // Сохраняем в localStorage
       saveGameState(initialState)
@@ -81,6 +92,7 @@ export const useGameStore = defineStore('game', () => {
     lastPlayed.value = initialState.lastPlayed
     contestResults.value = initialState.contestResults || {}
     boostsAndTraps.value = initialState.boostsAndTraps || []
+    teams.value = null
 
     // Сохраняем новое состояние
     saveGameState(initialState)
@@ -90,7 +102,7 @@ export const useGameStore = defineStore('game', () => {
     return cards.value.find((c) => c.id === cardId)
   }
 
-  function setContestResult(cardId: number, result: 'success' | 'failure') {
+  function setContestResult(cardId: number, result: ContestResult) {
     contestResults.value[cardId] = result
     lastPlayed.value = Date.now()
 
@@ -152,11 +164,37 @@ export const useGameStore = defineStore('game', () => {
 
   function setTeams(leftTeam: string, rightTeam: string) {
     teams.value = { leftTeam, rightTeam }
+    lastPlayed.value = Date.now()
+
+    // Сохраняем обновленное состояние
+    const currentState: GameState = {
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+    }
+    saveGameState(currentState)
+
     console.log(`Команды выбраны: ${leftTeam} vs ${rightTeam}`)
   }
 
   function resetTeams() {
     teams.value = null
+    lastPlayed.value = Date.now()
+
+    // Сохраняем обновленное состояние
+    const currentState: GameState = {
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+    }
+    saveGameState(currentState)
+
     console.log('Команды сброшены')
   }
 
@@ -198,6 +236,7 @@ export const useGameStore = defineStore('game', () => {
     flippedCardsCount,
     totalCardsCount,
     getContestResult,
+    getCardColor,
 
     // Действия
     initializeGame: initializeGame as () => Promise<void>,

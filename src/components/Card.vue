@@ -1,5 +1,10 @@
 <template>
-  <div class="card" :class="{ 'is-flipped': card?.isFlipped }" @click="toggleCard">
+  <div
+    class="card"
+    :class="{ 'is-flipped': card?.isFlipped }"
+    :style="cardColorStyle"
+    @click="toggleCard"
+  >
     <div class="card-inner" :class="{ 'is-flipped': card?.isFlipped }">
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
@@ -45,6 +50,20 @@ const gameStore = useGameStore()
 // Получаем данные карточки из store
 const card = computed(() => gameStore.getCard(props.cardNumber))
 
+// Получаем цвет карточки на основе результата конкурса
+const cardColor = computed(() => gameStore.getCardColor(props.cardNumber))
+
+// Стиль для карточки с цветом результата
+const cardColorStyle = computed(() => {
+  if (!cardColor.value) return {}
+
+  return {
+    backgroundColor: cardColor.value,
+    border: `2px solid ${cardColor.value.replace('0.3', '0.6')}`, // Более яркая граница
+    boxShadow: `0 0 0 4px ${cardColor.value.replace('0.3', '0.2')}`, // Дополнительная тень для выделения
+  }
+})
+
 // Функция переворота карточки
 const toggleCard = () => {
   // Карточка может быть перевернута только один раз
@@ -66,7 +85,11 @@ const toggleCard = () => {
   perspective: 1000px;
   cursor: pointer;
   position: relative;
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card:hover:not(.is-flipped) {
@@ -89,7 +112,7 @@ const toggleCard = () => {
 
 .card-inner.is-flipped {
   transform: rotateY(180deg);
-  border: 2px solid #e9ecef;
+  /* border будет применяться через cardColorStyle */
 }
 
 .card-face {
@@ -117,6 +140,15 @@ const toggleCard = () => {
   background-color: #f8f9fa;
   color: #495057;
   transform: rotateY(180deg);
+}
+
+/* Стили для карточек с результатами конкурса */
+.card[style*='background-color'] .card-front {
+  background-color: transparent !important; /* Позволяем цвету результата просвечивать */
+}
+
+.card[style*='background-color'] .card-back {
+  background-color: transparent !important; /* Позволяем цвету результата просвечивать */
 }
 
 .card-content {

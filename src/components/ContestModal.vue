@@ -78,14 +78,31 @@
           </div>
         </div>
 
-        <!-- Оверлей с результатом (показывается когда время истекло, но не для Code Names) -->
-        <div v-if="timeLeft <= 0 && questionType !== 'codenames'" class="result-overlay">
+        <!-- Оверлей с результатом (показывается когда время истекло или Code Names завершена) -->
+        <div v-if="timeLeft <= 0" class="result-overlay">
           <div class="result-content">
-            <h2>⏰ Время истекло!</h2>
-            <p>Выберите результат выполнения задания:</p>
+            <h2 v-if="questionType !== 'codenames'">⏰ Время истекло!</h2>
+            <h2 v-else>🏁 Игра завершена!</h2>
+            <p>Кто победил в конкурсе?</p>
             <div class="result-buttons-container">
-              <button class="btn btn-success" @click="handleSuccess">🎉 УСПЕХ</button>
-              <button class="btn btn-failure" @click="handleFailure">❌ ПРОВАЛ</button>
+              <button
+                v-if="leftTeamName"
+                class="btn btn-left-team"
+                @click="handleContestResult('leftTeam')"
+              >
+                🏆 {{ leftTeamName }}
+              </button>
+              <button
+                v-if="rightTeamName"
+                class="btn btn-right-team"
+                @click="handleContestResult('rightTeam')"
+              >
+                🏆 {{ rightTeamName }}
+              </button>
+              <button class="btn btn-nobody" @click="handleContestResult('nobody')">
+                ❌ Никто
+              </button>
+              <button class="btn btn-draw" @click="handleContestResult('draw')">🤝 Ничья</button>
             </div>
           </div>
         </div>
@@ -148,6 +165,8 @@ interface Props {
   duration?: number // длительность в секундах
   codenamesWidth?: number
   codenamesHeight?: number
+  leftTeamName?: string
+  rightTeamName?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -157,8 +176,7 @@ const props = withDefaults(defineProps<Props>(), {
 // Emits
 const emit = defineEmits<{
   close: []
-  success: [cardId: number]
-  failure: [cardId: number]
+  contestResult: [cardId: number, result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw']
 }>()
 
 // Состояние
@@ -203,15 +221,9 @@ const startTimer = () => {
   }, 1000)
 }
 
-const handleSuccess = () => {
-  console.log(`Конкурс ${props.cardId} - УСПЕХ`)
-  emit('success', props.cardId)
-  closeModal()
-}
-
-const handleFailure = () => {
-  console.log(`Конкурс ${props.cardId} - ПРОВАЛ`)
-  emit('failure', props.cardId)
+const handleContestResult = (result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw') => {
+  console.log(`Конкурс ${props.cardId} - результат: ${result}`)
+  emit('contestResult', props.cardId, result)
   closeModal()
 }
 
@@ -422,8 +434,8 @@ const flipCodenamesCard = (index: number) => {
 
 const finishCodenamesGame = () => {
   console.log(`Code Names игра ${props.cardId} завершена`)
-  // Для Code Names сразу считаем успешным завершением
-  handleSuccess()
+  // Для Code Names показываем выбор победителя
+  timeLeft.value = 0
 }
 
 const closeModal = () => {
@@ -779,22 +791,42 @@ onUnmounted(() => {
   min-width: 160px;
 }
 
-.btn-success {
-  background-color: #d4edda;
-  color: #155724;
+.btn-left-team {
+  background-color: #e3f2fd;
+  color: #1976d2;
 }
 
-.btn-success:hover {
+.btn-left-team:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 
-.btn-failure {
+.btn-right-team {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.btn-right-team:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-nobody {
   background-color: #f8d7da;
   color: #721c24;
 }
 
-.btn-failure:hover {
+.btn-nobody:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-draw {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.btn-draw:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }

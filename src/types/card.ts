@@ -67,13 +67,17 @@ export interface BoostOrTrap {
   cardId: number
 }
 
+// Тип для результата конкурса
+export type ContestResult = 'leftTeam' | 'rightTeam' | 'nobody' | 'draw'
+
 // Тип для состояния игры
 export interface GameState {
   cards: Card[]
   createdAt: number
   lastPlayed: number
-  contestResults?: Record<number, 'success' | 'failure'>
+  contestResults?: Record<number, ContestResult>
   boostsAndTraps: BoostOrTrap[]
+  teams?: { leftTeam: string; rightTeam: string }
 }
 
 // Тип для создания новой карточки
