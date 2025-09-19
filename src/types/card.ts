@@ -65,6 +65,7 @@ export interface BoostOrTrap {
   type: 'boost' | 'trap'
   content: string
   cardId: number
+  team?: 'leftTeam' | 'rightTeam' // Команда, которой принадлежит ловушка/бонус
 }
 
 // Тип для результата конкурса

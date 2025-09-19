@@ -4,6 +4,7 @@ import QuizCard from './components/Card.vue'
 import GameRulesModal from './components/GameRulesModal.vue'
 import ContestModal from './components/ContestModal.vue'
 import TeamSelectionModal from './components/TeamSelectionModal.vue'
+import TeamSelectionBoostTrapModal from './components/TeamSelectionBoostTrapModal.vue'
 import { useGameStore } from '@/stores/game'
 
 // Store
@@ -13,7 +14,9 @@ const gameStore = useGameStore()
 const showTeamSelectionModal = ref(false)
 const showRulesModal = ref(false)
 const showContestModal = ref(false)
+const showTeamSelectionBoostTrapModal = ref(false)
 const currentCardId = ref<number | null>(null)
+const currentBoostTrapData = ref<{ isBoost: boolean; content: string } | null>(null)
 
 // Инициализируем игру при загрузке компонента
 onMounted(async () => {
@@ -76,18 +79,24 @@ const handleContestResult = (
 }
 
 // Обработчики бустов и трэпов
-const handleActivateBoost = (cardId: number, content: string) => {
-  console.log(`Активирован буст ${cardId}: ${content}`)
-  gameStore.addBoostOrTrap('boost', content, cardId)
+const handleShowTeamSelection = (isBoost: boolean, content: string) => {
+  currentBoostTrapData.value = { isBoost, content }
   showRulesModal.value = false
-  currentCardId.value = null
+  showTeamSelectionBoostTrapModal.value = true
 }
 
-const handleActivateTrap = (cardId: number, content: string) => {
-  console.log(`Активирован трэп ${cardId}: ${content}`)
-  gameStore.addBoostOrTrap('trap', content, cardId)
-  showRulesModal.value = false
+const handleTeamSelectedForBoostTrap = (team: 'leftTeam' | 'rightTeam') => {
+  if (!currentBoostTrapData.value || !currentCardId.value) return
+
+  const { isBoost, content } = currentBoostTrapData.value
+  console.log(
+    `${isBoost ? 'Буст' : 'Трэп'} ${currentCardId.value} назначен команде ${team}: ${content}`,
+  )
+
+  gameStore.addBoostOrTrap(isBoost ? 'boost' : 'trap', content, currentCardId.value, team)
+  showTeamSelectionBoostTrapModal.value = false
   currentCardId.value = null
+  currentBoostTrapData.value = null
 }
 
 // Удаление буста или трэпа
@@ -117,23 +126,67 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 
     <!-- Отображение команд и очков -->
     <div v-if="gameStore.teams" class="teams-display">
-      <div class="team team-left">
-        <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
-        <div class="team-score-container">
-          <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
-          <div class="team-score">{{ gameStore.leftTeamScore }}</div>
-          <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
+      <div class="team-section-left">
+        <div class="team team-left">
+          <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
+          <div class="team-score-container">
+            <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
+            <div class="team-score">{{ gameStore.leftTeamScore }}</div>
+            <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
+          </div>
+        </div>
+
+        <!-- Бусты и ловушки левой команды -->
+        <div
+          v-if="gameStore.leftTeamBoosts.length > 0 || gameStore.leftTeamTraps.length > 0"
+          class="team-effects-section team-effects-left"
+        >
+          <div class="effects-title">{{ gameStore.teams?.leftTeam || 'Левая команда' }}</div>
+          <div class="effects-list">
+            <div
+              v-for="item in [...gameStore.leftTeamBoosts, ...gameStore.leftTeamTraps]"
+              :key="item.id"
+              class="effect-card"
+              :class="item.type"
+              @click="removeBoostOrTrap(item.id)"
+            >
+              {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="vs">
         <div class="vs-text">VS</div>
       </div>
-      <div class="team team-right">
-        <div class="team-name">{{ gameStore.teams.rightTeam }}</div>
-        <div class="team-score-container">
-          <button class="score-btn score-minus" @click="adjustScore('rightTeam', -1)">-</button>
-          <div class="team-score">{{ gameStore.rightTeamScore }}</div>
-          <button class="score-btn score-plus" @click="adjustScore('rightTeam', 1)">+</button>
+
+      <div class="team-section-right">
+        <div class="team team-right">
+          <div class="team-name">{{ gameStore.teams.rightTeam }}</div>
+          <div class="team-score-container">
+            <button class="score-btn score-minus" @click="adjustScore('rightTeam', -1)">-</button>
+            <div class="team-score">{{ gameStore.rightTeamScore }}</div>
+            <button class="score-btn score-plus" @click="adjustScore('rightTeam', 1)">+</button>
+          </div>
+        </div>
+
+        <!-- Бусты и ловушки правой команды -->
+        <div
+          v-if="gameStore.rightTeamBoosts.length > 0 || gameStore.rightTeamTraps.length > 0"
+          class="team-effects-section team-effects-right"
+        >
+          <div class="effects-title">{{ gameStore.teams?.rightTeam || 'Правая команда' }}</div>
+          <div class="effects-list">
+            <div
+              v-for="item in [...gameStore.rightTeamBoosts, ...gameStore.rightTeamTraps]"
+              :key="item.id"
+              class="effect-card"
+              :class="item.type"
+              @click="removeBoostOrTrap(item.id)"
+            >
+              {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -141,25 +194,6 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <!-- Кнопки отладки -->
     <div v-if="gameStore.isGameStarted" class="debug-buttons">
       <button @click="resetGame" class="debug-reset-btn" title="Перезапустить игру">🔄</button>
-    </div>
-
-    <!-- Блок бустов и трэпов -->
-    <div v-if="gameStore.boostsAndTraps.length > 0" class="boosts-traps-container">
-      <h3>🎯 Бусты и трэпы</h3>
-      <div class="boosts-traps-grid">
-        <div
-          v-for="item in gameStore.boostsAndTraps"
-          :key="item.id"
-          class="boost-trap-item"
-          :class="item.type"
-          @click="removeBoostOrTrap(item.id)"
-        >
-          <div class="boost-trap-content">
-            <span class="boost-trap-type">{{ item.type === 'boost' ? '🚀' : '💀' }}</span>
-            <p class="boost-trap-text">{{ item.content }}</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="grid-container">
@@ -182,8 +216,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
       @close="closeRulesModal"
       @start-contest="handleStartContest"
-      @activate-boost="handleActivateBoost"
-      @activate-trap="handleActivateTrap"
+      @show-team-selection="handleShowTeamSelection"
     />
 
     <!-- Модальное окно конкурса -->
@@ -216,6 +249,16 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       @close="closeContestModal"
       @contest-result="handleContestResult"
     />
+
+    <!-- Модальное окно выбора команды для бустов и ловушек -->
+    <TeamSelectionBoostTrapModal
+      :is-visible="showTeamSelectionBoostTrapModal"
+      :is-boost="currentBoostTrapData?.isBoost || false"
+      :content="currentBoostTrapData?.content || ''"
+      :left-team-name="gameStore.teams?.leftTeam"
+      :right-team-name="gameStore.teams?.rightTeam"
+      @team-selected="handleTeamSelectedForBoostTrap"
+    />
   </div>
 </template>
 
@@ -239,7 +282,7 @@ h1 {
 /* Отображение команд */
 .teams-display {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 20px;
   margin-bottom: 30px;
@@ -247,6 +290,16 @@ h1 {
   background-color: #f8f9fa;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-section-left,
+.team-section-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  max-width: 300px;
 }
 
 .team {
@@ -260,6 +313,77 @@ h1 {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+.team-effects-section {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.team-effects-left {
+  background-color: #fff5f5;
+  border-color: #f5c6cb;
+}
+
+.team-effects-right {
+  background-color: #f0f8ff;
+  border-color: #b3d9ff;
+}
+
+.effects-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.effects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.effect-card {
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  text-align: center;
+  border: 1px solid transparent;
+  word-wrap: break-word;
+  max-width: 100px;
+}
+
+.effect-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.effect-card.boost {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.effect-card.boost:hover {
+  background-color: #c3e6cb;
+}
+
+.effect-card.trap {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.effect-card.trap:hover {
+  background-color: #f5c6cb;
 }
 
 .team-name {
@@ -397,66 +521,6 @@ h1 {
   }
 }
 
-/* Блок бустов и трэпов */
-.boosts-traps-container {
-  margin-bottom: 30px;
-  padding: 20px;
-  background-color: #f1f3f4;
-  box-shadow: none;
-}
-
-.boosts-traps-container h3 {
-  color: #495057;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  text-align: center;
-  font-weight: 400;
-}
-
-.boosts-traps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.boost-trap-item {
-  padding: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-}
-
-.boost-trap-item.boost {
-  background-color: #d4edda;
-}
-
-.boost-trap-item.trap {
-  background-color: #f8d7da;
-}
-
-.boost-trap-item:hover {
-  transform: translateY(-2px);
-  box-shadow: none;
-}
-
-.boost-trap-content {
-  text-align: center;
-}
-
-.boost-trap-type {
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.boost-trap-text {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: #495057;
-  font-family: 'Arial', sans-serif;
-}
-
 /* Для мобильных устройств */
 @media (max-width: 767px) {
   .grid-container {
@@ -470,8 +534,33 @@ h1 {
     margin-bottom: 20px;
   }
 
-  .boosts-traps-grid {
-    grid-template-columns: 1fr;
+  .teams-display {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .team-section-left,
+  .team-section-right {
+    max-width: 100%;
+  }
+
+  .vs {
+    transform: rotate(90deg);
+  }
+
+  .team {
+    min-width: 100%;
+  }
+
+  .team-effects-section {
+    margin-top: 10px;
+    padding: 8px;
+  }
+
+  .effect-card {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    max-width: 80px;
   }
 }
 

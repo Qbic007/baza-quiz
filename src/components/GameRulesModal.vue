@@ -130,6 +130,7 @@ const emit = defineEmits<{
   startContest: [cardId: number]
   activateBoost: [cardId: number, content: string]
   activateTrap: [cardId: number, content: string]
+  showTeamSelection: [isBoost: boolean, content: string]
 }>()
 
 // Методы
@@ -138,11 +139,11 @@ const startContest = () => {
 }
 
 const activateBoost = () => {
-  emit('activateBoost', props.cardId, props.questionData?.content || '')
+  emit('showTeamSelection', true, props.questionData?.content || '')
 }
 
 const activateTrap = () => {
-  emit('activateTrap', props.cardId, props.questionData?.content || '')
+  emit('showTeamSelection', false, props.questionData?.content || '')
 }
 </script>
 
