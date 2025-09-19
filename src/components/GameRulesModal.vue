@@ -4,7 +4,7 @@
       <div class="modal-content">
         <!-- Заголовок -->
         <div class="modal-header">
-          <h2>Конкурс {{ cardId }}</h2>
+          <h2>{{ cardContent || `Конкурс ${cardId}` }}</h2>
           <!-- Убираем кнопку закрытия -->
         </div>
 
@@ -15,7 +15,7 @@
 
           <!-- Fallback контент если нет интро -->
           <div v-else class="intro-content">
-            <h3>{{ questionData?.content || 'Описание конкурса' }}</h3>
+            <h3>{{ introContent || '' }}</h3>
           </div>
         </div>
 
@@ -62,6 +62,7 @@ interface Props {
     textContent?: string
   }
   introContent?: string
+  cardContent?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

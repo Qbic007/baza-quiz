@@ -215,6 +215,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
       :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
       :intro-content="currentCardId ? gameStore.getCard(currentCardId)?.intro?.content : undefined"
+      :card-content="currentCardId ? gameStore.getCard(currentCardId)?.content : undefined"
       @close="closeRulesModal"
       @start-contest="handleStartContest"
       @show-team-selection="handleShowTeamSelection"
