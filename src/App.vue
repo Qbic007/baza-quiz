@@ -18,9 +18,14 @@ const currentCardId = ref<number | null>(null)
 // Инициализируем игру при загрузке компонента
 onMounted(async () => {
   await gameStore.initializeGame()
+  console.log('Команды выбраны:', gameStore.isTeamsSelected)
+  console.log('Текущие команды:', gameStore.teams)
   // Показываем модалку выбора команд только если команды не выбраны
   if (!gameStore.isTeamsSelected) {
+    console.log('Показываем модалку выбора команд')
     showTeamSelectionModal.value = true
+  } else {
+    console.log('Команды уже выбраны, модалка не показывается')
   }
 })
 
@@ -60,7 +65,10 @@ const handleStartContest = (cardId: number) => {
 }
 
 // Обработчик результата конкурса
-const handleContestResult = (cardId: number, result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw') => {
+const handleContestResult = (
+  cardId: number,
+  result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw',
+) => {
   console.log(`Конкурс ${cardId} - результат: ${result}`)
   gameStore.setContestResult(cardId, result)
   showContestModal.value = false
@@ -94,6 +102,11 @@ const resetGame = async () => {
   showTeamSelectionModal.value = true
 }
 
+// Корректировка очков команд
+const adjustScore = (team: 'leftTeam' | 'rightTeam', delta: number) => {
+  gameStore.adjustScore(team, delta)
+}
+
 // Создаем массив из 40 элементов для сетки 8x5
 const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 </script>
@@ -102,11 +115,27 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   <div class="app">
     <h1>Baza Quiz</h1>
 
-    <!-- Отображение команд -->
+    <!-- Отображение команд и очков -->
     <div v-if="gameStore.teams" class="teams-display">
-      <div class="team team-left">{{ gameStore.teams.leftTeam }}</div>
-      <div class="vs">VS</div>
-      <div class="team team-right">{{ gameStore.teams.rightTeam }}</div>
+      <div class="team team-left">
+        <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
+        <div class="team-score-container">
+          <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
+          <div class="team-score">{{ gameStore.leftTeamScore }}</div>
+          <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
+        </div>
+      </div>
+      <div class="vs">
+        <div class="vs-text">VS</div>
+      </div>
+      <div class="team team-right">
+        <div class="team-name">{{ gameStore.teams.rightTeam }}</div>
+        <div class="team-score-container">
+          <button class="score-btn score-minus" @click="adjustScore('rightTeam', -1)">-</button>
+          <div class="team-score">{{ gameStore.rightTeamScore }}</div>
+          <button class="score-btn score-plus" @click="adjustScore('rightTeam', 1)">+</button>
+        </div>
+      </div>
     </div>
 
     <!-- Кнопки отладки -->
@@ -223,10 +252,72 @@ h1 {
 .team {
   font-size: 1.5rem;
   font-weight: 600;
-  padding: 12px 24px;
+  padding: 16px 24px;
   border-radius: 8px;
   text-align: center;
-  min-width: 120px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.team-score-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-score {
+  font-size: 2rem;
+  font-weight: 800;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  min-width: 50px;
+}
+
+.score-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.team:hover .score-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.score-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+.score-btn:active {
+  transform: scale(0.95);
 }
 
 .team-left {
@@ -240,14 +331,19 @@ h1 {
 }
 
 .vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  min-width: 60px;
+}
+
+.vs-text {
   font-size: 1.2rem;
   font-weight: 700;
   color: #495057;
-  padding: 8px 16px;
-  background-color: #e9ecef;
-  border-radius: 50%;
-  min-width: 40px;
-  text-align: center;
 }
 
 /* Отладочные кнопки */

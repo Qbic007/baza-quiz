@@ -21,6 +21,8 @@ export async function createInitialGameState(): Promise<GameState> {
     createdAt: Date.now(),
     lastPlayed: Date.now(),
     boostsAndTraps: [],
+    teams: null,
+    scores: { leftTeam: 0, rightTeam: 0 },
   }
 }
 
@@ -81,12 +83,21 @@ export function saveGameState(state: GameState): void {
 export function loadGameState(): GameState | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (!stored) return null
+    if (!stored) {
+      console.log('Нет сохраненного состояния в localStorage')
+      return null
+    }
 
     const state = JSON.parse(stored) as GameState
+    console.log('Загружено из localStorage:', {
+      teams: state.teams,
+      scores: state.scores,
+      cardsCount: state.cards?.length,
+    })
 
     // Проверяем валидность данных
     if (!state.cards || !Array.isArray(state.cards) || state.cards.length !== 40) {
+      console.log('Невалидные данные карточек, возвращаем null')
       return null
     }
 

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Card, GameState, BoostOrTrap, ContestResult } from '@/types/card'
+import type { Card, GameState, BoostOrTrap, ContestResult, TeamScores } from '@/types/card'
 import { RESULT_COLORS } from '@/constants/colors'
+import { CONTEST_SCORES } from '@/constants/scoring'
 import {
   createInitialGameState,
   saveGameState,
@@ -17,20 +18,32 @@ export const useGameStore = defineStore('game', () => {
   const contestResults = ref<Record<number, ContestResult>>({})
   const boostsAndTraps = ref<BoostOrTrap[]>([])
   const teams = ref<{ leftTeam: string; rightTeam: string } | null>(null)
+  const scores = ref<TeamScores>({ leftTeam: 0, rightTeam: 0 })
 
   // Геттеры
   const isGameStarted = computed(() => cards.value.length > 0)
   const isTeamsSelected = computed(() => teams.value !== null)
   const flippedCardsCount = computed(() => cards.value.filter((card) => card.isFlipped).length)
   const totalCardsCount = computed(() => cards.value.length)
-  const getContestResult = computed(() => (cardId: number) => contestResults.value[cardId] || null)
-  
+  const getContestResult = computed(() => (cardId: number) => contestResults.value[cardId] ?? null)
+
+  // Геттеры для очков
+  const leftTeamScore = computed(() => scores.value.leftTeam)
+  const rightTeamScore = computed(() => scores.value.rightTeam)
+  const totalScore = computed(() => scores.value.leftTeam + scores.value.rightTeam)
+  const scoreDifference = computed(() => Math.abs(scores.value.leftTeam - scores.value.rightTeam))
+  const leadingTeam = computed(() => {
+    if (scores.value.leftTeam > scores.value.rightTeam) return 'leftTeam'
+    if (scores.value.rightTeam > scores.value.leftTeam) return 'rightTeam'
+    return null
+  })
+
   // Функция для получения цвета карточки на основе результата конкурса
   const getCardColor = (cardId: number): string | null => {
     const result = contestResults.value[cardId]
     if (!result) return null
-    
-    return RESULT_COLORS[result] || null
+
+    return RESULT_COLORS[result] ?? null
   }
 
   // Действия
@@ -42,12 +55,15 @@ export const useGameStore = defineStore('game', () => {
 
     if (savedState) {
       console.log('Загружено сохраненное состояние игры')
+      console.log('Сохраненные команды:', savedState.teams)
+      console.log('Сохраненные очки:', savedState.scores)
       cards.value = savedState.cards
       createdAt.value = savedState.createdAt
       lastPlayed.value = savedState.lastPlayed
-      contestResults.value = savedState.contestResults || {}
-      boostsAndTraps.value = savedState.boostsAndTraps || []
-      teams.value = savedState.teams || null
+      contestResults.value = savedState.contestResults ?? {}
+      boostsAndTraps.value = savedState.boostsAndTraps ?? []
+      teams.value = savedState.teams ?? null
+      scores.value = savedState.scores ?? { leftTeam: 0, rightTeam: 0 }
     } else {
       console.log('Создание нового состояния игры')
       // Создаем новое состояние
@@ -55,9 +71,10 @@ export const useGameStore = defineStore('game', () => {
       cards.value = initialState.cards
       createdAt.value = initialState.createdAt
       lastPlayed.value = initialState.lastPlayed
-      contestResults.value = initialState.contestResults || {}
-      boostsAndTraps.value = initialState.boostsAndTraps || []
+      contestResults.value = initialState.contestResults ?? {}
+      boostsAndTraps.value = initialState.boostsAndTraps ?? []
       teams.value = null
+      scores.value = { leftTeam: 0, rightTeam: 0 }
 
       // Сохраняем в localStorage
       saveGameState(initialState)
@@ -90,9 +107,10 @@ export const useGameStore = defineStore('game', () => {
     cards.value = initialState.cards
     createdAt.value = initialState.createdAt
     lastPlayed.value = initialState.lastPlayed
-    contestResults.value = initialState.contestResults || {}
-    boostsAndTraps.value = initialState.boostsAndTraps || []
+    contestResults.value = initialState.contestResults ?? {}
+    boostsAndTraps.value = initialState.boostsAndTraps ?? []
     teams.value = null
+    scores.value = { leftTeam: 0, rightTeam: 0 }
 
     // Сохраняем новое состояние
     saveGameState(initialState)
@@ -102,8 +120,45 @@ export const useGameStore = defineStore('game', () => {
     return cards.value.find((c) => c.id === cardId)
   }
 
-  function setContestResult(cardId: number, result: ContestResult) {
-    contestResults.value[cardId] = result
+  // Функции для работы с очками
+  function addScore(result: ContestResult) {
+    const baseScore = CONTEST_SCORES[result]
+    console.log(`Начисляем очки за результат "${result}": ${baseScore}`)
+
+    if (result === 'leftTeam') {
+      scores.value.leftTeam += baseScore
+    } else if (result === 'rightTeam') {
+      scores.value.rightTeam += baseScore
+    } else if (result === 'draw') {
+      scores.value.leftTeam += baseScore
+      scores.value.rightTeam += baseScore
+    }
+    // nobody - никто не получает очков
+
+    console.log(
+      `Очки обновлены: ${teams.value?.leftTeam || 'Левая команда'}: ${scores.value.leftTeam}, ${teams.value?.rightTeam || 'Правая команда'}: ${scores.value.rightTeam}`,
+    )
+  }
+
+  function resetScores() {
+    scores.value = { leftTeam: 0, rightTeam: 0 }
+    console.log('Очки сброшены')
+  }
+
+  function addBonusScore(
+    team: 'leftTeam' | 'rightTeam',
+    bonusType: keyof typeof import('@/constants/scoring').BONUS_SCORES,
+  ) {
+    const bonusScore = import('@/constants/scoring').BONUS_SCORES[bonusType]
+    scores.value[team] += bonusScore
+    console.log(`Бонусные очки ${bonusType} (+${bonusScore}) начислены команде ${team}`)
+  }
+
+  function adjustScore(team: 'leftTeam' | 'rightTeam', delta: number) {
+    const currentScore = team === 'leftTeam' ? scores.value.leftTeam : scores.value.rightTeam
+    const newScore = Math.max(0, currentScore + delta) // Не позволяем очкам быть отрицательными
+
+    scores.value[team] = newScore
     lastPlayed.value = Date.now()
 
     // Сохраняем обновленное состояние
@@ -113,6 +168,30 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+      scores: scores.value,
+    }
+    saveGameState(currentState)
+
+    console.log(`Очки ${team} изменены на ${delta > 0 ? '+' : ''}${delta}: ${newScore}`)
+  }
+
+  function setContestResult(cardId: number, result: ContestResult) {
+    contestResults.value[cardId] = result
+    lastPlayed.value = Date.now()
+
+    // Начисляем очки на основе результата
+    addScore(result)
+
+    // Сохраняем обновленное состояние
+    const currentState: GameState = {
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+      scores: scores.value,
     }
     saveGameState(currentState)
 
@@ -137,6 +216,8 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+      scores: scores.value,
     }
     saveGameState(currentState)
 
@@ -155,6 +236,8 @@ export const useGameStore = defineStore('game', () => {
         lastPlayed: lastPlayed.value,
         contestResults: contestResults.value,
         boostsAndTraps: boostsAndTraps.value,
+        teams: teams.value,
+        scores: scores.value,
       }
       saveGameState(currentState)
 
@@ -174,7 +257,10 @@ export const useGameStore = defineStore('game', () => {
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
       teams: teams.value,
+      scores: scores.value,
     }
+
+    console.log('Сохраняем состояние с командами:', currentState.teams)
     saveGameState(currentState)
 
     console.log(`Команды выбраны: ${leftTeam} vs ${rightTeam}`)
@@ -192,6 +278,7 @@ export const useGameStore = defineStore('game', () => {
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
       teams: teams.value,
+      scores: scores.value,
     }
     saveGameState(currentState)
 
@@ -229,6 +316,7 @@ export const useGameStore = defineStore('game', () => {
     contestResults,
     boostsAndTraps,
     teams,
+    scores,
 
     // Геттеры
     isGameStarted,
@@ -237,6 +325,11 @@ export const useGameStore = defineStore('game', () => {
     totalCardsCount,
     getContestResult,
     getCardColor,
+    leftTeamScore,
+    rightTeamScore,
+    totalScore,
+    scoreDifference,
+    leadingTeam,
 
     // Действия
     initializeGame: initializeGame as () => Promise<void>,
@@ -248,6 +341,10 @@ export const useGameStore = defineStore('game', () => {
     removeBoostOrTrap,
     setTeams,
     resetTeams,
+    addScore,
+    resetScores,
+    addBonusScore,
+    adjustScore,
     forceUpdateConfig: forceUpdateGameConfig as () => Promise<void>,
   }
 })
