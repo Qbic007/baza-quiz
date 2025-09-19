@@ -10,56 +10,80 @@
         <!-- Содержимое -->
         <div class="modal-body">
           <div class="teams-container">
-            <!-- Левая команда -->
-            <div class="team-section">
-              <h3>Команда 1</h3>
-              <div class="input-container">
-                <input
-                  v-model="leftTeamName"
-                  type="text"
-                  placeholder="Введите название команды"
-                  class="team-input"
-                  :disabled="leftTeamConfirmed"
-                  @keyup.enter="confirmLeftTeam"
-                />
-                <button
-                  v-if="!leftTeamConfirmed"
-                  class="confirm-btn"
-                  @click="confirmLeftTeam"
-                  :disabled="!leftTeamName.trim()"
-                >
-                  Подтвердить
-                </button>
-                <div v-else class="confirmed-name">
-                  <span class="team-name">{{ leftTeamName }}</span>
-                  <button class="edit-btn" @click="editLeftTeam">✏️</button>
+            <div class="teams-grid">
+              <!-- Левая команда -->
+              <div class="team-section">
+                <h3>Команда 1</h3>
+                <div class="input-container">
+                  <input
+                    v-model="leftTeamName"
+                    type="text"
+                    placeholder="Введите название команды"
+                    class="team-input"
+                    :disabled="leftTeamConfirmed"
+                    @keyup.enter="confirmLeftTeam"
+                    @click="leftTeamName = ''"
+                  />
+                  <div class="button-group">
+                    <button
+                      v-if="!leftTeamConfirmed"
+                      class="confirm-btn"
+                      @click="confirmLeftTeam"
+                      :disabled="!leftTeamName.trim()"
+                    >
+                      Подтвердить
+                    </button>
+                    <button
+                      v-if="!leftTeamConfirmed"
+                      class="regenerate-single-btn"
+                      @click="regenerateLeftTeam"
+                      title="Сгенерировать новое название"
+                    >
+                      🎲
+                    </button>
+                    <div v-else class="confirmed-name">
+                      <span class="team-name">{{ leftTeamName }}</span>
+                      <button class="edit-btn" @click="editLeftTeam">✏️</button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Правая команда -->
-            <div class="team-section">
-              <h3>Команда 2</h3>
-              <div class="input-container">
-                <input
-                  v-model="rightTeamName"
-                  type="text"
-                  placeholder="Введите название команды"
-                  class="team-input"
-                  :disabled="rightTeamConfirmed"
-                  @keyup.enter="confirmRightTeam"
-                />
-                <button
-                  v-if="!rightTeamConfirmed"
-                  class="confirm-btn"
-                  @click="confirmRightTeam"
-                  :disabled="!rightTeamName.trim()"
-                >
-                  Подтвердить
-                </button>
-                <div v-else class="confirmed-name">
-                  <span class="team-name">{{ rightTeamName }}</span>
-                  <button class="edit-btn" @click="editRightTeam">✏️</button>
+              <!-- Правая команда -->
+              <div class="team-section">
+                <h3>Команда 2</h3>
+                <div class="input-container">
+                  <input
+                    v-model="rightTeamName"
+                    type="text"
+                    placeholder="Введите название команды"
+                    class="team-input"
+                    :disabled="rightTeamConfirmed"
+                    @keyup.enter="confirmRightTeam"
+                    @click="rightTeamName = ''"
+                  />
+                  <div class="button-group">
+                    <button
+                      v-if="!rightTeamConfirmed"
+                      class="confirm-btn"
+                      @click="confirmRightTeam"
+                      :disabled="!rightTeamName.trim()"
+                    >
+                      Подтвердить
+                    </button>
+                    <button
+                      v-if="!rightTeamConfirmed"
+                      class="regenerate-single-btn"
+                      @click="regenerateRightTeam"
+                      title="Сгенерировать новое название"
+                    >
+                      🎲
+                    </button>
+                    <div v-else class="confirmed-name">
+                      <span class="team-name">{{ rightTeamName }}</span>
+                      <button class="edit-btn" @click="editRightTeam">✏️</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -102,7 +126,8 @@ const leftTeamName = ref('')
 const rightTeamName = ref('')
 const leftTeamConfirmed = ref(false)
 const rightTeamConfirmed = ref(false)
-const teamNames = ref<string[]>([])
+const adjectives = ref<string[]>([])
+const nouns = ref<string[]>([])
 
 // Вычисляемые свойства
 const bothTeamsConfirmed = computed(() => leftTeamConfirmed.value && rightTeamConfirmed.value)
@@ -112,25 +137,67 @@ const loadTeamNames = async () => {
   try {
     const response = await fetch('/config/team-names.json')
     const data = await response.json()
-    teamNames.value = data.teamNames
-    console.log('Загружено названий команд:', teamNames.value.length)
+    adjectives.value = data.adjectives || []
+    nouns.value = data.nouns || []
+    console.log('Загружено прилагательных:', adjectives.value.length)
+    console.log('Загружено существительных:', nouns.value.length)
   } catch (error) {
     console.error('Ошибка загрузки названий команд:', error)
     // Fallback названия
-    teamNames.value = ['Красные', 'Синие', 'Огненные', 'Ледяные', 'Молния', 'Гром']
-    console.log('Используются fallback названия:', teamNames.value.length)
+    adjectives.value = ['Красные', 'Синие', 'Огненные', 'Ледяные']
+    nouns.value = ['Молнии', 'Громы', 'Солнца', 'Луны']
+    console.log('Используются fallback названия')
   }
 }
 
-const getRandomTeamName = () => {
-  if (teamNames.value.length === 0) {
-    console.log('Нет доступных названий команд')
+const generateTeamName = () => {
+  if (adjectives.value.length === 0 || nouns.value.length === 0) {
+    console.log('Нет доступных слов для генерации')
     return ''
   }
-  const randomIndex = Math.floor(Math.random() * teamNames.value.length)
-  const selectedName = teamNames.value[randomIndex]
-  console.log('Выбрано случайное название:', selectedName)
-  return selectedName
+
+  const randomAdjective = adjectives.value[Math.floor(Math.random() * adjectives.value.length)]
+  const randomNoun = nouns.value[Math.floor(Math.random() * nouns.value.length)]
+  const generatedName = `${randomAdjective} ${randomNoun}`
+
+  console.log('Сгенерировано название команды:', generatedName)
+  return generatedName
+}
+
+const regenerateTeamNames = () => {
+  leftTeamName.value = generateTeamName()
+  rightTeamName.value = generateTeamName()
+
+  // Убеждаемся, что названия не совпадают
+  while (leftTeamName.value === rightTeamName.value) {
+    rightTeamName.value = generateTeamName()
+  }
+
+  leftTeamConfirmed.value = false
+  rightTeamConfirmed.value = false
+  console.log('Названия команд перегенерированы')
+}
+
+const regenerateLeftTeam = () => {
+  const newName = generateTeamName()
+  // Убеждаемся, что название не совпадает с правой командой
+  while (newName === rightTeamName.value) {
+    newName = generateTeamName()
+  }
+  leftTeamName.value = newName
+  leftTeamConfirmed.value = false
+  console.log('Перегенерировано название левой команды:', newName)
+}
+
+const regenerateRightTeam = () => {
+  const newName = generateTeamName()
+  // Убеждаемся, что название не совпадает с левой командой
+  while (newName === leftTeamName.value) {
+    newName = generateTeamName()
+  }
+  rightTeamName.value = newName
+  rightTeamConfirmed.value = false
+  console.log('Перегенерировано название правой команды:', newName)
 }
 
 const confirmLeftTeam = () => {
@@ -171,16 +238,14 @@ watch(
   () => props.isVisible,
   async (newValue) => {
     if (newValue) {
-      resetTeams()
       // Загружаем названия команд если еще не загружены
-      if (teamNames.value.length === 0) {
+      if (adjectives.value.length === 0 || nouns.value.length === 0) {
         await loadTeamNames()
       }
       // Небольшая задержка для корректной загрузки
       await new Promise((resolve) => setTimeout(resolve, 100))
-      // Предзаполняем случайными названиями
-      leftTeamName.value = getRandomTeamName()
-      rightTeamName.value = getRandomTeamName()
+      // Генерируем случайные названия команд
+      regenerateTeamNames()
     }
   },
 )
@@ -237,6 +302,68 @@ onMounted(() => {
 }
 
 .teams-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.regenerate-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.regenerate-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.regenerate-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.regenerate-btn:active {
+  transform: translateY(0);
+}
+
+.regenerate-single-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.regenerate-single-btn:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+}
+
+.regenerate-single-btn:active {
+  transform: scale(0.95);
+}
+
+.teams-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
@@ -257,6 +384,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
   align-items: center;
 }
 
