@@ -4,6 +4,9 @@
       "id": 1,
       "content": "Code Names",
       "questionType": "codenames",
+      "intro": {
+        "content": "# !!!Code Names\n\n**Игра в кодовые имена!**\n\nВам нужно назвать слова, связанные с заданной темой. Будьте внимательны и креативны!\n\n## Правила:\n- Назовите как можно больше слов за отведенное время\n- Слова должны быть связаны с темой\n- За каждое правильное слово получаете очки"
+      },
       "questionData": {
         "type": "codenames",
         "content": "Игра в кодовые имена! Назовите слова, связанные с заданной темой.",
@@ -15,6 +18,9 @@
       "id": 2,
       "content": "Вопрос 2",
       "questionType": "video",
+      "intro": {
+        "content": ""
+      },
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
@@ -24,6 +30,9 @@
       "id": 3,
       "content": "Приказ королевы",
       "questionType": "boost",
+      "intro": {
+        "content": ""
+      },
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 3! Он улучшит ваш следующий ход!"
@@ -33,6 +42,9 @@
       "id": 4,
       "content": "Неудача",
       "questionType": "trap",
+      "intro": {
+        "content": ""
+      },
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 4! Будьте осторожны!"
@@ -45,6 +57,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -54,6 +69,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -63,6 +81,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 7! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -72,6 +93,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 8! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -81,6 +105,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -90,6 +117,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -99,6 +129,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 11! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -108,6 +141,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 12! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -117,6 +153,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -126,6 +165,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -135,6 +177,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 15! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -144,6 +189,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 16! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -153,6 +201,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -162,6 +213,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -171,6 +225,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 19! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -180,6 +237,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 20! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -189,6 +249,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -198,6 +261,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -207,6 +273,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 23! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -216,6 +285,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 24! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -225,6 +297,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -234,6 +309,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -243,6 +321,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 27! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -252,6 +333,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 28! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -261,6 +345,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -270,6 +357,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -279,6 +369,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 31! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -288,6 +381,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 32! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -297,6 +393,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -306,6 +405,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -315,6 +417,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 35! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -324,6 +429,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 36! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -333,6 +441,9 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/i.webp"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -342,6 +453,9 @@
       "questionData": {
         "type": "video",
         "videoUrl": "/videos/sample-5s.mp4"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -351,6 +465,9 @@
       "questionData": {
         "type": "boost",
         "content": "Это буст для вопроса 39! Он улучшит ваш следующий ход!"
+      },
+      "intro": {
+        "content": ""
       }
     },
     {
@@ -360,6 +477,9 @@
       "questionData": {
         "type": "trap",
         "content": "Это ловушка для вопроса 40! Будьте осторожны!"
+      },
+      "intro": {
+        "content": ""
       }
     }
   ]

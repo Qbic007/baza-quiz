@@ -50,6 +50,11 @@ export interface CodenamesQuestionData extends QuestionData {
   height: number
 }
 
+// Тип для интро карточки
+export interface CardIntro {
+  content: string
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number
@@ -57,6 +62,7 @@ export interface Card {
   isFlipped: boolean
   questionType: QuestionType
   questionData: QuestionData
+  intro?: CardIntro
 }
 
 // Тип для буста или трэпа

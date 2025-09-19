@@ -186,7 +186,7 @@ const videoError = ref(false)
 const videoRef = ref<HTMLVideoElement>()
 const showTimeStartedMessage = ref(false)
 const codenamesCards = ref<CodenamesCard[]>([])
-let timerInterval: number | null = null
+let timerInterval: ReturnType<typeof setInterval> | null = null
 
 // Методы
 const startContest = async () => {
@@ -464,7 +464,7 @@ watch(
         timerInterval = null
       }
     } else {
-      // Автоматически запускаем конкурс при открытии модалки
+      // При открытии модалки запускаем конкурс
       startContest()
 
       // Если модалка открылась и это видео, запускаем его автоматически
@@ -998,5 +998,13 @@ onUnmounted(() => {
   .word {
     font-size: 0.9rem;
   }
+}
+
+/* Стили для интро контента */
+.intro-content {
+  padding: 20px;
+  line-height: 1.6;
+  color: #495057;
+  text-align: left;
 }
 </style>

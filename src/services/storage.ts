@@ -14,6 +14,7 @@ export async function createInitialGameState(): Promise<GameState> {
     isFlipped: false,
     questionType: question.questionType,
     questionData: question.questionData,
+    intro: question.intro,
   }))
 
   return {
@@ -39,6 +40,9 @@ async function loadQuestionsConfig(): Promise<
       videoUrl?: string
       width?: number
       height?: number
+    }
+    intro?: {
+      content: string
     }
   }>
 > {

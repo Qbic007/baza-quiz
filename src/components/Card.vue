@@ -70,7 +70,7 @@ const cardColorStyle = computed(() => {
 
   // Проверяем, является ли цвет градиентом
   const isGradient = cardColor.value.includes('linear-gradient')
-  
+
   if (isGradient) {
     return {
       backgroundImage: cardColor.value,

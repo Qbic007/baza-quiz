@@ -10,73 +10,12 @@
 
         <!-- Содержимое -->
         <div class="modal-body">
-          <!-- Буст -->
-          <div v-if="questionType === 'boost'" class="boost-section">
-            <h3>Охуеть! ВОТ ЭТО ДА!</h3>
-            <p>{{ questionData?.content || 'Это буст!' }}</p>
-          </div>
+          <!-- Интро контент -->
+          <div v-if="displayIntroContent" class="intro-content" v-html="displayIntroContent"></div>
 
-          <!-- Трэп (ловушка) -->
-          <div v-else-if="questionType === 'trap'" class="trap-section">
-            <h3>Блять! Ну нахуя?!</h3>
-            <p>{{ questionData?.content || 'Это ловушка!' }}</p>
-          </div>
-
-          <!-- Code Names -->
-          <div v-else-if="questionType === 'codenames'" class="codenames-section">
-            <h3>🎯 Code Names</h3>
-            <p>{{ questionData?.content || 'Игра в кодовые имена!' }}</p>
-            <div class="codenames-rules">
-              <h4>Правила игры:</h4>
-              <ul>
-                <li>На поле 3x3 расположены 9 карточек со словами</li>
-                <li>4 карточки принадлежат синей команде</li>
-                <li>4 карточки принадлежат красной команде</li>
-                <li>1 карточка - черная (проигрышная)</li>
-                <li>Кликайте на карточки, чтобы перевернуть их и увидеть цвет</li>
-                <li>Цель: найти все карточки своей команды</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Обычный конкурс -->
-          <div v-else class="rules-section">
-            <h3>🎯 Описание конкурса</h3>
-            <p>
-              Это описание конкурса для карточки {{ cardId }}. Здесь будет размещена подробная
-              информация о том, что нужно сделать, какие правила соблюдать и как получить
-              максимальное количество очков.
-            </p>
-          </div>
-
-          <!-- Условия участия только для обычных конкурсов -->
-          <div
-            v-if="
-              questionType !== 'boost' && questionType !== 'trap' && questionType !== 'codenames'
-            "
-            class="rules-section"
-          >
-            <h3>📋 Условия участия</h3>
-            <ul>
-              <li>Внимательно изучите задание</li>
-              <li>Соблюдайте все указанные правила</li>
-              <li>Используйте логику и знания</li>
-              <li>Не торопитесь с ответом</li>
-            </ul>
-          </div>
-
-          <!-- Награды только для обычных конкурсов -->
-          <div
-            v-if="
-              questionType !== 'boost' && questionType !== 'trap' && questionType !== 'codenames'
-            "
-            class="rules-section"
-          >
-            <h3>🏆 Награды</h3>
-            <p>
-              За успешное выполнение задания вы получите очки и сможете продолжить игру. Чем лучше
-              результат, тем больше очков заработаете!
-            </p>
+          <!-- Fallback контент если нет интро -->
+          <div v-else class="intro-content">
+            <h3>{{ questionData?.content || 'Описание конкурса' }}</h3>
           </div>
         </div>
 
@@ -101,6 +40,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import * as showdown from 'showdown'
+
 // Компонент модального окна с описанием конкурса
 defineOptions({
   name: 'GameRulesModal',
@@ -119,6 +61,7 @@ interface Props {
     audioUrl?: string
     textContent?: string
   }
+  introContent?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -132,6 +75,23 @@ const emit = defineEmits<{
   activateTrap: [cardId: number, content: string]
   showTeamSelection: [isBoost: boolean, content: string]
 }>()
+
+// Настройка showdown для конвертации Markdown в HTML
+const converter = new showdown.Converter({
+  tables: true,
+  strikethrough: true,
+  tasklists: true,
+  simpleLineBreaks: true,
+  openLinksInNewWindow: true,
+})
+
+// Computed для отображения интро контента
+const displayIntroContent = computed(() => {
+  if (props.introContent) {
+    return converter.makeHtml(props.introContent)
+  }
+  return null
+})
 
 // Методы
 const startContest = () => {
@@ -384,5 +344,13 @@ const activateTrap = () => {
   .btn {
     width: 100%;
   }
+}
+
+/* Стили для интро контента */
+.intro-content {
+  padding: 20px;
+  line-height: 1.6;
+  color: #495057;
+  text-align: left;
 }
 </style>
