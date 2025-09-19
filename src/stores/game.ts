@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Card, GameState, BoostOrTrap, ContestResult, TeamScores } from '@/types/card'
-import { RESULT_COLORS } from '@/constants/colors'
+import { RESULT_COLORS, BOOST_TRAP_COLORS } from '@/constants/colors'
 import { CONTEST_SCORES } from '@/constants/scoring'
 import {
   createInitialGameState,
@@ -19,53 +19,6 @@ export const useGameStore = defineStore('game', () => {
   const boostsAndTraps = ref<BoostOrTrap[]>([])
   const teams = ref<{ leftTeam: string; rightTeam: string } | null>(null)
   const scores = ref<TeamScores>({ leftTeam: 0, rightTeam: 0 })
-  
-  // Статичные пулы бустов и ловушек
-  const boostsPool = [
-    "Получите +2 очка за следующий конкурс",
-    "Пропустите один конкурс и получите очко",
-    "Удвойте очки за победу в следующем конкурсе",
-    "Получите подсказку для следующего конкурса",
-    "Заберите одно очко у соперника",
-    "Получите дополнительный ход",
-    "Измените результат одного конкурса",
-    "Получите +1 очко за каждый правильный ответ",
-    "Пропустите ловушку соперника",
-    "Получите бонусное очко за активность",
-    "Увеличьте время на конкурс на 30 секунд",
-    "Получите право выбрать тип следующего конкурса",
-    "Заблокируйте один буст соперника",
-    "Получите +3 очка за победу в следующем конкурсе",
-    "Верните одно очко, если проиграете",
-    "Получите иммунитет к ловушкам на 2 хода",
-    "Удвойте очки за ничью",
-    "Получите право переиграть один конкурс",
-    "Заберите 2 очка у соперника",
-    "Получите +1 очко за каждый ход в течение 3 ходов"
-  ]
-  
-  const trapsPool = [
-    "Потеряйте 1 очко",
-    "Пропустите следующий конкурс",
-    "Потеряйте 2 очка за следующий конкурс",
-    "Получите штраф -1 очко за каждый ход",
-    "Заблокируйте один из ваших бустов",
-    "Потеряйте право на подсказку",
-    "Получите -1 очко за каждый неправильный ответ",
-    "Потеряйте половину очков за следующий конкурс",
-    "Получите штраф -2 очка",
-    "Заблокируйте все бусты на 2 хода",
-    "Потеряйте 1 очко за каждый ход в течение 3 ходов",
-    "Получите штраф -3 очка за следующий конкурс",
-    "Заблокируйте один из ваших бустов навсегда",
-    "Потеряйте право выбирать тип конкурса",
-    "Получите штраф -1 очко за каждый правильный ответ",
-    "Потеряйте все очки за следующий конкурс",
-    "Получите штраф -2 очка за каждый ход",
-    "Заблокируйте все бусты навсегда",
-    "Потеряйте 5 очков",
-    "Получите штраф -1 очко за каждый ход в течение 5 ходов"
-  ]
 
   // Геттеры
   const isGameStarted = computed(() => cards.value.length > 0)
@@ -105,6 +58,20 @@ export const useGameStore = defineStore('game', () => {
     if (!result) return null
 
     return RESULT_COLORS[result] ?? null
+  }
+
+  // Функция для получения цвета карточки на основе типа буста/ловушки
+  const getBoostTrapCardColor = (cardId: number): string | null => {
+    const card = cards.value.find((c) => c.id === cardId)
+    if (!card) return null
+
+    if (card.questionType === 'boost') {
+      return BOOST_TRAP_COLORS.boost
+    } else if (card.questionType === 'trap') {
+      return BOOST_TRAP_COLORS.trap
+    }
+
+    return null
   }
 
   // Действия
@@ -267,21 +234,10 @@ export const useGameStore = defineStore('game', () => {
     cardId: number,
     team?: 'leftTeam' | 'rightTeam',
   ) {
-    // Если content пустой, выбираем случайный из пула
-    let finalContent = content
-    if (!finalContent) {
-      const pool = type === 'boost' ? boostsPool : trapsPool
-      if (pool.length > 0) {
-        finalContent = pool[Math.floor(Math.random() * pool.length)]
-      } else {
-        finalContent = type === 'boost' ? 'Получите +1 очко' : 'Потеряйте 1 очко'
-      }
-    }
-
     const newBoostOrTrap: BoostOrTrap = {
       id: `${type}-${Date.now()}-${Math.random()}`,
       type,
-      content: finalContent,
+      content,
       cardId,
       team,
     }
@@ -405,6 +361,7 @@ export const useGameStore = defineStore('game', () => {
     totalCardsCount,
     getContestResult,
     getCardColor,
+    getBoostTrapCardColor,
     leftTeamScore,
     rightTeamScore,
     totalScore,

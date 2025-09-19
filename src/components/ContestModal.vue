@@ -792,8 +792,8 @@ onUnmounted(() => {
 }
 
 .btn-left-team {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: #f3e5f5;
+  color: #6f42c1;
 }
 
 .btn-left-team:hover {
@@ -802,8 +802,8 @@ onUnmounted(() => {
 }
 
 .btn-right-team {
-  background-color: #ffebee;
-  color: #d32f2f;
+  background-color: #fff3e0;
+  color: #fd7e14;
 }
 
 .btn-right-team:hover {

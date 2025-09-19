@@ -50,17 +50,39 @@ const gameStore = useGameStore()
 // Получаем данные карточки из store
 const card = computed(() => gameStore.getCard(props.cardNumber))
 
-// Получаем цвет карточки на основе результата конкурса
-const cardColor = computed(() => gameStore.getCardColor(props.cardNumber))
+// Получаем цвет карточки на основе результата конкурса или типа буста/ловушки
+const cardColor = computed(() => {
+  // Сначала проверяем результат конкурса
+  const contestColor = gameStore.getCardColor(props.cardNumber)
+  if (contestColor) return contestColor
+
+  // Если нет результата конкурса, проверяем тип буста/ловушки (только если карточка перевернута)
+  if (card.value?.isFlipped) {
+    return gameStore.getBoostTrapCardColor(props.cardNumber)
+  }
+
+  return null
+})
 
 // Стиль для карточки с цветом результата
 const cardColorStyle = computed(() => {
   if (!cardColor.value) return {}
 
-  return {
-    backgroundColor: cardColor.value,
-    border: `2px solid ${cardColor.value.replace('0.3', '0.6')}`, // Более яркая граница
-    boxShadow: `0 0 0 4px ${cardColor.value.replace('0.3', '0.2')}`, // Дополнительная тень для выделения
+  // Проверяем, является ли цвет градиентом
+  const isGradient = cardColor.value.includes('linear-gradient')
+  
+  if (isGradient) {
+    return {
+      backgroundImage: cardColor.value,
+      border: '2px solid rgba(128, 128, 128, 0.6)',
+      boxShadow: '0 0 0 4px rgba(128, 128, 128, 0.2)',
+    }
+  } else {
+    return {
+      backgroundColor: cardColor.value,
+      border: `2px solid ${cardColor.value.replace('0.3', '0.6')}`,
+      boxShadow: `0 0 0 4px ${cardColor.value.replace('0.3', '0.2')}`,
+    }
   }
 })
 
@@ -88,6 +110,7 @@ const toggleCard = () => {
   transition:
     transform 0.2s ease,
     background-color 0.3s ease,
+    background-image 0.3s ease,
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
@@ -143,11 +166,13 @@ const toggleCard = () => {
 }
 
 /* Стили для карточек с результатами конкурса */
-.card[style*='background-color'] .card-front {
+.card[style*='background-color'] .card-front,
+.card[style*='background-image'] .card-front {
   background-color: transparent !important; /* Позволяем цвету результата просвечивать */
 }
 
-.card[style*='background-color'] .card-back {
+.card[style*='background-color'] .card-back,
+.card[style*='background-image'] .card-back {
   background-color: transparent !important; /* Позволяем цвету результата просвечивать */
 }
 

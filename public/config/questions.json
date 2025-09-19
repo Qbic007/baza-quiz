@@ -22,7 +22,7 @@
     },
     {
       "id": 3,
-      "content": "Буст 3",
+      "content": "Приказ королевы",
       "questionType": "boost",
       "questionData": {
         "type": "boost",
@@ -31,7 +31,7 @@
     },
     {
       "id": 4,
-      "content": "Трэп 4",
+      "content": "Неудача",
       "questionType": "trap",
       "questionData": {
         "type": "trap",
@@ -58,7 +58,7 @@
     },
     {
       "id": 7,
-      "content": "Буст 7",
+      "content": "Текила тайм",
       "questionType": "boost",
       "questionData": {
         "type": "boost",
@@ -67,7 +67,7 @@
     },
     {
       "id": 8,
-      "content": "Трэп 8",
+      "content": "Ловушка",
       "questionType": "trap",
       "questionData": {
         "type": "trap",
@@ -94,7 +94,7 @@
     },
     {
       "id": 11,
-      "content": "Буст 11",
+      "content": "Удача",
       "questionType": "boost",
       "questionData": {
         "type": "boost",
@@ -103,7 +103,7 @@
     },
     {
       "id": 12,
-      "content": "Трэп 12",
+      "content": "Взятка",
       "questionType": "trap",
       "questionData": {
         "type": "trap",
@@ -130,7 +130,7 @@
     },
     {
       "id": 15,
-      "content": "Буст 15",
+      "content": "Ставка",
       "questionType": "boost",
       "questionData": {
         "type": "boost",

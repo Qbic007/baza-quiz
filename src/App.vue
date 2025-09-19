@@ -127,21 +127,12 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
     <!-- Отображение команд и очков -->
     <div v-if="gameStore.teams" class="teams-display">
       <div class="team-section-left">
-        <div class="team team-left">
-          <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
-          <div class="team-score-container">
-            <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
-            <div class="team-score">{{ gameStore.leftTeamScore }}</div>
-            <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
-          </div>
-        </div>
-
         <!-- Бусты и ловушки левой команды -->
         <div
           v-if="gameStore.leftTeamBoosts.length > 0 || gameStore.leftTeamTraps.length > 0"
           class="team-effects-section team-effects-left"
         >
-          <div class="effects-title">{{ gameStore.teams?.leftTeam || 'Левая команда' }}</div>
+          <div class="effects-title">Ловушки и бонусы</div>
           <div class="effects-list">
             <div
               v-for="item in [...gameStore.leftTeamBoosts, ...gameStore.leftTeamTraps]"
@@ -152,6 +143,15 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
             >
               {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
             </div>
+          </div>
+        </div>
+
+        <div class="team team-left">
+          <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
+          <div class="team-score-container">
+            <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
+            <div class="team-score">{{ gameStore.leftTeamScore }}</div>
+            <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
           v-if="gameStore.rightTeamBoosts.length > 0 || gameStore.rightTeamTraps.length > 0"
           class="team-effects-section team-effects-right"
         >
-          <div class="effects-title">{{ gameStore.teams?.rightTeam || 'Правая команда' }}</div>
+          <div class="effects-title">Ловушки и бонусы</div>
           <div class="effects-list">
             <div
               v-for="item in [...gameStore.rightTeamBoosts, ...gameStore.rightTeamTraps]"
@@ -292,14 +292,24 @@ h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.team-section-left,
-.team-section-right {
+.team-section-left {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 15px;
   flex: 1;
   max-width: 300px;
+  justify-content: flex-end;
+}
+
+.team-section-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  max-width: 300px;
+  justify-content: flex-start;
 }
 
 .team {
@@ -316,21 +326,23 @@ h1 {
 }
 
 .team-effects-section {
-  margin-top: 15px;
   padding: 10px;
   border-radius: 8px;
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
+  width: 200px;
+  max-width: 200px;
+  flex-shrink: 0;
 }
 
 .team-effects-left {
-  background-color: #fff5f5;
-  border-color: #f5c6cb;
+  background-color: rgba(111, 66, 193, 0.1);
+  border-color: rgba(111, 66, 193, 0.3);
 }
 
 .team-effects-right {
-  background-color: #f0f8ff;
-  border-color: #b3d9ff;
+  background-color: rgba(253, 126, 20, 0.1);
+  border-color: rgba(253, 126, 20, 0.3);
 }
 
 .effects-title {
@@ -367,23 +379,23 @@ h1 {
 }
 
 .effect-card.boost {
-  background-color: #d4edda;
-  border-color: #c3e6cb;
+  background-color: rgba(40, 167, 69, 0.2);
+  border-color: rgba(40, 167, 69, 0.4);
   color: #155724;
 }
 
 .effect-card.boost:hover {
-  background-color: #c3e6cb;
+  background-color: rgba(40, 167, 69, 0.3);
 }
 
 .effect-card.trap {
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+  background-color: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.4);
   color: #721c24;
 }
 
 .effect-card.trap:hover {
-  background-color: #f5c6cb;
+  background-color: rgba(220, 53, 69, 0.3);
 }
 
 .team-name {
@@ -445,12 +457,12 @@ h1 {
 }
 
 .team-left {
-  background-color: #dc3545;
+  background-color: #6f42c1;
   color: white;
 }
 
 .team-right {
-  background-color: #007bff;
+  background-color: #fd7e14;
   color: white;
 }
 
@@ -553,8 +565,9 @@ h1 {
   }
 
   .team-effects-section {
-    margin-top: 10px;
     padding: 8px;
+    width: 150px;
+    max-width: 150px;
   }
 
   .effect-card {
