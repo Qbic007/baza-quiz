@@ -1,15 +1,8 @@
 <template>
   <Transition name="contest-modal">
     <div v-if="isVisible" class="contest-modal">
-      <!-- Тёмный оверлей с кнопкой "Начать" -->
-      <div v-if="!isStarted" class="contest-overlay">
-        <div class="start-button-container">
-          <button class="start-btn" @click="startContest">🚀 Начать конкурс</button>
-        </div>
-      </div>
-
       <!-- Контент конкурса -->
-      <div class="contest-content" v-if="isStarted">
+      <div class="contest-content">
         <!-- Заголовок -->
         <div class="contest-header">
           <h2>Конкурс {{ cardId }}</h2>
@@ -169,7 +162,6 @@ const emit = defineEmits<{
 }>()
 
 // Состояние
-const isStarted = ref(false)
 const timeLeft = ref(props.duration)
 const imageError = ref(false)
 const videoError = ref(false)
@@ -181,7 +173,6 @@ let timerInterval: number | null = null
 // Методы
 const startContest = async () => {
   console.log(`Запуск конкурса ${props.cardId}`)
-  isStarted.value = true
 
   // Инициализируем Code Names карточки если это Code Names
   if (props.questionType === 'codenames') {
@@ -268,15 +259,19 @@ const handleVideoEnded = () => {
   }, 2000)
 }
 
-// Функция для генерации цветов по правилам
-const generateColors = (totalCards: number): string[] => {
+// Функция для генерации цветов по новым правилам
+const generateColors = (
+  totalCards: number,
+): { colors: string[]; firstTeam: 'red' | 'blue' | null } => {
   const colors: string[] = []
 
-  if (totalCards % 2 === 1) {
-    // Нечётное количество: поровну красных и синих + одна чёрная
-    const teamCards = Math.floor(totalCards / 2)
+  if (totalCards <= 9) {
+    // До 9 карточек: у обеих команд равное количество + 1 чёрная + белые для дополнения
+    const teamCards = Math.floor((totalCards - 1) / 2) // -1 для чёрной карточки
     const redCards = teamCards
     const blueCards = teamCards
+    const blackCards = 1
+    const whiteCards = totalCards - redCards - blueCards - blackCards
 
     // Добавляем красные карточки
     for (let i = 0; i < redCards; i++) {
@@ -289,12 +284,35 @@ const generateColors = (totalCards: number): string[] => {
     }
 
     // Добавляем чёрную карточку
-    colors.push('black')
+    for (let i = 0; i < blackCards; i++) {
+      colors.push('black')
+    }
+
+    // Добавляем белые карточки (ничьи)
+    for (let i = 0; i < whiteCards; i++) {
+      colors.push('white')
+    }
+
+    // Перемешиваем цвета
+    for (let i = colors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[colors[i], colors[j]] = [colors[j], colors[i]]
+    }
+
+    return { colors, firstTeam: null }
   } else {
-    // Чётное количество: поровну красных и синих + 1 чёрная + одна белая (ничья)
-    const teamCards = (totalCards - 2) / 2
-    const redCards = teamCards
-    const blueCards = teamCards
+    // Больше 9 карточек: первая команда ~9/25, вторая команда на 1 меньше, 1 чёрная, остальные белые
+    const firstTeamCards = Math.floor((totalCards * 9) / 25) // ~9/25
+    const secondTeamCards = firstTeamCards - 1 // на одну меньше
+    const blackCards = 1
+    const whiteCards = totalCards - firstTeamCards - secondTeamCards - blackCards
+
+    // Случайно выбираем, какая команда ходит первой
+    const firstTeam = Math.random() < 0.5 ? 'red' : 'blue'
+
+    // Распределяем карточки между командами
+    const redCards = firstTeam === 'red' ? firstTeamCards : secondTeamCards
+    const blueCards = firstTeam === 'blue' ? firstTeamCards : secondTeamCards
 
     // Добавляем красные карточки
     for (let i = 0; i < redCards; i++) {
@@ -307,19 +325,23 @@ const generateColors = (totalCards: number): string[] => {
     }
 
     // Добавляем чёрную карточку
-    colors.push('black')
+    for (let i = 0; i < blackCards; i++) {
+      colors.push('black')
+    }
 
-    // Добавляем белую карточку (ничья)
-    colors.push('white')
+    // Добавляем белые карточки (ничьи)
+    for (let i = 0; i < whiteCards; i++) {
+      colors.push('white')
+    }
+
+    // Перемешиваем цвета
+    for (let i = colors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[colors[i], colors[j]] = [colors[j], colors[i]]
+    }
+
+    return { colors, firstTeam }
   }
-
-  // Перемешиваем цвета
-  for (let i = colors.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[colors[i], colors[j]] = [colors[j], colors[i]]
-  }
-
-  return colors
 }
 
 // Методы для Code Names
@@ -346,7 +368,7 @@ const initializeCodenamesCards = async () => {
     }
 
     // Генерируем цвета автоматически по правилам
-    const colors = generateColors(totalCards)
+    const { colors, firstTeam } = generateColors(totalCards)
 
     // Создаем карточки
     codenamesCards.value = selectedWords.map((word, index) => ({
@@ -356,7 +378,7 @@ const initializeCodenamesCards = async () => {
     }))
 
     // Отправляем раскладку в Telegram
-    await sendCodeNamesLayout(selectedWords, colors, props.cardId, width, height)
+    await sendCodeNamesLayout(selectedWords, colors, props.cardId, width, height, firstTeam)
   } catch (error) {
     console.error('Ошибка загрузки слов для Code Names:', error)
     // Fallback на слова по умолчанию
@@ -376,7 +398,7 @@ const initializeCodenamesCards = async () => {
       'ЦВЕТОК',
     ].slice(0, totalCards)
 
-    const colors = generateColors(totalCards)
+    const { colors, firstTeam } = generateColors(totalCards)
 
     codenamesCards.value = fallbackWords.map((word, index) => ({
       word,
@@ -385,7 +407,7 @@ const initializeCodenamesCards = async () => {
     }))
 
     // Отправляем раскладку в Telegram (fallback)
-    await sendCodeNamesLayout(fallbackWords, colors, props.cardId, width, height)
+    await sendCodeNamesLayout(fallbackWords, colors, props.cardId, width, height, firstTeam)
   }
 }
 
@@ -409,7 +431,6 @@ const closeModal = () => {
     clearInterval(timerInterval)
     timerInterval = null
   }
-  isStarted.value = false
   timeLeft.value = props.duration
   showTimeStartedMessage.value = false
   codenamesCards.value = []
@@ -421,7 +442,6 @@ watch(
   () => props.isVisible,
   (newValue) => {
     if (!newValue) {
-      isStarted.value = false
       timeLeft.value = props.duration
       imageError.value = false
       videoError.value = false
@@ -432,6 +452,9 @@ watch(
         timerInterval = null
       }
     } else {
+      // Автоматически запускаем конкурс при открытии модалки
+      startContest()
+
       // Если модалка открылась и это видео, запускаем его автоматически
       if (props.questionType === 'video' && videoRef.value) {
         // Небольшая задержка для корректной инициализации
@@ -465,44 +488,6 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   z-index: 2000;
-}
-
-/* Тёмный оверлей с кнопкой */
-.contest-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.start-button-container {
-  text-align: center;
-}
-
-.start-btn {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  padding: 20px 40px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.start-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
-}
-
-.start-btn:active {
-  transform: translateY(0);
 }
 
 /* Контент конкурса */
@@ -729,11 +714,6 @@ onUnmounted(() => {
 
   .contest-body {
     padding: 0;
-  }
-
-  .start-btn {
-    padding: 16px 32px;
-    font-size: 1.3rem;
   }
 
   .timer-container {

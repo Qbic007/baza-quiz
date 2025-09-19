@@ -7,7 +7,7 @@
       "questionData": {
         "type": "codenames",
         "content": "Игра в кодовые имена! Назовите слова, связанные с заданной темой.",
-        "width": 4,
+        "width": 3,
         "height": 3
       }
     },

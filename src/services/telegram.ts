@@ -46,6 +46,7 @@ export const sendCodeNamesLayout = async (
   cardId: number,
   width: number = 3,
   height: number = 3,
+  firstTeam: 'red' | 'blue' | null = null,
 ): Promise<boolean> => {
   console.log('=== TELEGRAM SEND ===')
   console.log('width:', width, 'height:', height)
@@ -54,7 +55,7 @@ export const sendCodeNamesLayout = async (
   console.log('=====================')
   try {
     // Создаем сообщение с раскладкой Code Names
-    let message = `🎯 <b>Code Names - Карточка ${cardId}</b>\n`
+    let message = `🎯 <b>Code Names</b>\n`
     message += `📐 <b>Размер поля: ${width}x${height}</b>\n\n`
     message += `📋 <b>Порядок цветов (слева направо, сверху вниз):</b>\n`
 
@@ -121,6 +122,13 @@ export const sendCodeNamesLayout = async (
     if (colorCounts.black)
       message += `⚫ Черная карточка (${colorCounts.black} карточка - проигрышная)\n`
     if (colorCounts.white) message += `⚪ Белая карточка (${colorCounts.white} карточка - ничья)\n`
+
+    // Добавляем информацию о том, какая команда ходит первой
+    if (firstTeam) {
+      const teamName = firstTeam === 'red' ? 'Красная' : 'Синяя'
+      const teamEmoji = firstTeam === 'red' ? '🔴' : '🔵'
+      message += `\n🎯 <b>Первый ход: ${teamEmoji} ${teamName} команда</b>\n`
+    }
 
     // Добавляем сгруппированные списки слов для каждой команды
     message += `\n🎯 <b>Слова для загадывания:</b>\n\n`
