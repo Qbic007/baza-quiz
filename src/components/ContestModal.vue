@@ -880,7 +880,6 @@ onUnmounted(() => {
   height: 100%;
   backface-visibility: hidden;
   border: 2px solid #ddd;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -950,7 +949,6 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
 }
 
 .btn-finish-game:hover {

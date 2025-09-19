@@ -279,7 +279,6 @@ onMounted(() => {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
 }
 
 .modal-header {
@@ -318,7 +317,6 @@ onMounted(() => {
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -343,7 +341,6 @@ onMounted(() => {
   color: white;
   border: none;
   padding: 8px 12px;
-  border-radius: 6px;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -397,7 +394,6 @@ onMounted(() => {
   width: 100%;
   padding: 12px 16px;
   border: 2px solid #e9ecef;
-  border-radius: 6px;
   font-size: 1rem;
   text-align: center;
   transition: border-color 0.2s ease;
@@ -418,7 +414,6 @@ onMounted(() => {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -441,7 +436,6 @@ onMounted(() => {
   padding: 12px 16px;
   background-color: #d4edda;
   border: 2px solid #28a745;
-  border-radius: 6px;
   width: 100%;
   justify-content: center;
 }
@@ -458,7 +452,6 @@ onMounted(() => {
   font-size: 1rem;
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
@@ -478,7 +471,6 @@ onMounted(() => {
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;

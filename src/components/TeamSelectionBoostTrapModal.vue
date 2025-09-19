@@ -104,7 +104,6 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
 }
 
 .modal-header {
@@ -139,7 +138,6 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
   margin-bottom: 16px;
   padding: 16px;
   background-color: #f8f9fa;
-  border-radius: 8px;
   border-left: 4px solid #007bff;
 }
 
@@ -161,7 +159,6 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
   max-width: 150px;
   padding: 20px 16px;
   border: 2px solid #e9ecef;
-  border-radius: 12px;
   background-color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -216,7 +213,6 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
   font-weight: 600;
   color: #6c757d;
   background-color: #f8f9fa;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
   flex-shrink: 0;

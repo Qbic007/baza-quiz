@@ -314,7 +314,6 @@ const activateTrap = () => {
 .codenames-rules {
   background-color: #f8f9fa;
   padding: 20px;
-  border-radius: 8px;
   border-left: 4px solid #007bff;
   margin-top: 20px;
 }

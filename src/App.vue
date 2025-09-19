@@ -288,7 +288,6 @@ h1 {
   margin-bottom: 30px;
   padding: 20px;
   background-color: #f8f9fa;
-  border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -316,7 +315,6 @@ h1 {
   font-size: 1.5rem;
   font-weight: 600;
   padding: 16px 24px;
-  border-radius: 8px;
   text-align: center;
   min-width: 140px;
   display: flex;
@@ -327,7 +325,6 @@ h1 {
 
 .team-effects-section {
   padding: 10px;
-  border-radius: 8px;
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
   width: 200px;
@@ -362,7 +359,6 @@ h1 {
 
 .effect-card {
   padding: 6px 10px;
-  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.75rem;
@@ -413,7 +409,6 @@ h1 {
   font-size: 2rem;
   font-weight: 800;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
   width: 50px;
   height: 50px;
   display: flex;
@@ -426,7 +421,6 @@ h1 {
 .score-btn {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.5);
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
@@ -472,7 +466,6 @@ h1 {
   justify-content: center;
   padding: 16px;
   background-color: #e9ecef;
-  border-radius: 12px;
   min-width: 60px;
 }
 
@@ -501,7 +494,6 @@ h1 {
   cursor: pointer;
   font-size: 1.2rem;
   transition: all 0.2s;
-  border-radius: 4px;
 }
 
 .debug-reset-btn:hover {
