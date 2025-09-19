@@ -122,11 +122,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 
     <div class="grid-container">
       <div v-for="card in cards" :key="card" class="grid-item">
-        <QuizCard
-          :card-number="card"
-          :contest-result="gameStore.getContestResult(card)"
-          @card-flipped="handleCardFlipped"
-        />
+        <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
       </div>
     </div>
 
