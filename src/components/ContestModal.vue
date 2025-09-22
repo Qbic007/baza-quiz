@@ -167,6 +167,13 @@
             </span>
             <span class="timer-unit">сек</span>
           </div>
+          <!-- Кнопка запуска таймера (показывается если autoStartTimer = false) -->
+          <div
+            v-if="questionData?.autoStartTimer === false && timeLeft === duration"
+            class="timer-controls"
+          >
+            <button @click="startTimer" class="btn btn-start-timer">▶️ Запустить таймер</button>
+          </div>
         </div>
 
         <!-- Кнопка завершения игры для Code Names -->
@@ -284,12 +291,13 @@ const startContest = async () => {
   }
 
   // Для видео таймер запускается после окончания видео
-  // Для изображений, текстовых вопросов и коллажей таймер запускается сразу
+  // Для изображений, текстовых вопросов и коллажей таймер запускается сразу (если autoStartTimer не false)
   // Для Code Names и состязаний таймер не нужен
   if (
-    props.questionType === 'image' ||
-    props.questionType === 'text' ||
-    props.questionType === 'collage'
+    (props.questionType === 'image' ||
+      props.questionType === 'text' ||
+      props.questionType === 'collage') &&
+    props.questionData?.autoStartTimer !== false
   ) {
     startTimer()
   }
@@ -922,6 +930,10 @@ onUnmounted(() => {
   bottom: 32px;
   right: 32px;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
 }
 
 .timer {
@@ -1001,6 +1013,36 @@ onUnmounted(() => {
   .timer {
     padding: 12px 20px;
   }
+}
+
+/* Кнопка запуска таймера */
+.timer-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-start-timer {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-start-timer:hover {
+  background: linear-gradient(135deg, #218838, #1ea085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.btn-start-timer:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
 
 /* Оверлей с результатом */

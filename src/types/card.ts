@@ -13,6 +13,7 @@ export type QuestionType =
 // Базовый интерфейс для данных вопроса
 export interface QuestionData {
   type: QuestionType
+  autoStartTimer?: boolean // Автоматический запуск таймера (по умолчанию true)
 }
 
 // Данные для изображения

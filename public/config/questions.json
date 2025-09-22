@@ -164,7 +164,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/блок.png"
+        "imageUrl": "/images/блок.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -176,7 +177,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/воронеж.jpg"
+        "imageUrl": "/images/воронеж.jpg",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -188,7 +190,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/город_бесов.jpg"
+        "imageUrl": "/images/город_бесов.jpg",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -200,7 +203,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/карточный_гомик.jpg"
+        "imageUrl": "/images/карточный_гомик.jpg",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -212,7 +216,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/коррозия.jpg"
+        "imageUrl": "/images/коррозия.jpg",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -224,7 +229,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Её прут 11 человек, а она тащится"
+        "content": "Её прут 11 человек, а она тащится",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -236,7 +242,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Он краснеет, возможно от смущения, коснувшись обнажённых ягодиц юноши"
+        "content": "Он краснеет, возможно от смущения, коснувшись обнажённых ягодиц юноши",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -248,7 +255,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Она, не стесняясь, делает это двумя пальцами прямо на глазах у изумлённой публики"
+        "content": "Она, не стесняясь, делает это двумя пальцами прямо на глазах у изумлённой публики",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -265,7 +273,8 @@
           "/images/OULnWxbd.jpg",
           "/images/Ql6F93U.jpg"
         ],
-        "title": "Сказка - Сектор Газа"
+        "title": "Сказка - Сектор Газа",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -311,7 +320,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/крематорий_вопрос.png"
+        "imageUrl": "/images/крематорий_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -323,7 +333,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/ленивые_вопрос.png"
+        "imageUrl": "/images/ленивые_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -335,7 +346,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/минет_вопрос.png"
+        "imageUrl": "/images/минет_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -347,7 +359,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/питер_вопрос.png"
+        "imageUrl": "/images/питер_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -359,7 +372,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/свадьба_вопрос.png"
+        "imageUrl": "/images/свадьба_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -371,7 +385,8 @@
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/ухо_вопрос.png"
+        "imageUrl": "/images/ухо_вопрос.png",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -422,7 +437,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Нашел на улице бумажник\nи сначала было хотел\nоставить деньги себе. Но\nпотом я задумался, а как бы\nпоступил Иисус на моем\nместе? И [П Д В В]."
+        "content": "Нашел на улице бумажник\nи сначала было хотел\nоставить деньги себе. Но\nпотом я задумался, а как бы\nпоступил Иисус на моем\nместе? И [П Д В В].",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -434,7 +450,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "У нас в общежитии неделю\nжила кошка, а потом пропала.\nВот [Т П]..."
+        "content": "У нас в общежитии неделю\nжила кошка, а потом пропала.\nВот [Т П]...",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -446,7 +463,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "По статистике люди, которые\n[Е С] реже взрываются."
+        "content": "По статистике люди, которые\n[Е С] реже взрываются.",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -458,7 +476,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Страшная угроза от [К]\nлюдей:\n- Я вылижу всю твою семью."
+        "content": "Страшная угроза от [К]\nлюдей:\n- Я вылижу всю твою семью.",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -470,7 +489,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Чтобы не перепутать,\nбабушка назвала одного\nноворожденного котенка\nБарсик, а второго [У]."
+        "content": "Чтобы не перепутать,\nбабушка назвала одного\nноворожденного котенка\nБарсик, а второго [У].",
+        "autoStartTimer": true
       },
       "intro": {
         "content": ""
@@ -482,7 +502,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Ћути, много је болесније ћутати\\nБоље је скинути глас, викати!\\nУ срцу на поразу\\nШта сте спори са овом метом?\\nСве сам расипао, мапе су отворене\\nБеј, да постоје снаге и да ћемо квити"
+        "content": "Ћути, много је болесније ћутати\\nБоље је скинути глас, викати!\\nУ срцу на поразу\\nШта сте спори са овом метом?\\nСве сам расипао, мапе су отворене\\nБеј, да постоје снаге и да ћемо квити",
+        "autoStartTimer": false
       },
       "intro": {
         "content": ""
@@ -494,7 +515,8 @@
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Светло жуте наочаре\\nДва срца на привеску за кључеве\\nВеселе зенице\\nТвоје име на руци\\nОкрузи, квартови, стамбене масиве\\nОдлазим, лепо одлазим"
+        "content": "Светло жуте наочаре\\nДва срца на привеску за кључеве\\nВеселе зенице\\nТвоје име на руци\\nОкрузи, квартови, стамбене масиве\\nОдлазим, лепо одлазим",
+        "autoStartTimer": false
       },
       "intro": {
         "content": ""
