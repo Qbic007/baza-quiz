@@ -16,7 +16,7 @@
       <!-- Лицевая сторона карточки -->
       <div class="card-face card-front">
         <div class="card-content">
-          <h2 class="card-title">{{ card?.content || 'Загрузка...' }}</h2>
+          <h2 class="card-title" v-html="card?.content || 'Загрузка...'"></h2>
         </div>
       </div>
     </div>

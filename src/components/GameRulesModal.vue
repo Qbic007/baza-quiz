@@ -4,7 +4,7 @@
       <div class="modal-content">
         <!-- Заголовок -->
         <div class="modal-header">
-          <h2>{{ cardContent || `Конкурс ${cardId}` }}</h2>
+          <h2 v-html="cardContent || `Конкурс ${cardId}`"></h2>
           <!-- Убираем кнопку закрытия -->
         </div>
 
@@ -93,6 +93,8 @@ const converter = new showdown.Converter({
   tasklists: true,
   simpleLineBreaks: true,
   openLinksInNewWindow: true,
+  emoji: false, // Отключаем эмодзи
+  noHeaderId: true, // Отключаем автоматические ID заголовков
 })
 
 // Computed для отображения интро контента
@@ -155,6 +157,7 @@ const activateTrap = () => {
   color: #495057;
   font-size: 1.8rem;
   font-weight: 500;
+  text-align: center;
 }
 
 .modal-body {

@@ -78,12 +78,12 @@ export const useGameStore = defineStore('game', () => {
   async function initializeGame() {
     console.log('Инициализация игры...')
 
-    // Принудительно обновляем конфигурацию для получения новых полей
-    console.log('Принудительное обновление конфигурации...')
-    const initialState = await forceUpdateConfig()
-
-    // Пытаемся загрузить существующее состояние для сохранения прогресса
+    // Сначала пытаемся загрузить существующее состояние
     const savedState = loadGameState()
+
+    // Создаем новое состояние с обновленными полями
+    console.log('Создание нового состояния с обновленными полями...')
+    const initialState = await createInitialGameState()
 
     if (savedState) {
       console.log('Загружено сохраненное состояние игры')
@@ -101,6 +101,7 @@ export const useGameStore = defineStore('game', () => {
         return newCard
       })
 
+      // Сохраняем все данные из сохраненного состояния
       createdAt.value = savedState.createdAt
       lastPlayed.value = savedState.lastPlayed
       contestResults.value = savedState.contestResults ?? {}
@@ -363,7 +364,18 @@ export const useGameStore = defineStore('game', () => {
     lastPlayed.value = newState.lastPlayed
     contestResults.value = newState.contestResults || {}
     boostsAndTraps.value = newState.boostsAndTraps || []
-    saveGameState(newState)
+
+    // Сохраняем обновленное состояние с сохранением команд и очков
+    const currentState: GameState = {
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+      scores: scores.value,
+    }
+    saveGameState(currentState)
 
     console.log('Конфигурация обновлена успешно!')
   }

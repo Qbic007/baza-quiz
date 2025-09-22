@@ -5,7 +5,7 @@
       <div class="contest-content">
         <!-- Заголовок -->
         <div class="contest-header">
-          <h2>{{ getQuestionTitle() }}</h2>
+          <h2 v-html="getQuestionTitle()"></h2>
           <!-- Убираем кнопку закрытия до истечения таймера -->
         </div>
 
@@ -147,8 +147,7 @@
         <!-- Оверлей с кнопкой показать ответ (показывается когда время истекло и есть ответ) -->
         <div v-if="timeLeft <= 0 && answer && showAnswerOverlay" class="answer-overlay">
           <div class="answer-content">
-            <h2>⏰ Время истекло!</h2>
-            <p>Хотите посмотреть ответ?</p>
+            <h2>Хотите посмотреть ответ?</h2>
             <div class="answer-buttons-container">
               <button @click="showAnswer" class="btn btn-show-answer">👁️ Показать ответ</button>
             </div>
@@ -158,9 +157,8 @@
         <!-- Оверлей с результатом (показывается когда время истекло или Code Names завершена) -->
         <div v-if="timeLeft <= 0 && !showAnswerOverlay && !showAnswerScreen" class="result-overlay">
           <div class="result-content">
-            <h2 v-if="questionType !== 'codenames'">⏰ Время истекло!</h2>
+            <h2 v-if="questionType !== 'codenames'">Кто победил в конкурсе?</h2>
             <h2 v-else>🏁 Игра завершена!</h2>
-            <p>Кто победил в конкурсе?</p>
             <div class="result-buttons-container">
               <button
                 v-if="leftTeamName"
