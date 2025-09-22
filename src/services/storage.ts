@@ -15,6 +15,7 @@ export async function createInitialGameState(): Promise<GameState> {
     questionType: question.questionType,
     questionData: question.questionData,
     intro: question.intro,
+    answer: question.answer,
   }))
 
   return {
@@ -32,16 +33,32 @@ async function loadQuestionsConfig(): Promise<
   Array<{
     id: number
     content: string
-    questionType: 'image' | 'video' | 'boost' | 'trap' | 'codenames'
+    questionType:
+      | 'image'
+      | 'video'
+      | 'boost'
+      | 'trap'
+      | 'codenames'
+      | 'text'
+      | 'collage'
+      | 'competition'
     questionData: {
-      type: 'image' | 'video' | 'boost' | 'trap' | 'codenames'
+      type: 'image' | 'video' | 'boost' | 'trap' | 'codenames' | 'text' | 'collage' | 'competition'
       content?: string
       imageUrl?: string
       videoUrl?: string
       width?: number
       height?: number
+      images?: string[]
+      title?: string
+      name?: string
+      description?: string
+      autoStartTimer?: boolean
     }
     intro?: {
+      content: string
+    }
+    answer?: {
       content: string
     }
   }>

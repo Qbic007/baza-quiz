@@ -79,6 +79,13 @@ export interface CardIntro {
   content: string
 }
 
+// Тип для ответа на вопрос
+export interface QuestionAnswer {
+  content: string
+  audioUrl?: string
+  audioStartTime?: number // время начала воспроизведения в секундах
+}
+
 // Тип для отдельной карточки
 export interface Card {
   id: number
@@ -87,6 +94,7 @@ export interface Card {
   questionType: QuestionType
   questionData: QuestionData
   intro?: CardIntro
+  answer?: QuestionAnswer
 }
 
 // Тип для буста или трэпа

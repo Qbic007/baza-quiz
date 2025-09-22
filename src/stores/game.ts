@@ -78,14 +78,29 @@ export const useGameStore = defineStore('game', () => {
   async function initializeGame() {
     console.log('Инициализация игры...')
 
-    // Пытаемся загрузить существующее состояние
+    // Принудительно обновляем конфигурацию для получения новых полей
+    console.log('Принудительное обновление конфигурации...')
+    const initialState = await forceUpdateConfig()
+
+    // Пытаемся загрузить существующее состояние для сохранения прогресса
     const savedState = loadGameState()
 
     if (savedState) {
       console.log('Загружено сохраненное состояние игры')
       console.log('Сохраненные команды:', savedState.teams)
       console.log('Сохраненные очки:', savedState.scores)
-      cards.value = savedState.cards
+      // Используем новые карточки с обновленными полями, но сохраняем прогресс
+      cards.value = initialState.cards.map((newCard) => {
+        const savedCard = savedState.cards.find((c) => c.id === newCard.id)
+        if (savedCard) {
+          return {
+            ...newCard,
+            isFlipped: savedCard.isFlipped,
+          }
+        }
+        return newCard
+      })
+
       createdAt.value = savedState.createdAt
       lastPlayed.value = savedState.lastPlayed
       contestResults.value = savedState.contestResults ?? {}
@@ -94,8 +109,6 @@ export const useGameStore = defineStore('game', () => {
       scores.value = savedState.scores ?? { leftTeam: 0, rightTeam: 0 }
     } else {
       console.log('Создание нового состояния игры')
-      // Создаем новое состояние
-      const initialState = await createInitialGameState()
       cards.value = initialState.cards
       createdAt.value = initialState.createdAt
       lastPlayed.value = initialState.lastPlayed
@@ -103,10 +116,18 @@ export const useGameStore = defineStore('game', () => {
       boostsAndTraps.value = initialState.boostsAndTraps ?? []
       teams.value = null
       scores.value = { leftTeam: 0, rightTeam: 0 }
-
-      // Сохраняем в localStorage
-      saveGameState(initialState)
     }
+
+    // Сохраняем обновленное состояние
+    saveGameState({
+      cards: cards.value,
+      createdAt: createdAt.value,
+      lastPlayed: lastPlayed.value,
+      contestResults: contestResults.value,
+      boostsAndTraps: boostsAndTraps.value,
+      teams: teams.value,
+      scores: scores.value,
+    })
 
     console.log('Игра инициализирована')
   }

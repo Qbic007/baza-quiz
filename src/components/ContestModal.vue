@@ -117,10 +117,46 @@
               </div>
             </div>
           </div>
+
+          <!-- Экран с ответом -->
+          <div v-if="showAnswerScreen" class="answer-screen">
+            <div class="answer-screen-content">
+              <h2>📝 Ответ</h2>
+              <div class="answer-text">
+                <div v-html="formatTextContent(answer?.content || 'Ответ не найден')"></div>
+              </div>
+              <!-- Скрытое аудио для ответа -->
+              <audio
+                v-if="answer?.audioUrl"
+                ref="answerAudioRef"
+                :src="answer.audioUrl"
+                @loadeddata="handleAnswerAudioLoaded"
+                @error="handleAnswerAudioError"
+                preload="metadata"
+                style="display: none"
+              >
+                Ваш браузер не поддерживает воспроизведение аудио.
+              </audio>
+              <div class="answer-buttons">
+                <button @click="finishAnswer" class="btn btn-finish-answer">✅ Завершить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Оверлей с кнопкой показать ответ (показывается когда время истекло и есть ответ) -->
+        <div v-if="timeLeft <= 0 && answer && showAnswerOverlay" class="answer-overlay">
+          <div class="answer-content">
+            <h2>⏰ Время истекло!</h2>
+            <p>Хотите посмотреть ответ?</p>
+            <div class="answer-buttons-container">
+              <button @click="showAnswer" class="btn btn-show-answer">👁️ Показать ответ</button>
+            </div>
+          </div>
         </div>
 
         <!-- Оверлей с результатом (показывается когда время истекло или Code Names завершена) -->
-        <div v-if="timeLeft <= 0" class="result-overlay">
+        <div v-if="timeLeft <= 0 && !showAnswerOverlay && !showAnswerScreen" class="result-overlay">
           <div class="result-content">
             <h2 v-if="questionType !== 'codenames'">⏰ Время истекло!</h2>
             <h2 v-else>🏁 Игра завершена!</h2>
@@ -255,6 +291,9 @@ interface Props {
     name?: string
     description?: string
   }
+  answer?: {
+    content: string
+  }
   duration?: number // длительность в секундах
   codenamesWidth?: number
   codenamesHeight?: number
@@ -277,8 +316,12 @@ const timeLeft = ref(props.duration)
 const imageError = ref(false)
 const videoError = ref(false)
 const videoRef = ref<HTMLVideoElement>()
+const showAnswerOverlay = ref(false)
+const showAnswerScreen = ref(false)
 const showTimeStartedMessage = ref(false)
 const codenamesCards = ref<CodenamesCard[]>([])
+const answerAudioRef = ref<HTMLAudioElement>()
+const answerAudioError = ref(false)
 let timerInterval: ReturnType<typeof setInterval> | null = null
 
 // Методы
@@ -314,7 +357,10 @@ const startTimer = () => {
         clearInterval(timerInterval)
         timerInterval = null
       }
-      // НЕ закрываем модалку, показываем кнопки результата
+      // Показываем оверлей с кнопкой показать ответ (если есть ответ)
+      if (props.answer) {
+        showAnswerOverlay.value = true
+      }
     }
   }, 1000)
 }
@@ -330,6 +376,52 @@ const finishCompetition = () => {
   // Для состязаний автоматически считаем ничьей, так как это не конкурс
   emit('contestResult', props.cardId, 'draw')
   closeModal()
+}
+
+const showAnswer = () => {
+  showAnswerOverlay.value = false
+  showAnswerScreen.value = true
+
+  // Автоматически запускаем воспроизведение аудио если есть
+  if (props.answer?.audioUrl) {
+    // Небольшая задержка для корректной инициализации аудио элемента
+    setTimeout(() => {
+      playAnswerAudio()
+    }, 500)
+  }
+}
+
+const finishAnswer = () => {
+  showAnswerScreen.value = false
+  showAnswerOverlay.value = false
+  // Останавливаем аудио если играет
+  if (answerAudioRef.value) {
+    answerAudioRef.value.pause()
+    answerAudioRef.value.currentTime = 0
+  }
+  // Показываем обычный оверлей с выбором победителя
+  // Устанавливаем timeLeft в 0, чтобы показать result-overlay
+  timeLeft.value = 0
+}
+
+const handleAnswerAudioLoaded = () => {
+  console.log('Аудио ответа загружено')
+  answerAudioError.value = false
+}
+
+const handleAnswerAudioError = () => {
+  console.error('Ошибка загрузки аудио ответа')
+  answerAudioError.value = true
+}
+
+const playAnswerAudio = () => {
+  if (answerAudioRef.value && props.answer?.audioStartTime) {
+    answerAudioRef.value.currentTime = props.answer.audioStartTime
+    answerAudioRef.value.play().catch((error) => {
+      console.error('Ошибка воспроизведения аудио:', error)
+      answerAudioError.value = true
+    })
+  }
 }
 
 // Функция для получения заголовка вопроса
@@ -557,6 +649,9 @@ const closeModal = () => {
   }
   timeLeft.value = props.duration
   showTimeStartedMessage.value = false
+  showAnswerOverlay.value = false
+  showAnswerScreen.value = false
+  answerAudioError.value = false
   codenamesCards.value = []
   emit('close')
 }
@@ -570,6 +665,9 @@ watch(
       imageError.value = false
       videoError.value = false
       showTimeStartedMessage.value = false
+      showAnswerOverlay.value = false
+      showAnswerScreen.value = false
+      answerAudioError.value = false
       codenamesCards.value = []
       if (timerInterval) {
         clearInterval(timerInterval)
@@ -1041,6 +1139,138 @@ onUnmounted(() => {
 }
 
 .btn-start-timer:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Оверлей с кнопкой показать ответ */
+.answer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.answer-content {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.answer-content h2 {
+  color: #dc3545;
+  margin-bottom: 16px;
+  font-size: 2rem;
+}
+
+.answer-content p {
+  color: #495057;
+  margin-bottom: 32px;
+  font-size: 1.2rem;
+}
+
+.answer-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.btn-show-answer {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-show-answer:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+}
+
+/* Экран с ответом */
+.answer-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.answer-screen-content {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.answer-screen-content h2 {
+  color: #28a745;
+  margin-bottom: 24px;
+  font-size: 2.2rem;
+}
+
+.answer-text {
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #495057;
+  white-space: pre-line;
+}
+
+.answer-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-finish-answer {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-finish-answer:hover {
+  background: linear-gradient(135deg, #218838, #1ea085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.btn-finish-answer:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
