@@ -74,9 +74,6 @@
           <div v-else-if="questionType === 'competition'" class="competition-container">
             <div class="competition-content">
               <h2>Состязание: {{ questionData?.name || 'Состязание' }}</h2>
-              <p v-if="questionData?.description" class="competition-description">
-                {{ questionData.description }}
-              </p>
               <button class="btn btn-finish-competition" @click="finishCompetition">
                 Завершить
               </button>
@@ -137,6 +134,21 @@
               >
                 Ваш браузер не поддерживает воспроизведение аудио.
               </audio>
+
+              <!-- Видео для ответа -->
+              <div v-if="answer?.videoUrl" class="answer-video-container">
+                <video
+                  ref="answerVideoRef"
+                  :src="answer.videoUrl"
+                  controls
+                  class="answer-video"
+                  @loadeddata="handleAnswerVideoLoaded"
+                  @error="handleAnswerVideoError"
+                  @ended="handleAnswerVideoEnded"
+                >
+                  Ваш браузер не поддерживает воспроизведение видео.
+                </video>
+              </div>
               <div class="answer-buttons">
                 <button @click="finishAnswer" class="btn btn-finish-answer">✅ Завершить</button>
               </div>
@@ -155,10 +167,14 @@
         </div>
 
         <!-- Оверлей с результатом (показывается когда время истекло или Code Names завершена) -->
-        <div v-if="timeLeft <= 0 && !showAnswerOverlay && !showAnswerScreen" class="result-overlay">
+        <div
+          v-if="(timeLeft <= 0 || competitionFinished) && !showAnswerOverlay && !showAnswerScreen"
+          class="result-overlay"
+        >
           <div class="result-content">
-            <h2 v-if="questionType !== 'codenames'">Кто победил в конкурсе?</h2>
-            <h2 v-else>🏁 Игра завершена!</h2>
+            <h2 v-if="questionType === 'codenames'">🏁 Игра завершена!</h2>
+            <h2 v-else-if="questionType === 'competition'">Кто победил в состязании?</h2>
+            <h2 v-else>Кто победил в конкурсе?</h2>
             <div class="result-buttons-container">
               <button
                 v-if="leftTeamName"
@@ -288,9 +304,13 @@ interface Props {
     title?: string
     name?: string
     description?: string
+    autoStartTimer?: boolean
   }
   answer?: {
     content: string
+    audioUrl?: string
+    audioStartTime?: number
+    videoUrl?: string
   }
   duration?: number // длительность в секундах
   codenamesWidth?: number
@@ -316,10 +336,13 @@ const videoError = ref(false)
 const videoRef = ref<HTMLVideoElement>()
 const showAnswerOverlay = ref(false)
 const showAnswerScreen = ref(false)
+const competitionFinished = ref(false)
 const showTimeStartedMessage = ref(false)
 const codenamesCards = ref<CodenamesCard[]>([])
 const answerAudioRef = ref<HTMLAudioElement>()
 const answerAudioError = ref(false)
+const answerVideoRef = ref<HTMLVideoElement>()
+const answerVideoError = ref(false)
 let timerInterval: ReturnType<typeof setInterval> | null = null
 
 // Методы
@@ -371,9 +394,7 @@ const handleContestResult = (result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw
 
 const finishCompetition = () => {
   console.log(`Состязание ${props.cardId} завершено`)
-  // Для состязаний автоматически считаем ничьей, так как это не конкурс
-  emit('contestResult', props.cardId, 'draw')
-  closeModal()
+  competitionFinished.value = true
 }
 
 const showAnswer = () => {
@@ -387,6 +408,14 @@ const showAnswer = () => {
       playAnswerAudio()
     }, 500)
   }
+
+  // Автоматически запускаем воспроизведение видео если есть
+  if (props.answer?.videoUrl) {
+    // Небольшая задержка для корректной инициализации видео элемента
+    setTimeout(() => {
+      playAnswerVideo()
+    }, 500)
+  }
 }
 
 const finishAnswer = () => {
@@ -396,6 +425,11 @@ const finishAnswer = () => {
   if (answerAudioRef.value) {
     answerAudioRef.value.pause()
     answerAudioRef.value.currentTime = 0
+  }
+  // Останавливаем видео если играет
+  if (answerVideoRef.value) {
+    answerVideoRef.value.pause()
+    answerVideoRef.value.currentTime = 0
   }
   // Показываем обычный оверлей с выбором победителя
   // Устанавливаем timeLeft в 0, чтобы показать result-overlay
@@ -412,6 +446,26 @@ const handleAnswerAudioError = () => {
   answerAudioError.value = true
 }
 
+const handleAnswerVideoLoaded = () => {
+  console.log('Видео для ответа загружено')
+  answerVideoError.value = false
+}
+
+const handleAnswerVideoError = () => {
+  console.error('Ошибка загрузки видео для ответа')
+  answerVideoError.value = true
+}
+
+const handleAnswerVideoEnded = () => {
+  console.log('Видео ответа завершено')
+  // Сворачиваем видео с полного экрана при окончании
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch((error) => {
+      console.log('Не удалось свернуть видео с полного экрана:', error)
+    })
+  }
+}
+
 const playAnswerAudio = () => {
   if (answerAudioRef.value && props.answer?.audioStartTime) {
     answerAudioRef.value.currentTime = props.answer.audioStartTime
@@ -419,6 +473,24 @@ const playAnswerAudio = () => {
       console.error('Ошибка воспроизведения аудио:', error)
       answerAudioError.value = true
     })
+  }
+}
+
+const playAnswerVideo = () => {
+  if (answerVideoRef.value) {
+    answerVideoRef.value.play().catch((error) => {
+      console.error('Ошибка воспроизведения видео:', error)
+      answerVideoError.value = true
+    })
+
+    // Разворачиваем видео на весь экран при запуске
+    setTimeout(() => {
+      if (answerVideoRef.value && answerVideoRef.value.requestFullscreen) {
+        answerVideoRef.value.requestFullscreen().catch((error) => {
+          console.log('Не удалось развернуть видео на весь экран:', error)
+        })
+      }
+    }, 100)
   }
 }
 
@@ -458,11 +530,28 @@ const handleVideoLoaded = () => {
     videoRef.value.play().catch((error) => {
       console.log('Автовоспроизведение заблокировано браузером:', error)
     })
+
+    // Разворачиваем видео на весь экран при запуске
+    setTimeout(() => {
+      if (videoRef.value && videoRef.value.requestFullscreen) {
+        videoRef.value.requestFullscreen().catch((error) => {
+          console.log('Не удалось развернуть видео на весь экран:', error)
+        })
+      }
+    }, 100)
   }
 }
 
 const handleVideoEnded = () => {
   console.log(`Видео для конкурса ${props.cardId} закончилось, показываем сообщение`)
+
+  // Сворачиваем видео с полного экрана при окончании
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch((error) => {
+      console.log('Не удалось свернуть видео с полного экрана:', error)
+    })
+  }
+
   // Показываем сообщение "ВРЕМЯ ПОШЛО!"
   showTimeStartedMessage.value = true
 
@@ -649,7 +738,9 @@ const closeModal = () => {
   showTimeStartedMessage.value = false
   showAnswerOverlay.value = false
   showAnswerScreen.value = false
+  competitionFinished.value = false
   answerAudioError.value = false
+  answerVideoError.value = false
   codenamesCards.value = []
   emit('close')
 }
@@ -665,7 +756,9 @@ watch(
       showTimeStartedMessage.value = false
       showAnswerOverlay.value = false
       showAnswerScreen.value = false
+      competitionFinished.value = false
       answerAudioError.value = false
+      answerVideoError.value = false
       codenamesCards.value = []
       if (timerInterval) {
         clearInterval(timerInterval)
@@ -685,6 +778,15 @@ watch(
             videoRef.value.play().catch((error) => {
               console.log('Автовоспроизведение заблокировано браузером:', error)
             })
+
+            // Разворачиваем видео на весь экран при запуске
+            setTimeout(() => {
+              if (videoRef.value && videoRef.value.requestFullscreen) {
+                videoRef.value.requestFullscreen().catch((error) => {
+                  console.log('Не удалось развернуть видео на весь экран:', error)
+                })
+              }
+            }, 200)
           }
         }, 100)
       }
@@ -971,13 +1073,6 @@ onUnmounted(() => {
   line-height: 1.2;
 }
 
-.competition-description {
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin: 0 0 30px 0;
-  line-height: 1.4;
-}
-
 .btn-finish-competition {
   background-color: #28a745;
   color: white;
@@ -1242,6 +1337,18 @@ onUnmounted(() => {
   line-height: 1.6;
   color: #495057;
   white-space: pre-line;
+}
+
+.answer-video-container {
+  margin-bottom: 32px;
+}
+
+.answer-video {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .answer-buttons {

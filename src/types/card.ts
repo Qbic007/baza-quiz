@@ -71,7 +71,6 @@ export interface CollageQuestionData extends QuestionData {
 export interface CompetitionQuestionData extends QuestionData {
   type: 'competition'
   name: string
-  description?: string
 }
 
 // Тип для интро карточки
@@ -84,6 +83,7 @@ export interface QuestionAnswer {
   content: string
   audioUrl?: string
   audioStartTime?: number // время начала воспроизведения в секундах
+  videoUrl?: string
 }
 
 // Тип для отдельной карточки
