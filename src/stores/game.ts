@@ -123,7 +123,10 @@ export const useGameStore = defineStore('game', () => {
         cards: cards.value,
         createdAt: createdAt.value,
         lastPlayed: lastPlayed.value,
+        contestResults: contestResults.value,
         boostsAndTraps: boostsAndTraps.value,
+        teams: teams.value,
+        scores: scores.value,
       }
       saveGameState(currentState)
 
