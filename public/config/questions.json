@@ -165,6 +165,7 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/блок.png",
+        "description": "",
         "autoStartTimer": true
       },
       "intro": {
@@ -178,6 +179,7 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/воронеж.jpg",
+        "description": "",
         "autoStartTimer": true
       },
       "intro": {
@@ -191,6 +193,7 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/город_бесов.jpg",
+        "description": "",
         "autoStartTimer": true
       },
       "intro": {
@@ -204,6 +207,7 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/карточный_гомик.jpg",
+        "description": "",
         "autoStartTimer": true
       },
       "intro": {
@@ -217,6 +221,7 @@
       "questionData": {
         "type": "image",
         "imageUrl": "/images/коррозия.jpg",
+        "description": "",
         "autoStartTimer": true
       },
       "intro": {
@@ -311,85 +316,115 @@
         "title": "Умерли в 27 лет"
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
       }
     },
     {
       "id": 25,
-      "content": "Крематорий",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/крематорий_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какие два слова мы скрыли на этом изображении?",
+        "autoStartTimer": false
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/крематорий_ответ.png"
       }
     },
     {
       "id": 26,
-      "content": "Ленивые",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/ленивые_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какие два слова мы скрыли на этом изображении?",
+        "autoStartTimer": false
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/ленивые_ответ.png"
       }
     },
     {
       "id": 27,
-      "content": "Минет",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/минет_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какое существительное с разными предлогами мы скрыли на картинке?",
+        "autoStartTimer": false
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/минет_ответ.png"
       }
     },
     {
       "id": 28,
-      "content": "Питер",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/питер_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какие два слова, отличающиеся только двумя буквами мы скрыли на картинке?",
+        "autoStartTimer": false
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/питер_ответ.png"
       }
     },
     {
       "id": 29,
-      "content": "Свадьба",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/свадьба_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какие три слова мы скрыли на картинке?",
+        "autoStartTimer": false
       },
       "intro": {
-        "content": ""
+        "content": "## Правила раунда \"Бредокомиксы\"\n\n**Расчехляйте свои \"какого хуя?\" и \"чего, бля!?\"...**\n\n**Потому что это БРЕДОКОМИКСЫ!**\n\n**Фантазии всех ебанутых этой планеты** воплощённые на бумаге!\n\n**Ваша задача ответить на вопрос**, указанный под этим бредом сумасшедших!\n\n**Удачи вам!**"
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/свадьба_ответ.png"
       }
     },
     {
       "id": 30,
-      "content": "Ухо",
+      "content": "Бредокомиксы",
       "questionType": "image",
       "questionData": {
         "type": "image",
         "imageUrl": "/images/ухо_вопрос.png",
-        "autoStartTimer": true
+        "description": "Какие четыре слова мы скрыли на картинке?",
+        "autoStartTimer": false
       },
       "intro": {
         "content": ""
+      },
+      "answer": {
+        "content": "",
+        "imageUrl": "/images/ухо_ответ.png"
       }
     },
     {

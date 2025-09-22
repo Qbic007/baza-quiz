@@ -13,16 +13,22 @@
         <div class="contest-body">
           <!-- Отображение изображения -->
           <div v-if="questionType === 'image'" class="image-container">
-            <img
-              :src="imageUrl"
-              :alt="`Задание для конкурса ${cardId}`"
-              class="contest-image"
-              @error="handleImageError"
-              @load="handleImageLoad"
-            />
-            <div v-if="imageError" class="image-error">
-              <p>⚠️ Ошибка загрузки изображения</p>
-              <p>Попробуйте обновить страницу</p>
+            <div class="image-wrapper">
+              <img
+                :src="imageUrl"
+                :alt="`Задание для конкурса ${cardId}`"
+                class="contest-image"
+                @error="handleImageError"
+                @load="handleImageLoad"
+              />
+              <div v-if="imageError" class="image-error">
+                <p>⚠️ Ошибка загрузки изображения</p>
+                <p>Попробуйте обновить страницу</p>
+              </div>
+            </div>
+            <!-- Описание вопроса под картинкой -->
+            <div v-if="questionData?.description" class="image-description">
+              <div v-html="formatTextContent(questionData.description)"></div>
             </div>
           </div>
 
@@ -119,8 +125,8 @@
           <div v-if="showAnswerScreen" class="answer-screen">
             <div class="answer-screen-content">
               <h2>📝 Ответ</h2>
-              <div class="answer-text">
-                <div v-html="formatTextContent(answer?.content || 'Ответ не найден')"></div>
+              <div v-if="answer?.content" class="answer-text">
+                <div v-html="formatTextContent(answer.content)"></div>
               </div>
               <!-- Скрытое аудио для ответа -->
               <audio
@@ -148,6 +154,11 @@
                 >
                   Ваш браузер не поддерживает воспроизведение видео.
                 </video>
+              </div>
+
+              <!-- Изображение для ответа -->
+              <div v-if="answer?.imageUrl" class="answer-image-container">
+                <img :src="answer.imageUrl" :alt="'Ответ на вопрос'" class="answer-image" />
               </div>
               <div class="answer-buttons">
                 <button @click="finishAnswer" class="btn btn-finish-answer">✅ Завершить</button>
@@ -311,6 +322,7 @@ interface Props {
     audioUrl?: string
     audioStartTime?: number
     videoUrl?: string
+    imageUrl?: string
   }
   duration?: number // длительность в секундах
   codenamesWidth?: number
@@ -875,9 +887,19 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 0;
+  overflow: hidden;
+}
+
+.image-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
@@ -886,6 +908,17 @@ onUnmounted(() => {
   height: 100%;
   object-fit: contain;
   object-position: center;
+}
+
+.image-description {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  flex-shrink: 0;
 }
 
 .image-error {
@@ -1344,6 +1377,18 @@ onUnmounted(() => {
 }
 
 .answer-video {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.answer-image-container {
+  margin-bottom: 32px;
+}
+
+.answer-image {
   width: 100%;
   max-width: 600px;
   height: auto;

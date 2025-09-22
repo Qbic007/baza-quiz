@@ -20,6 +20,7 @@ export interface QuestionData {
 export interface ImageQuestionData extends QuestionData {
   type: 'image'
   imageUrl: string
+  description: string
 }
 
 // Данные для видео
@@ -84,6 +85,7 @@ export interface QuestionAnswer {
   audioUrl?: string
   audioStartTime?: number // время начала воспроизведения в секундах
   videoUrl?: string
+  imageUrl?: string
 }
 
 // Тип для отдельной карточки
