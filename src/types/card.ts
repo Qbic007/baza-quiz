@@ -1,5 +1,13 @@
 // Типы вопросов
-export type QuestionType = 'image' | 'audio' | 'video' | 'text' | 'boost' | 'trap' | 'codenames'
+export type QuestionType =
+  | 'image'
+  | 'audio'
+  | 'video'
+  | 'text'
+  | 'boost'
+  | 'trap'
+  | 'codenames'
+  | 'collage'
 
 // Базовый интерфейс для данных вопроса
 export interface QuestionData {
@@ -48,6 +56,13 @@ export interface CodenamesQuestionData extends QuestionData {
   content: string
   width: number
   height: number
+}
+
+// Данные для коллажа
+export interface CollageQuestionData extends QuestionData {
+  type: 'collage'
+  images: string[]
+  title: string
 }
 
 // Тип для интро карточки

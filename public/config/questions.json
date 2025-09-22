@@ -220,11 +220,11 @@
     },
     {
       "id": 19,
-      "content": "Текстовый вопрос",
+      "content": "Текстовый вопрос 1",
       "questionType": "text",
       "questionData": {
         "type": "text",
-        "content": "Какой город является столицей России?"
+        "content": "Её прут 11 человек, а она тащится"
       },
       "intro": {
         "content": ""
@@ -232,11 +232,11 @@
     },
     {
       "id": 20,
-      "content": "Вопрос 18",
-      "questionType": "video",
+      "content": "Текстовый вопрос 2",
+      "questionType": "text",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "text",
+        "content": "Он краснеет от смущения, коснувшись обнажённых ягодиц юноши"
       },
       "intro": {
         "content": ""
@@ -244,11 +244,11 @@
     },
     {
       "id": 21,
-      "content": "Вопрос 22",
-      "questionType": "video",
+      "content": "Текстовый вопрос 3",
+      "questionType": "text",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "text",
+        "content": "Она, не стесняясь, делает это двумя пальцами прямо на глазах у изумлённой публики"
       },
       "intro": {
         "content": ""
@@ -256,11 +256,16 @@
     },
     {
       "id": 22,
-      "content": "Вопрос 26",
-      "questionType": "video",
+      "content": "Угадайте произведение",
+      "questionType": "collage",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "collage",
+        "images": [
+          "/images/5384b53ad843f3db4b5e426b807f0cf7.png",
+          "/images/OULnWxbd.jpg",
+          "/images/Ql6F93U.jpg"
+        ],
+        "title": "Сказка - Сектор Газа"
       },
       "intro": {
         "content": ""
@@ -268,11 +273,16 @@
     },
     {
       "id": 23,
-      "content": "Вопрос 30",
-      "questionType": "video",
+      "content": "Что общего?",
+      "questionType": "collage",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "collage",
+        "images": [
+          "/images/12996.970.png",
+          "/images/c5tOp1NcItThiTXG4GWvxpVTHMhZ_uB139aGUAwFLNMno7OIxs7XxTFQcljSA0VclLxe_elHec8SR0Gb4_R2hzDa.jpg",
+          "/images/garlic-isolated-white-background_881868-1117.jpg"
+        ],
+        "title": "Боятся вампиры"
       },
       "intro": {
         "content": ""
@@ -280,11 +290,16 @@
     },
     {
       "id": 24,
-      "content": "Вопрос 34",
-      "questionType": "video",
+      "content": "Что общего?",
+      "questionType": "collage",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "collage",
+        "images": [
+          "/images/1992-2019.jpg",
+          "/images/1db55c3c0ba0a0f6dd55a628f082463e.jpg",
+          "/images/22c58d85c64c84f289bd26c77bdae442.jpg"
+        ],
+        "title": "Умерли в 27 лет"
       },
       "intro": {
         "content": ""

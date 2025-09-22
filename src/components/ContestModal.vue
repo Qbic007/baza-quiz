@@ -49,6 +49,27 @@
             </div>
           </div>
 
+          <!-- Отображение коллажа -->
+          <div v-else-if="questionType === 'collage'" class="collage-container">
+            <div class="collage-title">
+              <h3>{{ questionData?.title || 'Коллаж' }}</h3>
+            </div>
+            <div class="collage-images">
+              <div
+                v-for="(image, index) in questionData?.images || []"
+                :key="index"
+                class="collage-image-item"
+              >
+                <img
+                  :src="image"
+                  :alt="`Изображение ${index + 1}`"
+                  class="collage-image"
+                  @error="handleImageError"
+                />
+              </div>
+            </div>
+          </div>
+
           <!-- Отображение Code Names -->
           <div v-else-if="questionType === 'codenames'" class="codenames-container">
             <div
@@ -166,7 +187,7 @@ interface CodenamesCard {
 interface Props {
   isVisible: boolean
   cardId: number
-  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames'
+  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames' | 'collage'
   imageUrl?: string
   videoUrl?: string
   questionData?: {
@@ -175,6 +196,8 @@ interface Props {
     imageUrl?: string
     videoUrl?: string
     audioUrl?: string
+    images?: string[]
+    title?: string
   }
   duration?: number // длительность в секундах
   codenamesWidth?: number
@@ -212,9 +235,13 @@ const startContest = async () => {
   }
 
   // Для видео таймер запускается после окончания видео
-  // Для изображений и текстовых вопросов таймер запускается сразу
+  // Для изображений, текстовых вопросов и коллажей таймер запускается сразу
   // Для Code Names таймер не нужен
-  if (props.questionType === 'image' || props.questionType === 'text') {
+  if (
+    props.questionType === 'image' ||
+    props.questionType === 'text' ||
+    props.questionType === 'collage'
+  ) {
     startTimer()
   }
 }
@@ -676,6 +703,64 @@ onUnmounted(() => {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для коллажа */
+.collage-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+}
+
+.collage-title {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.collage-title h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+  padding: 15px 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.collage-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.collage-image-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.collage-image-item:hover {
+  transform: translateY(-2px);
+}
+
+.collage-image {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .contest-video {
