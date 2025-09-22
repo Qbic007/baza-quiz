@@ -5,7 +5,7 @@
       <div class="contest-content">
         <!-- Заголовок -->
         <div class="contest-header">
-          <h2>Конкурс {{ cardId }}</h2>
+          <h2>{{ getQuestionTitle() }}</h2>
           <!-- Убираем кнопку закрытия до истечения таймера -->
         </div>
 
@@ -184,6 +184,7 @@
 import { ref, onUnmounted, watch } from 'vue'
 import { sendCodeNamesLayout } from '@/services/telegram'
 import * as showdown from 'showdown'
+import { useGameStore } from '@/stores/game'
 
 // Компонент полноэкранной модалки для конкурса
 defineOptions({
@@ -192,6 +193,9 @@ defineOptions({
 
 // Константы
 const CONTEST_DURATION = 3 // Время конкурса в секундах (для разработки)
+
+// Store
+const gameStore = useGameStore()
 
 // Настройка showdown для конвертации Markdown в HTML
 const converter = new showdown.Converter({
@@ -318,6 +322,13 @@ const finishCompetition = () => {
   // Для состязаний автоматически считаем ничьей, так как это не конкурс
   emit('contestResult', props.cardId, 'draw')
   closeModal()
+}
+
+// Функция для получения заголовка вопроса
+const getQuestionTitle = (): string => {
+  // Получаем данные карточки из store
+  const card = gameStore.getCard(props.cardId)
+  return card?.content || `Конкурс ${props.cardId}`
 }
 
 const handleImageError = () => {
@@ -608,7 +619,7 @@ onUnmounted(() => {
 
 .contest-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 24px 32px;
   background-color: #ffffff;
