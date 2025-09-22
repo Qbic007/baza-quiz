@@ -307,11 +307,11 @@
     },
     {
       "id": 25,
-      "content": "Вопрос 38",
-      "questionType": "video",
+      "content": "Крематорий",
+      "questionType": "image",
       "questionData": {
-        "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "type": "image",
+        "imageUrl": "/images/крематорий_вопрос.png"
       },
       "intro": {
         "content": ""
@@ -319,11 +319,11 @@
     },
     {
       "id": 26,
-      "content": "Вопрос 33",
+      "content": "Ленивые",
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/i.webp"
+        "imageUrl": "/images/ленивые_вопрос.png"
       },
       "intro": {
         "content": ""
@@ -331,11 +331,11 @@
     },
     {
       "id": 27,
-      "content": "Вопрос 37",
+      "content": "Минет",
       "questionType": "image",
       "questionData": {
         "type": "image",
-        "imageUrl": "/images/i.webp"
+        "imageUrl": "/images/минет_вопрос.png"
       },
       "intro": {
         "content": ""
@@ -343,11 +343,11 @@
     },
     {
       "id": 28,
-      "content": "Вопрос 19",
-      "questionType": "boost",
+      "content": "Питер",
+      "questionType": "image",
       "questionData": {
-        "type": "boost",
-        "content": "Это буст для вопроса 28! Он улучшит ваш следующий ход!"
+        "type": "image",
+        "imageUrl": "/images/питер_вопрос.png"
       },
       "intro": {
         "content": ""
@@ -355,11 +355,11 @@
     },
     {
       "id": 29,
-      "content": "Вопрос 23",
-      "questionType": "boost",
+      "content": "Свадьба",
+      "questionType": "image",
       "questionData": {
-        "type": "boost",
-        "content": "Это буст для вопроса 29! Он улучшит ваш следующий ход!"
+        "type": "image",
+        "imageUrl": "/images/свадьба_вопрос.png"
       },
       "intro": {
         "content": ""
@@ -367,11 +367,11 @@
     },
     {
       "id": 30,
-      "content": "Вопрос 27",
-      "questionType": "boost",
+      "content": "Ухо",
+      "questionType": "image",
       "questionData": {
-        "type": "boost",
-        "content": "Это буст для вопроса 30! Он улучшит ваш следующий ход!"
+        "type": "image",
+        "imageUrl": "/images/ухо_вопрос.png"
       },
       "intro": {
         "content": ""
