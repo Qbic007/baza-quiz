@@ -126,7 +126,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     })
 
@@ -147,7 +147,7 @@ export const useGameStore = defineStore('game', () => {
         lastPlayed: lastPlayed.value,
         contestResults: contestResults.value,
         boostsAndTraps: boostsAndTraps.value,
-        teams: teams.value,
+        teams: teams.value || undefined,
         scores: scores.value,
       }
       saveGameState(currentState)
@@ -200,11 +200,12 @@ export const useGameStore = defineStore('game', () => {
     console.log('Очки сброшены')
   }
 
-  function addBonusScore(
+  async function addBonusScore(
     team: 'leftTeam' | 'rightTeam',
     bonusType: keyof typeof import('@/constants/scoring').BONUS_SCORES,
   ) {
-    const bonusScore = import('@/constants/scoring').BONUS_SCORES[bonusType]
+    const scoring = await import('@/constants/scoring')
+    const bonusScore = scoring.BONUS_SCORES[bonusType]
     scores.value[team] += bonusScore
     console.log(`Бонусные очки ${bonusType} (+${bonusScore}) начислены команде ${team}`)
   }
@@ -223,7 +224,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
     saveGameState(currentState)
@@ -245,7 +246,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
     saveGameState(currentState)
@@ -277,7 +278,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
     saveGameState(currentState)
@@ -297,7 +298,7 @@ export const useGameStore = defineStore('game', () => {
         lastPlayed: lastPlayed.value,
         contestResults: contestResults.value,
         boostsAndTraps: boostsAndTraps.value,
-        teams: teams.value,
+        teams: teams.value || undefined,
         scores: scores.value,
       }
       saveGameState(currentState)
@@ -317,7 +318,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
 
@@ -338,7 +339,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
     saveGameState(currentState)
@@ -372,7 +373,7 @@ export const useGameStore = defineStore('game', () => {
       lastPlayed: lastPlayed.value,
       contestResults: contestResults.value,
       boostsAndTraps: boostsAndTraps.value,
-      teams: teams.value,
+      teams: teams.value || undefined,
       scores: scores.value,
     }
     saveGameState(currentState)

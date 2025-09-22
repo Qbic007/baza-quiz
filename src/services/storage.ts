@@ -23,7 +23,7 @@ export async function createInitialGameState(): Promise<GameState> {
     createdAt: Date.now(),
     lastPlayed: Date.now(),
     boostsAndTraps: [],
-    teams: null,
+    teams: undefined,
     scores: { leftTeam: 0, rightTeam: 0 },
   }
 }

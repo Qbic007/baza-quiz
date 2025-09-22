@@ -179,7 +179,7 @@ const regenerateTeamNames = () => {
 }
 
 const regenerateLeftTeam = () => {
-  const newName = generateTeamName()
+  let newName = generateTeamName()
   // Убеждаемся, что название не совпадает с правой командой
   while (newName === rightTeamName.value) {
     newName = generateTeamName()
@@ -190,7 +190,7 @@ const regenerateLeftTeam = () => {
 }
 
 const regenerateRightTeam = () => {
-  const newName = generateTeamName()
+  let newName = generateTeamName()
   // Убеждаемся, что название не совпадает с левой командой
   while (newName === leftTeamName.value) {
     newName = generateTeamName()
