@@ -16,14 +16,14 @@
     },
     {
       "id": 2,
-      "content": "Вопрос 2",
+      "content": "Би-2",
       "questionType": "video",
       "intro": {
         "content": ""
       },
       "questionData": {
         "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "videoUrl": "/videos/би-2.mp4"
       }
     },
     {
@@ -52,11 +52,11 @@
     },
     {
       "id": 5,
-      "content": "Вопрос 5",
-      "questionType": "image",
+      "content": "Киш",
+      "questionType": "video",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "video",
+        "videoUrl": "/videos/киш.mp4"
       },
       "intro": {
         "content": ""
@@ -64,11 +64,11 @@
     },
     {
       "id": 6,
-      "content": "Вопрос 6",
+      "content": "Кукушка",
       "questionType": "video",
       "questionData": {
         "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "videoUrl": "/videos/Кукушка-тест.mp4"
       },
       "intro": {
         "content": ""
@@ -100,11 +100,11 @@
     },
     {
       "id": 9,
-      "content": "Вопрос 9",
-      "questionType": "image",
+      "content": "Максим",
+      "questionType": "video",
       "questionData": {
-        "type": "image",
-        "imageUrl": "/images/i.webp"
+        "type": "video",
+        "videoUrl": "/videos/максим.mp4"
       },
       "intro": {
         "content": ""
@@ -112,11 +112,11 @@
     },
     {
       "id": 10,
-      "content": "Вопрос 10",
+      "content": "Монако",
       "questionType": "video",
       "questionData": {
         "type": "video",
-        "videoUrl": "/videos/sample-5s.mp4"
+        "videoUrl": "/videos/монако.mp4"
       },
       "intro": {
         "content": ""
