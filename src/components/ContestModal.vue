@@ -70,6 +70,19 @@
             </div>
           </div>
 
+          <!-- Отображение состязания -->
+          <div v-else-if="questionType === 'competition'" class="competition-container">
+            <div class="competition-content">
+              <h2>Состязание: {{ questionData?.name || 'Состязание' }}</h2>
+              <p v-if="questionData?.description" class="competition-description">
+                {{ questionData.description }}
+              </p>
+              <button class="btn btn-finish-competition" @click="finishCompetition">
+                Завершить
+              </button>
+            </div>
+          </div>
+
           <!-- Отображение Code Names -->
           <div v-else-if="questionType === 'codenames'" class="codenames-container">
             <div
@@ -187,7 +200,16 @@ interface CodenamesCard {
 interface Props {
   isVisible: boolean
   cardId: number
-  questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames' | 'collage'
+  questionType:
+    | 'image'
+    | 'video'
+    | 'audio'
+    | 'text'
+    | 'boost'
+    | 'trap'
+    | 'codenames'
+    | 'collage'
+    | 'competition'
   imageUrl?: string
   videoUrl?: string
   questionData?: {
@@ -198,6 +220,8 @@ interface Props {
     audioUrl?: string
     images?: string[]
     title?: string
+    name?: string
+    description?: string
   }
   duration?: number // длительность в секундах
   codenamesWidth?: number
@@ -236,7 +260,7 @@ const startContest = async () => {
 
   // Для видео таймер запускается после окончания видео
   // Для изображений, текстовых вопросов и коллажей таймер запускается сразу
-  // Для Code Names таймер не нужен
+  // Для Code Names и состязаний таймер не нужен
   if (
     props.questionType === 'image' ||
     props.questionType === 'text' ||
@@ -265,6 +289,13 @@ const startTimer = () => {
 const handleContestResult = (result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw') => {
   console.log(`Конкурс ${props.cardId} - результат: ${result}`)
   emit('contestResult', props.cardId, result)
+  closeModal()
+}
+
+const finishCompetition = () => {
+  console.log(`Состязание ${props.cardId} завершено`)
+  // Для состязаний автоматически считаем ничьей, так как это не конкурс
+  emit('contestResult', props.cardId, 'draw')
   closeModal()
 }
 
@@ -761,6 +792,65 @@ onUnmounted(() => {
   max-height: 200px;
   object-fit: contain;
   border-radius: 8px;
+}
+
+/* Стили для состязания */
+.competition-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+}
+
+.competition-content {
+  text-align: center;
+  max-width: 600px;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.competition-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #495057;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
+}
+
+.competition-description {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin: 0 0 30px 0;
+  line-height: 1.4;
+}
+
+.btn-finish-competition {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-finish-competition:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.btn-finish-competition:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
 
 .contest-video {

@@ -52,7 +52,16 @@ defineOptions({
 interface Props {
   isVisible: boolean
   cardId?: number
-  questionType?: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames' | 'collage'
+  questionType?:
+    | 'image'
+    | 'video'
+    | 'audio'
+    | 'text'
+    | 'boost'
+    | 'trap'
+    | 'codenames'
+    | 'collage'
+    | 'competition'
   questionData?: {
     type: string
     content?: string

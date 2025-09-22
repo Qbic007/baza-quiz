@@ -8,6 +8,7 @@ export type QuestionType =
   | 'trap'
   | 'codenames'
   | 'collage'
+  | 'competition'
 
 // Базовый интерфейс для данных вопроса
 export interface QuestionData {
@@ -63,6 +64,13 @@ export interface CollageQuestionData extends QuestionData {
   type: 'collage'
   images: string[]
   title: string
+}
+
+// Данные для состязания
+export interface CompetitionQuestionData extends QuestionData {
+  type: 'competition'
+  name: string
+  description?: string
 }
 
 // Тип для интро карточки
