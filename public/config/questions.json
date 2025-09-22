@@ -418,11 +418,11 @@
     },
     {
       "id": 34,
-      "content": "Вопрос 16",
-      "questionType": "trap",
+      "content": "Сокращение 1",
+      "questionType": "text",
       "questionData": {
-        "type": "trap",
-        "content": "Это ловушка для вопроса 34! Будьте осторожны!"
+        "type": "text",
+        "content": "Нашел на улице бумажник\nи сначала было хотел\nоставить деньги себе. Но\nпотом я задумался, а как бы\nпоступил Иисус на моем\nместе? И [П Д В В]."
       },
       "intro": {
         "content": ""
@@ -430,11 +430,11 @@
     },
     {
       "id": 35,
-      "content": "Вопрос 20",
-      "questionType": "trap",
+      "content": "Сокращение 2",
+      "questionType": "text",
       "questionData": {
-        "type": "trap",
-        "content": "Это ловушка для вопроса 35! Будьте осторожны!"
+        "type": "text",
+        "content": "У нас в общежитии неделю\nжила кошка, а потом пропала.\nВот [Т П]..."
       },
       "intro": {
         "content": ""
@@ -442,11 +442,11 @@
     },
     {
       "id": 36,
-      "content": "Вопрос 24",
-      "questionType": "trap",
+      "content": "Сокращение 3",
+      "questionType": "text",
       "questionData": {
-        "type": "trap",
-        "content": "Это ловушка для вопроса 36! Будьте осторожны!"
+        "type": "text",
+        "content": "По статистике люди, которые\n[Е С] реже взрываются."
       },
       "intro": {
         "content": ""
@@ -454,11 +454,11 @@
     },
     {
       "id": 37,
-      "content": "Вопрос 28",
-      "questionType": "trap",
+      "content": "Сокращение 4",
+      "questionType": "text",
       "questionData": {
-        "type": "trap",
-        "content": "Это ловушка для вопроса 37! Будьте осторожны!"
+        "type": "text",
+        "content": "Страшная угроза от [К]\nлюдей:\n- Я вылижу всю твою семью."
       },
       "intro": {
         "content": ""
@@ -466,11 +466,11 @@
     },
     {
       "id": 38,
-      "content": "Вопрос 32",
-      "questionType": "trap",
+      "content": "Сокращение 5",
+      "questionType": "text",
       "questionData": {
-        "type": "trap",
-        "content": "Это ловушка для вопроса 38! Будьте осторожны!"
+        "type": "text",
+        "content": "Чтобы не перепутать,\nбабушка назвала одного\nноворожденного котенка\nБарсик, а второго [У]."
       },
       "intro": {
         "content": ""

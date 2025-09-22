@@ -45,7 +45,7 @@
           <!-- Отображение текстового вопроса -->
           <div v-else-if="questionType === 'text'" class="text-container">
             <div class="text-question">
-              <h3>{{ questionData?.content || 'Текстовый вопрос' }}</h3>
+              <div v-html="formatTextContent(questionData?.content || 'Текстовый вопрос')"></div>
             </div>
           </div>
 
@@ -156,7 +156,10 @@
         </div>
 
         <!-- Таймер -->
-        <div v-if="questionType !== 'codenames'" class="timer-container">
+        <div
+          v-if="questionType !== 'codenames' && questionType !== 'competition'"
+          class="timer-container"
+        >
           <div class="timer">
             <span class="timer-label">⏱️ Время:</span>
             <span class="timer-value" :class="{ warning: timeLeft <= 10 }">
@@ -180,6 +183,7 @@
 <script setup lang="ts">
 import { ref, onUnmounted, watch } from 'vue'
 import { sendCodeNamesLayout } from '@/services/telegram'
+import * as showdown from 'showdown'
 
 // Компонент полноэкранной модалки для конкурса
 defineOptions({
@@ -188,6 +192,23 @@ defineOptions({
 
 // Константы
 const CONTEST_DURATION = 3 // Время конкурса в секундах (для разработки)
+
+// Настройка showdown для конвертации Markdown в HTML
+const converter = new showdown.Converter({
+  tables: true,
+  strikethrough: true,
+  tasklists: true,
+  simpleLineBreaks: true,
+  openLinksInNewWindow: true,
+})
+
+// Функция для форматирования текстового контента
+const formatTextContent = (content: string): string => {
+  if (!content) return ''
+  // Заменяем \n на переносы строк для корректного отображения
+  const formattedContent = content.replace(/\\n/g, '\n')
+  return converter.makeHtml(formattedContent)
+}
 
 // Интерфейс для карточки Code Names
 interface CodenamesCard {
@@ -734,6 +755,19 @@ onUnmounted(() => {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.text-question div {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #495057;
+  line-height: 1.6;
+  margin: 0;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  white-space: pre-line;
 }
 
 /* Стили для коллажа */

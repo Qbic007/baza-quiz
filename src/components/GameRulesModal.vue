@@ -195,7 +195,7 @@ const activateTrap = () => {
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
   padding: 16px 24px 24px 24px;
   border-top: 1px solid #e1e5e9;
