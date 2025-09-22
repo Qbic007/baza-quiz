@@ -42,6 +42,13 @@
             </div>
           </div>
 
+          <!-- Отображение текстового вопроса -->
+          <div v-else-if="questionType === 'text'" class="text-container">
+            <div class="text-question">
+              <h3>{{ questionData?.content || 'Текстовый вопрос' }}</h3>
+            </div>
+          </div>
+
           <!-- Отображение Code Names -->
           <div v-else-if="questionType === 'codenames'" class="codenames-container">
             <div
@@ -162,6 +169,13 @@ interface Props {
   questionType: 'image' | 'video' | 'audio' | 'text' | 'boost' | 'trap' | 'codenames'
   imageUrl?: string
   videoUrl?: string
+  questionData?: {
+    type: string
+    content?: string
+    imageUrl?: string
+    videoUrl?: string
+    audioUrl?: string
+  }
   duration?: number // длительность в секундах
   codenamesWidth?: number
   codenamesHeight?: number
@@ -198,9 +212,9 @@ const startContest = async () => {
   }
 
   // Для видео таймер запускается после окончания видео
-  // Для изображений таймер запускается сразу
+  // Для изображений и текстовых вопросов таймер запускается сразу
   // Для Code Names таймер не нужен
-  if (props.questionType === 'image') {
+  if (props.questionType === 'image' || props.questionType === 'text') {
     startTimer()
   }
 }
@@ -521,6 +535,8 @@ onUnmounted(() => {
   background-color: #ffffff;
   border-bottom: 1px solid #e9ecef;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
 }
 
 .contest-header h2 {
@@ -556,6 +572,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 
 .image-container {
@@ -631,6 +648,34 @@ onUnmounted(() => {
   justify-content: center;
   padding: 0;
   overflow: hidden;
+}
+
+.text-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+  margin-top: 0;
+}
+
+.text-question {
+  text-align: center;
+  max-width: 600px;
+}
+
+.text-question h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #495057;
+  line-height: 1.4;
+  margin: 0;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .contest-video {

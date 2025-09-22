@@ -27,7 +27,7 @@ export interface AudioQuestionData extends QuestionData {
 // Данные для текста
 export interface TextQuestionData extends QuestionData {
   type: 'text'
-  textContent: string
+  content: string
 }
 
 // Данные для буста

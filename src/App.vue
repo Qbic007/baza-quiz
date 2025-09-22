@@ -226,6 +226,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       :is-visible="showContestModal"
       :card-id="currentCardId || 0"
       :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
+      :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
       :image-url="
         gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
           ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
