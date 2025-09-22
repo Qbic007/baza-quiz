@@ -26,7 +26,7 @@
                 <p>Попробуйте обновить страницу</p>
               </div>
             </div>
-            <!-- Описание вопроса под картинкой -->
+            <!-- Описание вопроса справа от картинки -->
             <div v-if="questionData?.description" class="image-description">
               <div v-html="formatTextContent(questionData.description)"></div>
             </div>
@@ -885,40 +885,71 @@ onUnmounted(() => {
 
 .image-container {
   width: 100%;
+  max-width: 100%;
   height: 100%;
+  max-height: 80vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 20px;
+  gap: 20px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .image-wrapper {
   flex: 1;
-  width: 100%;
+  max-width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
+  box-sizing: border-box;
+  min-height: 0;
 }
 
 .contest-image {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 80vh;
   object-fit: contain;
   object-position: center;
 }
 
 .image-description {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
+  flex: 1;
+  max-width: 50%;
+  box-sizing: border-box;
   padding: 20px;
-  text-align: center;
+  text-align: left;
   font-size: 1.2rem;
   line-height: 1.4;
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-description > div {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .image-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .image-wrapper {
+    max-width: 100%;
+  }
+
+  .image-description {
+    max-width: 100%;
+    text-align: center;
+  }
 }
 
 .image-error {
