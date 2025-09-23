@@ -1084,14 +1084,20 @@ onUnmounted(() => {
   font-size: 3.5rem;
   line-height: 1.2;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100%;
 }
 
 .video-description > div,
 .audio-description > div {
   max-width: 1200px;
   margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Адаптивность для мобильных устройств */
@@ -1161,7 +1167,8 @@ onUnmounted(() => {
 }
 
 /* Стили для видео */
-.video-container {
+.video-container,
+.audio-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -1187,6 +1194,11 @@ onUnmounted(() => {
 .text-question {
   text-align: center;
   max-width: 1200px;
+}
+
+.text-question > div,
+.text-question p {
+  text-align: left;
 }
 
 .text-question h3 {
