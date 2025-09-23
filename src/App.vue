@@ -129,164 +129,179 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 
 <template>
   <div class="app">
-    <h1>Baza Quiz</h1>
+    <div class="app-content">
+      <!-- Отображение команд и очков -->
+      <div v-if="gameStore.teams" class="teams-display">
+        <div class="team-section-left">
+          <div class="team team-left">
+            <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
+            <div class="team-score-container">
+              <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
+              <div class="team-score">{{ gameStore.leftTeamScore }}</div>
+              <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
+            </div>
+          </div>
 
-    <!-- Отображение команд и очков -->
-    <div v-if="gameStore.teams" class="teams-display">
-      <div class="team-section-left">
-        <!-- Бусты и ловушки левой команды -->
-        <div
-          v-if="gameStore.leftTeamBoosts.length > 0 || gameStore.leftTeamTraps.length > 0"
-          class="team-effects-section team-effects-left"
-        >
-          <div class="effects-title">Ловушки и бонусы</div>
-          <div class="effects-list">
-            <div
-              v-for="item in [...gameStore.leftTeamBoosts, ...gameStore.leftTeamTraps]"
-              :key="item.id"
-              class="effect-card"
-              :class="item.type"
-              @click="removeBoostOrTrap(item.id)"
-            >
-              {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+          <!-- Бусты и ловушки левой команды -->
+          <div
+            v-if="gameStore.leftTeamBoosts.length > 0 || gameStore.leftTeamTraps.length > 0"
+            class="team-effects-section team-effects-left"
+          >
+            <div class="effects-title">Ловушки и бонусы</div>
+            <div class="effects-list">
+              <div
+                v-for="item in [...gameStore.leftTeamBoosts, ...gameStore.leftTeamTraps]"
+                :key="item.id"
+                class="effect-card"
+                :class="item.type"
+                @click="removeBoostOrTrap(item.id)"
+              >
+                {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="team team-left">
-          <div class="team-name">{{ gameStore.teams.leftTeam }}</div>
-          <div class="team-score-container">
-            <button class="score-btn score-minus" @click="adjustScore('leftTeam', -1)">-</button>
-            <div class="team-score">{{ gameStore.leftTeamScore }}</div>
-            <button class="score-btn score-plus" @click="adjustScore('leftTeam', 1)">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="vs">
-        <div class="vs-text">VS</div>
-      </div>
-
-      <div class="team-section-right">
-        <div class="team team-right">
-          <div class="team-name">{{ gameStore.teams.rightTeam }}</div>
-          <div class="team-score-container">
-            <button class="score-btn score-minus" @click="adjustScore('rightTeam', -1)">-</button>
-            <div class="team-score">{{ gameStore.rightTeamScore }}</div>
-            <button class="score-btn score-plus" @click="adjustScore('rightTeam', 1)">+</button>
-          </div>
+        <div class="quiz-title">
+          <h1>Baza Quiz</h1>
         </div>
 
-        <!-- Бусты и ловушки правой команды -->
-        <div
-          v-if="gameStore.rightTeamBoosts.length > 0 || gameStore.rightTeamTraps.length > 0"
-          class="team-effects-section team-effects-right"
-        >
-          <div class="effects-title">Ловушки и бонусы</div>
-          <div class="effects-list">
-            <div
-              v-for="item in [...gameStore.rightTeamBoosts, ...gameStore.rightTeamTraps]"
-              :key="item.id"
-              class="effect-card"
-              :class="item.type"
-              @click="removeBoostOrTrap(item.id)"
-            >
-              {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+        <div class="team-section-right">
+          <!-- Бусты и ловушки правой команды -->
+          <div
+            v-if="gameStore.rightTeamBoosts.length > 0 || gameStore.rightTeamTraps.length > 0"
+            class="team-effects-section team-effects-right"
+          >
+            <div class="effects-title">Ловушки и бонусы</div>
+            <div class="effects-list">
+              <div
+                v-for="item in [...gameStore.rightTeamBoosts, ...gameStore.rightTeamTraps]"
+                :key="item.id"
+                class="effect-card"
+                :class="item.type"
+                @click="removeBoostOrTrap(item.id)"
+              >
+                {{ gameStore.getCard(item.cardId)?.content || `Карточка ${item.cardId}` }}
+              </div>
+            </div>
+          </div>
+
+          <div class="team team-right">
+            <div class="team-name">{{ gameStore.teams.rightTeam }}</div>
+            <div class="team-score-container">
+              <button class="score-btn score-minus" @click="adjustScore('rightTeam', -1)">-</button>
+              <div class="team-score">{{ gameStore.rightTeamScore }}</div>
+              <button class="score-btn score-plus" @click="adjustScore('rightTeam', 1)">+</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Кнопки отладки -->
-    <div v-if="gameStore.isGameStarted" class="debug-buttons">
-      <button @click="resetGame" class="debug-reset-btn" title="Перезапустить игру">🔄</button>
-    </div>
-
-    <div class="grid-container">
-      <div v-for="card in cards" :key="card" class="grid-item">
-        <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
+      <!-- Кнопки отладки -->
+      <div v-if="gameStore.isGameStarted" class="debug-buttons">
+        <button @click="resetGame" class="debug-reset-btn" title="Перезапустить игру">🔄</button>
       </div>
+
+      <div class="grid-container">
+        <div v-for="card in cards" :key="card" class="grid-item">
+          <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
+        </div>
+      </div>
+
+      <!-- Модальное окно выбора команд -->
+      <TeamSelectionModal
+        :is-visible="showTeamSelectionModal"
+        @teams-selected="handleTeamsSelected"
+      />
+
+      <!-- Модальное окно с правилами -->
+      <GameRulesModal
+        :is-visible="showRulesModal"
+        :card-id="currentCardId || 0"
+        :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
+        :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
+        :intro-content="
+          currentCardId ? gameStore.getCard(currentCardId)?.intro?.content : undefined
+        "
+        :card-content="currentCardId ? gameStore.getCard(currentCardId)?.content : undefined"
+        @close="closeRulesModal"
+        @start-contest="handleStartContest"
+        @show-team-selection="handleShowTeamSelection"
+      />
+
+      <!-- Модальное окно конкурса -->
+      <ContestModal
+        :is-visible="showContestModal"
+        :card-id="currentCardId || 0"
+        :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
+        :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
+        :answer="gameStore.getCard(currentCardId || 0)?.answer"
+        :image-url="
+          gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
+            ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
+            : ''
+        "
+        :video-url="
+          gameStore.getCard(currentCardId || 0)?.questionData?.type === 'video'
+            ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
+            : ''
+        "
+        :codenames-width="
+          currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+            ? (gameStore.getCard(currentCardId)?.questionData as any)?.width
+            : undefined
+        "
+        :codenames-height="
+          currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+            ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
+            : undefined
+        "
+        :left-team-name="gameStore.teams?.leftTeam"
+        :right-team-name="gameStore.teams?.rightTeam"
+        @close="closeContestModal"
+        @contest-result="handleContestResult"
+      />
+
+      <!-- Модальное окно выбора команды для бустов и ловушек -->
+      <TeamSelectionBoostTrapModal
+        :is-visible="showTeamSelectionBoostTrapModal"
+        :is-boost="currentBoostTrapData?.isBoost || false"
+        :content="currentBoostTrapData?.content || ''"
+        :round-name="currentBoostTrapData?.roundName || ''"
+        :left-team-name="gameStore.teams?.leftTeam"
+        :right-team-name="gameStore.teams?.rightTeam"
+        @team-selected="handleTeamSelectedForBoostTrap"
+      />
     </div>
-
-    <!-- Модальное окно выбора команд -->
-    <TeamSelectionModal
-      :is-visible="showTeamSelectionModal"
-      @teams-selected="handleTeamsSelected"
-    />
-
-    <!-- Модальное окно с правилами -->
-    <GameRulesModal
-      :is-visible="showRulesModal"
-      :card-id="currentCardId || 0"
-      :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
-      :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
-      :intro-content="currentCardId ? gameStore.getCard(currentCardId)?.intro?.content : undefined"
-      :card-content="currentCardId ? gameStore.getCard(currentCardId)?.content : undefined"
-      @close="closeRulesModal"
-      @start-contest="handleStartContest"
-      @show-team-selection="handleShowTeamSelection"
-    />
-
-    <!-- Модальное окно конкурса -->
-    <ContestModal
-      :is-visible="showContestModal"
-      :card-id="currentCardId || 0"
-      :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
-      :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
-      :answer="gameStore.getCard(currentCardId || 0)?.answer"
-      :image-url="
-        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
-          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
-          : ''
-      "
-      :video-url="
-        gameStore.getCard(currentCardId || 0)?.questionData?.type === 'video'
-          ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
-          : ''
-      "
-      :codenames-width="
-        currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
-          ? (gameStore.getCard(currentCardId)?.questionData as any)?.width
-          : undefined
-      "
-      :codenames-height="
-        currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
-          ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
-          : undefined
-      "
-      :left-team-name="gameStore.teams?.leftTeam"
-      :right-team-name="gameStore.teams?.rightTeam"
-      @close="closeContestModal"
-      @contest-result="handleContestResult"
-    />
-
-    <!-- Модальное окно выбора команды для бустов и ловушек -->
-    <TeamSelectionBoostTrapModal
-      :is-visible="showTeamSelectionBoostTrapModal"
-      :is-boost="currentBoostTrapData?.isBoost || false"
-      :content="currentBoostTrapData?.content || ''"
-      :round-name="currentBoostTrapData?.roundName || ''"
-      :left-team-name="gameStore.teams?.leftTeam"
-      :right-team-name="gameStore.teams?.rightTeam"
-      @team-selected="handleTeamSelectedForBoostTrap"
-    />
   </div>
 </template>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+}
 .app {
-  padding: 20px;
+  padding: 10px;
   text-align: center;
-  min-height: 100vh;
-  background-color: #f8f9fa;
+  height: 100vh;
   font-family: 'Arial', sans-serif;
   color: #495057;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-content {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 h1 {
   color: #495057;
-  margin-bottom: 30px;
   font-size: 2.5rem;
   font-weight: 300;
 }
@@ -295,12 +310,7 @@ h1 {
 .teams-display {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
 }
 
 .team-section-left {
@@ -308,9 +318,7 @@ h1 {
   flex-direction: row;
   align-items: center;
   gap: 15px;
-  flex: 1;
-  max-width: 300px;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .team-section-right {
@@ -318,13 +326,11 @@ h1 {
   flex-direction: row;
   align-items: center;
   gap: 15px;
-  flex: 1;
-  max-width: 300px;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .team {
-  font-size: 1.5rem;
+  font-size: 3rem;
   font-weight: 600;
   padding: 16px 24px;
   text-align: center;
@@ -407,7 +413,7 @@ h1 {
 }
 
 .team-name {
-  font-size: 1.2rem;
+  font-size: 2.2rem;
   font-weight: 600;
 }
 
@@ -420,22 +426,20 @@ h1 {
 .team-score {
   font-size: 2rem;
   font-weight: 800;
-  background-color: rgba(255, 255, 255, 0.2);
   width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.3);
   min-width: 50px;
 }
 
 .score-btn {
   width: 30px;
   height: 30px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  border: 2px solid #e9ecef;
+  background-color: #f8f9fa;
+  color: #495057;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
@@ -453,8 +457,8 @@ h1 {
 }
 
 .score-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.8);
+  background-color: #e9ecef;
+  border-color: #dee2e6;
   transform: scale(1.1);
 }
 
@@ -463,27 +467,24 @@ h1 {
 }
 
 .team-left {
-  background-color: #6f42c1;
-  color: white;
+  color: #6f42c1;
 }
 
 .team-right {
-  background-color: #fd7e14;
-  color: white;
+  color: #fd7e14;
 }
 
-.vs {
+.quiz-title {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
-  background-color: #e9ecef;
-  min-width: 60px;
+  flex: 1;
 }
 
-.vs-text {
-  font-size: 1.2rem;
-  font-weight: 700;
+.quiz-title h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 300;
   color: #495057;
 }
 
@@ -519,7 +520,6 @@ h1 {
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 /* Для больших экранов - фиксированная сетка 8x5 */
@@ -542,12 +542,10 @@ h1 {
   .grid-container {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
-    padding: 0 15px;
   }
 
   h1 {
     font-size: 2rem;
-    margin-bottom: 20px;
   }
 
   .teams-display {
