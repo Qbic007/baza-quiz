@@ -81,9 +81,6 @@
           <div v-else-if="questionType === 'competition'" class="competition-container">
             <div class="competition-content">
               <h2>Состязание: {{ questionData?.name || 'Состязание' }}</h2>
-              <button class="btn btn-finish-competition" @click="finishCompetition">
-                Завершить
-              </button>
             </div>
           </div>
 
@@ -206,6 +203,27 @@
           </div>
         </div>
 
+        <!-- Кнопки действий для вопросов -->
+        <div class="contest-actions">
+          <!-- Кнопка завершения состязания (только для состязаний) -->
+          <button
+            v-if="questionType === 'competition'"
+            class="btn btn-finish-competition"
+            @click="finishCompetition"
+          >
+            Завершить
+          </button>
+
+          <!-- Кнопка завершения игры для Code Names (только для обычного режима) -->
+          <button
+            v-if="questionType === 'codenames' && !isStandaloneCodenames"
+            class="btn btn-finish-game"
+            @click="finishCodenamesGame"
+          >
+            🏁 Завершить игру
+          </button>
+        </div>
+
         <!-- Оверлей с кнопкой показать ответ (показывается когда время истекло и есть ответ) -->
         <div v-if="timeLeft <= 0 && answer && showAnswerOverlay" class="answer-overlay">
           <div class="answer-content">
@@ -274,16 +292,6 @@
           >
             <button @click="startTimer" class="btn btn-start-timer">▶️ Запустить таймер</button>
           </div>
-        </div>
-
-        <!-- Кнопка завершения игры для Code Names (только для обычного режима) -->
-        <div
-          v-if="questionType === 'codenames' && !isStandaloneCodenames"
-          class="codenames-controls"
-        >
-          <button class="btn btn-finish-game" @click="finishCodenamesGame">
-            🏁 Завершить игру
-          </button>
         </div>
       </div>
     </div>
@@ -885,7 +893,9 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   background: white;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .contest-header {
@@ -928,12 +938,21 @@ onUnmounted(() => {
 }
 
 .contest-body {
+  flex: 1;
   padding: 0;
-  height: calc(100vh - 120px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  overflow: visible;
+  overflow-y: auto;
+}
+
+.contest-actions {
+  flex-shrink: 0;
+  padding: 20px 0;
+  background: white;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .image-container {
