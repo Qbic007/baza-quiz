@@ -123,44 +123,82 @@
 
           <!-- Экран с ответом -->
           <div v-if="showAnswerScreen" class="answer-screen">
-            <div class="answer-screen-content">
-              <h2>📝 Ответ</h2>
-              <div v-if="answer?.content" class="answer-text">
-                <div v-html="formatTextContent(answer.content)"></div>
-              </div>
-              <!-- Скрытое аудио для ответа -->
-              <audio
-                v-if="answer?.audioUrl"
-                ref="answerAudioRef"
-                :src="answer.audioUrl"
-                @loadeddata="handleAnswerAudioLoaded"
-                @error="handleAnswerAudioError"
-                preload="metadata"
-                style="display: none"
-              >
-                Ваш браузер не поддерживает воспроизведение аудио.
-              </audio>
-
-              <!-- Видео для ответа -->
-              <div v-if="answer?.videoUrl" class="answer-video-container">
-                <video
-                  ref="answerVideoRef"
-                  :src="answer.videoUrl"
-                  controls
-                  class="answer-video"
-                  @loadeddata="handleAnswerVideoLoaded"
-                  @error="handleAnswerVideoError"
-                  @ended="handleAnswerVideoEnded"
-                >
-                  Ваш браузер не поддерживает воспроизведение видео.
-                </video>
+            <!-- Контент ответа (идентичен contest-content) -->
+            <div class="contest-content">
+              <!-- Заголовок -->
+              <div class="contest-header">
+                <h2>{{ getQuestionTitle() }}: ответ</h2>
               </div>
 
-              <!-- Изображение для ответа -->
-              <div v-if="answer?.imageUrl" class="answer-image-container">
-                <img :src="answer.imageUrl" :alt="'Ответ на вопрос'" class="answer-image" />
+              <!-- Основной контент -->
+              <div class="contest-body">
+                <!-- Отображение изображения ответа -->
+                <div v-if="answer?.imageUrl" class="image-container">
+                  <div class="image-wrapper">
+                    <img
+                      :src="answer.imageUrl"
+                      :alt="`Ответ на вопрос ${cardId}`"
+                      class="contest-image"
+                      @error="handleAnswerImageError"
+                    />
+                    <div v-if="answerImageError" class="image-error">
+                      <p>⚠️ Ошибка загрузки изображения</p>
+                      <p>Попробуйте обновить страницу</p>
+                    </div>
+                  </div>
+                  <!-- Описание ответа справа от картинки -->
+                  <div v-if="answer?.content" class="image-description">
+                    <div v-html="formatTextContent(answer.content)"></div>
+                  </div>
+                </div>
+
+                <!-- Отображение видео ответа -->
+                <div v-else-if="answer?.videoUrl" class="video-container">
+                  <video
+                    ref="answerVideoRef"
+                    :src="answer.videoUrl"
+                    class="contest-video"
+                    @error="handleAnswerVideoError"
+                    @loadeddata="handleAnswerVideoLoaded"
+                    @play="playAnswerVideo"
+                    controls
+                  />
+                  <div v-if="answerVideoError" class="video-error">
+                    <p>⚠️ Ошибка загрузки видео</p>
+                    <p>Попробуйте обновить страницу</p>
+                  </div>
+                  <div v-if="answer?.content" class="video-description">
+                    <div v-html="formatTextContent(answer.content)"></div>
+                  </div>
+                </div>
+
+                <!-- Отображение аудио ответа -->
+                <div v-else-if="answer?.audioUrl" class="audio-container">
+                  <audio
+                    ref="answerAudioRef"
+                    :src="answer.audioUrl"
+                    controls
+                    class="contest-audio"
+                    @loadeddata="handleAnswerAudioLoaded"
+                    @error="handleAnswerAudioError"
+                  >
+                    Ваш браузер не поддерживает воспроизведение аудио.
+                  </audio>
+                  <div v-if="answer?.content" class="audio-description">
+                    <div v-html="formatTextContent(answer.content)"></div>
+                  </div>
+                </div>
+
+                <!-- Отображение текстового ответа -->
+                <div v-else-if="answer?.content" class="text-container">
+                  <div class="text-question">
+                    <div v-html="formatTextContent(answer.content)"></div>
+                  </div>
+                </div>
               </div>
-              <div class="answer-buttons">
+
+              <!-- Кнопки действий -->
+              <div class="contest-actions">
                 <button @click="finishAnswer" class="btn btn-finish-answer">✅ Завершить</button>
               </div>
             </div>
@@ -355,6 +393,7 @@ const answerAudioRef = ref<HTMLAudioElement>()
 const answerAudioError = ref(false)
 const answerVideoRef = ref<HTMLVideoElement>()
 const answerVideoError = ref(false)
+const answerImageError = ref(false)
 let timerInterval: ReturnType<typeof setInterval> | null = null
 
 // Методы
@@ -516,6 +555,11 @@ const getQuestionTitle = (): string => {
 const handleImageError = () => {
   console.log(`Ошибка загрузки изображения для конкурса ${props.cardId}`)
   imageError.value = true
+}
+
+const handleAnswerImageError = () => {
+  console.log(`Ошибка загрузки изображения ответа для конкурса ${props.cardId}`)
+  answerImageError.value = true
 }
 
 const handleImageLoad = () => {
@@ -831,7 +875,7 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #f8f9fa;
+  background: white;
   overflow-y: auto;
 }
 
@@ -935,6 +979,27 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
+/* Стили для описаний видео и аудио в ответах */
+.video-description,
+.audio-description {
+  flex: 1;
+  max-width: 50%;
+  box-sizing: border-box;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-description > div,
+.audio-description > div {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
   .image-container {
@@ -946,7 +1011,9 @@ onUnmounted(() => {
     max-width: 100%;
   }
 
-  .image-description {
+  .image-description,
+  .video-description,
+  .audio-description {
     max-width: 100%;
     text-align: center;
   }
@@ -1017,8 +1084,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 40px;
-  background-color: #f8f9fa;
   margin-top: 0;
+  background: white;
 }
 
 .text-question {
@@ -1034,7 +1101,6 @@ onUnmounted(() => {
   margin: 0;
   padding: 20px;
   background-color: #ffffff;
-  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -1046,7 +1112,6 @@ onUnmounted(() => {
   margin: 0;
   padding: 20px;
   background-color: #ffffff;
-  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   white-space: pre-line;
 }
@@ -1060,7 +1125,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 40px;
-  background-color: #f8f9fa;
+  background: white;
 }
 
 .collage-title {
@@ -1075,7 +1140,6 @@ onUnmounted(() => {
   margin: 0;
   padding: 15px 30px;
   background-color: #ffffff;
-  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -1092,7 +1156,6 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  border-radius: 12px;
   padding: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
@@ -1106,7 +1169,6 @@ onUnmounted(() => {
   max-width: 100%;
   max-height: 200px;
   object-fit: contain;
-  border-radius: 8px;
 }
 
 /* Стили для состязания */
@@ -1117,7 +1179,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 40px;
-  background-color: #f8f9fa;
+  background: white;
 }
 
 .competition-content {
@@ -1125,7 +1187,6 @@ onUnmounted(() => {
   max-width: 600px;
   background-color: #ffffff;
   padding: 40px;
-  border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -1144,7 +1205,6 @@ onUnmounted(() => {
   padding: 15px 40px;
   font-size: 1.2rem;
   font-weight: 600;
-  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
@@ -1281,7 +1341,6 @@ onUnmounted(() => {
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -1317,7 +1376,6 @@ onUnmounted(() => {
 .answer-content {
   background: white;
   padding: 40px;
-  border-radius: 16px;
   text-align: center;
   max-width: 500px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -1346,7 +1404,6 @@ onUnmounted(() => {
   color: white;
   border: none;
   padding: 16px 32px;
-  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -1367,22 +1424,42 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
+  overflow: hidden;
 }
 
 .answer-screen-content {
   background: white;
   padding: 40px;
-  border-radius: 16px;
   text-align: center;
   max-width: 800px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для contest-content внутри answer-screen */
+.answer-screen .contest-content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.answer-screen .contest-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.answer-screen .contest-actions {
+  flex-shrink: 0;
+  padding: 20px 0;
+  background: white;
 }
 
 .answer-screen-content h2 {
@@ -1392,9 +1469,7 @@ onUnmounted(() => {
 }
 
 .answer-text {
-  background: #f8f9fa;
   padding: 24px;
-  border-radius: 12px;
   margin-bottom: 32px;
   text-align: left;
   font-size: 1.1rem;
@@ -1411,7 +1486,6 @@ onUnmounted(() => {
   width: 100%;
   max-width: 600px;
   height: auto;
-  border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -1423,7 +1497,6 @@ onUnmounted(() => {
   width: 100%;
   max-width: 600px;
   height: auto;
-  border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -1437,7 +1510,6 @@ onUnmounted(() => {
   color: white;
   border: none;
   padding: 16px 32px;
-  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
