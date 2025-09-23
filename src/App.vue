@@ -336,8 +336,10 @@ h1 {
 /* Отображение команд */
 .teams-display {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .team-section-left {
@@ -346,6 +348,9 @@ h1 {
   align-items: center;
   gap: 15px;
   justify-content: flex-start;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(50% - 150px);
 }
 
 .team-section-right {
@@ -354,6 +359,9 @@ h1 {
   align-items: center;
   gap: 15px;
   justify-content: flex-end;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(50% - 150px);
 }
 
 .team {
@@ -505,7 +513,9 @@ h1 {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  flex: 1;
+  width: 300px;
+  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .quiz-title h1 {
