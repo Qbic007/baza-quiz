@@ -225,7 +225,7 @@
 
           <!-- Кнопка запуска таймера (показывается если autoStartTimer = false) -->
           <button
-            v-if="questionData?.autoStartTimer === false && timeLeft === duration"
+            v-if="questionData?.autoStartTimer === false && timeLeft === timerDuration"
             class="btn btn-start-timer"
             @click="startTimer"
           >
@@ -299,7 +299,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted, watch } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import { sendCodeNamesLayout } from '@/services/telegram'
 import * as showdown from 'showdown'
 import { useGameStore } from '@/stores/game'
@@ -377,6 +377,7 @@ interface Props {
     name?: string
     description?: string
     autoStartTimer?: boolean
+    timerLimit?: number
   }
   answer?: {
     content: string
@@ -397,6 +398,20 @@ const props = withDefaults(defineProps<Props>(), {
   isStandaloneCodenames: false,
 })
 
+// Computed для получения правильного лимита времени
+const timerDuration = computed(() => {
+  // Если есть timerLimit в questionData, используем его
+  if (props.questionData?.timerLimit) {
+    console.log(
+      `Используем timerLimit: ${props.questionData.timerLimit} для вопроса ${props.cardId}`,
+    )
+    return props.questionData.timerLimit
+  }
+  // Иначе используем duration из props (по умолчанию CONTEST_DURATION)
+  console.log(`Используем duration: ${props.duration} для вопроса ${props.cardId}`)
+  return props.duration
+})
+
 // Emits
 const emit = defineEmits<{
   close: []
@@ -404,7 +419,7 @@ const emit = defineEmits<{
 }>()
 
 // Состояние
-const timeLeft = ref(props.duration)
+const timeLeft = ref(timerDuration.value)
 const imageError = ref(false)
 const videoError = ref(false)
 const videoRef = ref<HTMLVideoElement>()
@@ -423,6 +438,10 @@ let timerInterval: ReturnType<typeof setInterval> | null = null
 // Методы
 const startContest = async () => {
   console.log(`Запуск конкурса ${props.cardId}`)
+
+  // Обновляем timeLeft с правильным значением
+  timeLeft.value = timerDuration.value
+  console.log(`Установлен timeLeft: ${timeLeft.value} для вопроса ${props.cardId}`)
 
   // Инициализируем Code Names карточки если это Code Names
   if (props.questionType === 'codenames') {
@@ -443,7 +462,7 @@ const startContest = async () => {
 }
 
 const startTimer = () => {
-  timeLeft.value = props.duration
+  timeLeft.value = timerDuration.value
   timerInterval = setInterval(() => {
     timeLeft.value--
 
@@ -813,7 +832,7 @@ const closeModal = () => {
     clearInterval(timerInterval)
     timerInterval = null
   }
-  timeLeft.value = props.duration
+  timeLeft.value = timerDuration.value
   showTimeStartedMessage.value = false
   showAnswerOverlay.value = false
   showAnswerScreen.value = false
@@ -829,7 +848,7 @@ watch(
   () => props.isVisible,
   (newValue) => {
     if (!newValue) {
-      timeLeft.value = props.duration
+      timeLeft.value = timerDuration.value
       imageError.value = false
       videoError.value = false
       showTimeStartedMessage.value = false
@@ -872,6 +891,14 @@ watch(
     }
   },
 )
+
+// Watch для обновления timeLeft при изменении timerDuration
+watch(timerDuration, (newDuration) => {
+  // Обновляем timeLeft только если таймер еще не запущен
+  if (timeLeft.value === timerDuration.value) {
+    timeLeft.value = newDuration
+  }
+})
 
 // Очистка при размонтировании
 onUnmounted(() => {
