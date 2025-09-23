@@ -276,7 +276,7 @@ onMounted(() => {
 .modal-content {
   background-color: #ffffff;
   border: none;
-  max-width: 800px;
+  max-width: 1800px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -294,7 +294,7 @@ onMounted(() => {
 .modal-header h2 {
   margin: 0;
   color: #495057;
-  font-size: 1.8rem;
+  font-size: 3.6rem;
   font-weight: 500;
 }
 
@@ -375,7 +375,7 @@ onMounted(() => {
 .team-section h3 {
   margin: 0 0 20px 0;
   color: #495057;
-  font-size: 1.3rem;
+  font-size: 2.6rem;
   font-weight: 500;
 }
 
@@ -396,7 +396,7 @@ onMounted(() => {
   width: 100%;
   padding: 12px 16px;
   border: 2px solid #e9ecef;
-  font-size: 1rem;
+  font-size: 3.5rem;
   text-align: center;
   transition: border-color 0.2s ease;
 }
@@ -445,7 +445,7 @@ onMounted(() => {
 .team-name {
   font-weight: 600;
   color: #155724;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 
 .edit-btn {
@@ -517,7 +517,7 @@ onMounted(() => {
   }
 
   .modal-header h2 {
-    font-size: 1.5rem;
+    font-size: 2.4rem;
   }
 
   .modal-body {
