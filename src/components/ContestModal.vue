@@ -231,6 +231,15 @@
           >
             Запустить таймер
           </button>
+
+          <!-- Кнопка досрочного ответа (показывается когда таймер запущен и больше 1 секунды) -->
+          <button
+            v-if="timeLeft > 0 && timeLeft < timerDuration && timerInterval"
+            class="btn btn-early-answer"
+            @click="earlyAnswer"
+          >
+            Досрочный ответ
+          </button>
         </div>
 
         <!-- Оверлей с кнопкой показать ответ (показывается когда время истекло и есть ответ) -->
@@ -489,6 +498,32 @@ const handleContestResult = (result: 'leftTeam' | 'rightTeam' | 'nobody' | 'draw
 const finishCompetition = () => {
   console.log(`Состязание ${props.cardId} завершено`)
   competitionFinished.value = true
+}
+
+const earlyAnswer = () => {
+  console.log(`Досрочный ответ для вопроса ${props.cardId}`)
+  // Устанавливаем таймер на 1 секунду
+  timeLeft.value = 1
+  // Очищаем текущий интервал
+  if (timerInterval) {
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
+  // Запускаем новый интервал, который сработает через 1 секунду
+  timerInterval = setInterval(() => {
+    timeLeft.value--
+    if (timeLeft.value <= 0) {
+      console.log(`Время конкурса ${props.cardId} истекло (досрочно)`)
+      if (timerInterval) {
+        clearInterval(timerInterval)
+        timerInterval = null
+      }
+      // Показываем оверлей с кнопкой показать ответ (если есть ответ)
+      if (props.answer) {
+        showAnswerOverlay.value = true
+      }
+    }
+  }, 1000)
 }
 
 const showAnswer = () => {
@@ -1416,6 +1451,29 @@ onUnmounted(() => {
 .btn-start-timer:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-early-answer {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.btn-early-answer:hover {
+  background-color: #e0a800;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+}
+
+.btn-early-answer:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
 }
 
 /* Оверлей с кнопкой показать ответ */
