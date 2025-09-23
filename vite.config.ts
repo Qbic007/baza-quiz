@@ -5,16 +5,16 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [vue(), vueDevTools()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  // base: '/baza-quiz/', // Временно отключено для локальной разработки
+  base: command === 'build' ? '/baza-quiz/' : '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
   },
-})
+}))
