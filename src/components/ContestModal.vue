@@ -189,7 +189,11 @@
                 </div>
 
                 <!-- Отображение текстового ответа -->
-                <div v-else-if="answer?.content" class="text-container">
+                <div
+                  v-else-if="answer?.content"
+                  class="text-container"
+                  :class="{ 'karaoke-answer': questionType === 'video' }"
+                >
                   <div class="text-question">
                     <div v-html="formatTextContent(answer.content)"></div>
                   </div>
@@ -993,6 +997,11 @@ onUnmounted(() => {
   z-index: 10;
 }
 
+.contest-header .close-btn {
+  position: absolute;
+  right: 32px;
+}
+
 .contest-header h2 {
   margin: 0;
   color: #495057;
@@ -1210,6 +1219,11 @@ onUnmounted(() => {
 .text-question {
   text-align: center;
   max-width: 1200px;
+}
+
+/* Специальные стили для ответов караоке */
+.karaoke-answer .text-question > div {
+  font-size: 2.8rem;
 }
 
 .text-question > div,
