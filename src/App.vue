@@ -16,7 +16,9 @@ const showRulesModal = ref(false)
 const showContestModal = ref(false)
 const showTeamSelectionBoostTrapModal = ref(false)
 const currentCardId = ref<number | null>(null)
-const currentBoostTrapData = ref<{ isBoost: boolean; content: string } | null>(null)
+const currentBoostTrapData = ref<{ isBoost: boolean; content: string; roundName: string } | null>(
+  null,
+)
 
 // Инициализируем игру при загрузке компонента
 onMounted(async () => {
@@ -80,7 +82,12 @@ const handleContestResult = (
 
 // Обработчики бустов и трэпов
 const handleShowTeamSelection = (isBoost: boolean, content: string) => {
-  currentBoostTrapData.value = { isBoost, content }
+  const card = gameStore.getCard(currentCardId.value || 0)
+  currentBoostTrapData.value = {
+    isBoost,
+    content,
+    roundName: card?.content || '',
+  }
   showRulesModal.value = false
   showTeamSelectionBoostTrapModal.value = true
 }
@@ -259,6 +266,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       :is-visible="showTeamSelectionBoostTrapModal"
       :is-boost="currentBoostTrapData?.isBoost || false"
       :content="currentBoostTrapData?.content || ''"
+      :round-name="currentBoostTrapData?.roundName || ''"
       :left-team-name="gameStore.teams?.leftTeam"
       :right-team-name="gameStore.teams?.rightTeam"
       @team-selected="handleTeamSelectedForBoostTrap"

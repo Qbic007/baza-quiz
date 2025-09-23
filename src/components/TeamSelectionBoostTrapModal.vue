@@ -4,16 +4,17 @@
       <div class="modal-content">
         <!-- Заголовок -->
         <div class="modal-header">
-          <h2>{{ isBoost ? '🚀 Буст!' : '💀 Ловушка!' }}</h2>
+          <h2>{{ roundName || (isBoost ? '🚀 Буст!' : '💀 Ловушка!') }}</h2>
         </div>
 
         <!-- Содержимое -->
         <div class="modal-body">
           <div class="boost-trap-info">
-            <p class="boost-trap-content">{{ content }}</p>
             <p class="boost-trap-question">
               {{
-                isBoost ? 'Какой команде дать этот буст?' : 'Какой команде подложить эту ловушку?'
+                isBoost
+                  ? 'Какой команде дать этот усилитель?'
+                  : 'Какой команде подложить эту ловушку?'
               }}
             </p>
           </div>
@@ -58,6 +59,7 @@ interface Props {
   isVisible: boolean
   isBoost: boolean
   content: string
+  roundName?: string
   leftTeamName?: string
   rightTeamName?: string
 }
@@ -65,6 +67,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   isBoost: false,
   content: '',
+  roundName: '',
   leftTeamName: '',
   rightTeamName: '',
 })
@@ -129,16 +132,6 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
 .boost-trap-info {
   text-align: center;
   margin-bottom: 32px;
-}
-
-.boost-trap-content {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #495057;
-  margin-bottom: 16px;
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-left: 4px solid #007bff;
 }
 
 .boost-trap-question {
