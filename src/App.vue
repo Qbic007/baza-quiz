@@ -303,15 +303,23 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
   </div>
 </template>
 
-<style scoped>
+<style>
+body {
+  margin: 0 !important;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
 * {
   box-sizing: border-box;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
+</style>
+
+<style scoped>
 .app {
   padding: 10px;
   text-align: center;
   height: 100vh;
-  font-family: 'Arial', sans-serif;
   color: #495057;
   box-sizing: border-box;
   display: flex;

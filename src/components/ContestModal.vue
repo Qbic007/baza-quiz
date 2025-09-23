@@ -222,6 +222,15 @@
           >
             🏁 Завершить игру
           </button>
+
+          <!-- Кнопка запуска таймера (показывается если autoStartTimer = false) -->
+          <button
+            v-if="questionData?.autoStartTimer === false && timeLeft === duration"
+            class="btn btn-start-timer"
+            @click="startTimer"
+          >
+            Запустить таймер
+          </button>
         </div>
 
         <!-- Оверлей с кнопкой показать ответ (показывается когда время истекло и есть ответ) -->
@@ -279,18 +288,9 @@
           class="timer-container"
         >
           <div class="timer">
-            <span class="timer-label">⏱️ Время:</span>
             <span class="timer-value" :class="{ warning: timeLeft <= 10 }">
               {{ timeLeft }}
             </span>
-            <span class="timer-unit">сек</span>
-          </div>
-          <!-- Кнопка запуска таймера (показывается если autoStartTimer = false) -->
-          <div
-            v-if="questionData?.autoStartTimer === false && timeLeft === duration"
-            class="timer-controls"
-          >
-            <button @click="startTimer" class="btn btn-start-timer">▶️ Запустить таймер</button>
           </div>
         </div>
       </div>
@@ -913,7 +913,7 @@ onUnmounted(() => {
 .contest-header h2 {
   margin: 0;
   color: #495057;
-  font-size: 2rem;
+  font-size: 4.8rem;
   font-weight: 500;
 }
 
@@ -995,15 +995,15 @@ onUnmounted(() => {
   box-sizing: border-box;
   padding: 20px;
   text-align: left;
-  font-size: 1.2rem;
-  line-height: 1.4;
+  font-size: 2.9rem;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .image-description > div {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -1024,7 +1024,7 @@ onUnmounted(() => {
 
 .video-description > div,
 .audio-description > div {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -1111,6 +1111,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 2.9rem;
+  line-height: 1;
   padding: 40px;
   margin-top: 0;
   background: white;
@@ -1118,7 +1120,7 @@ onUnmounted(() => {
 
 .text-question {
   text-align: center;
-  max-width: 600px;
+  max-width: 1200px;
 }
 
 .text-question h3 {
@@ -1129,18 +1131,16 @@ onUnmounted(() => {
   margin: 0;
   padding: 20px;
   background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .text-question div {
-  font-size: 1.5rem;
+  font-size: 3.5rem;
   font-weight: 500;
   color: #495057;
-  line-height: 1.6;
+  line-height: 0.8;
   margin: 0;
   padding: 20px;
   background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   white-space: pre-line;
 }
 
@@ -1175,7 +1175,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
-  max-width: 800px;
+  max-width: 1600px;
   width: 100%;
 }
 
@@ -1212,7 +1212,7 @@ onUnmounted(() => {
 
 .competition-content {
   text-align: center;
-  max-width: 600px;
+  max-width: 1200px;
   background-color: #ffffff;
   padding: 40px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -1270,8 +1270,9 @@ onUnmounted(() => {
 /* Таймер */
 .timer-container {
   position: fixed;
-  bottom: 32px;
+  top: 0;
   right: 32px;
+  height: 156px;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -1282,13 +1283,12 @@ onUnmounted(() => {
 .timer {
   background-color: #ffffff;
   color: #495057;
-  padding: 16px 24px;
+  padding: 32px 48px;
   border: none;
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .timer-label {
@@ -1297,9 +1297,9 @@ onUnmounted(() => {
 }
 
 .timer-value {
-  font-size: 1.5rem;
+  font-size: 4rem;
   font-weight: 700;
-  min-width: 30px;
+  min-width: 80px;
   text-align: center;
 }
 
@@ -1349,8 +1349,9 @@ onUnmounted(() => {
   }
 
   .timer-container {
-    bottom: 20px;
+    top: 0;
     right: 20px;
+    height: 156px;
   }
 
   .timer {
@@ -1365,19 +1366,19 @@ onUnmounted(() => {
 }
 
 .btn-start-timer {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background-color: #28a745;
   color: white;
   border: none;
-  padding: 12px 24px;
-  font-size: 1rem;
+  padding: 15px 40px;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .btn-start-timer:hover {
-  background: linear-gradient(135deg, #218838, #1ea085);
+  background-color: #218838;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
 }
@@ -1405,7 +1406,7 @@ onUnmounted(() => {
   background: white;
   padding: 40px;
   text-align: center;
-  max-width: 500px;
+  max-width: 1000px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -1464,7 +1465,7 @@ onUnmounted(() => {
   background: white;
   padding: 40px;
   text-align: center;
-  max-width: 800px;
+  max-width: 1600px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -1512,7 +1513,7 @@ onUnmounted(() => {
 
 .answer-video {
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   height: auto;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
@@ -1523,7 +1524,7 @@ onUnmounted(() => {
 
 .answer-image {
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   height: auto;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
@@ -1573,7 +1574,7 @@ onUnmounted(() => {
 .result-content {
   text-align: center;
   color: white;
-  max-width: 500px;
+  max-width: 1000px;
   padding: 40px;
 }
 

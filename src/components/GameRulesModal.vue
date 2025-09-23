@@ -137,7 +137,7 @@ const activateTrap = () => {
 .modal-content {
   background-color: #ffffff;
   border: none;
-  max-width: 600px;
+  max-width: 1200px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -162,6 +162,8 @@ const activateTrap = () => {
 
 .modal-body {
   padding: 24px;
+  font-size: 2.4rem;
+  line-height: 1;
 }
 
 .rules-section {
