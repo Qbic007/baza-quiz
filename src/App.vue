@@ -118,6 +118,11 @@ const resetGame = async () => {
   showTeamSelectionModal.value = true
 }
 
+const startCodenames5x5 = () => {
+  currentCardId.value = 0 // Специальный ID для отдельного режима
+  showContestModal.value = true
+}
+
 // Корректировка очков команд
 const adjustScore = (team: 'leftTeam' | 'rightTeam', delta: number) => {
   gameStore.adjustScore(team, delta)
@@ -199,6 +204,13 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
 
       <!-- Кнопки отладки -->
       <div v-if="gameStore.isGameStarted" class="debug-buttons">
+        <button
+          @click="startCodenames5x5"
+          class="debug-codenames-btn"
+          title="Запустить Code Names 5x5"
+        >
+          🎲
+        </button>
         <button @click="resetGame" class="debug-reset-btn" title="Перезапустить игру">🔄</button>
       </div>
 
@@ -233,29 +245,44 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       <ContestModal
         :is-visible="showContestModal"
         :card-id="currentCardId || 0"
-        :question-type="gameStore.getCard(currentCardId || 0)?.questionType || 'image'"
-        :question-data="gameStore.getCard(currentCardId || 0)?.questionData"
-        :answer="gameStore.getCard(currentCardId || 0)?.answer"
+        :question-type="
+          currentCardId === 0
+            ? 'codenames'
+            : gameStore.getCard(currentCardId || 0)?.questionType || 'image'
+        "
+        :question-data="
+          currentCardId === 0 ? undefined : gameStore.getCard(currentCardId || 0)?.questionData
+        "
+        :answer="currentCardId === 0 ? undefined : gameStore.getCard(currentCardId || 0)?.answer"
         :image-url="
-          gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
-            ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
-            : ''
+          currentCardId === 0
+            ? ''
+            : gameStore.getCard(currentCardId || 0)?.questionData?.type === 'image'
+              ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.imageUrl
+              : ''
         "
         :video-url="
-          gameStore.getCard(currentCardId || 0)?.questionData?.type === 'video'
-            ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
-            : ''
+          currentCardId === 0
+            ? ''
+            : gameStore.getCard(currentCardId || 0)?.questionData?.type === 'video'
+              ? (gameStore.getCard(currentCardId || 0)?.questionData as any)?.videoUrl
+              : ''
         "
         :codenames-width="
-          currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
-            ? (gameStore.getCard(currentCardId)?.questionData as any)?.width
-            : undefined
+          currentCardId === 0
+            ? 5
+            : currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+              ? (gameStore.getCard(currentCardId)?.questionData as any)?.width
+              : undefined
         "
         :codenames-height="
-          currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
-            ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
-            : undefined
+          currentCardId === 0
+            ? 5
+            : currentCardId && gameStore.getCard(currentCardId)?.questionData?.type === 'codenames'
+              ? (gameStore.getCard(currentCardId)?.questionData as any)?.height
+              : undefined
         "
+        :is-standalone-codenames="currentCardId === 0"
         :left-team-name="gameStore.teams?.leftTeam"
         :right-team-name="gameStore.teams?.rightTeam"
         @close="closeContestModal"
@@ -490,14 +517,15 @@ h1 {
 
 /* Отладочные кнопки */
 .debug-buttons {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   display: flex;
   gap: 10px;
   z-index: 100;
 }
 
+.debug-codenames-btn,
 .debug-reset-btn {
   background-color: #e9ecef;
   color: #495057;
@@ -509,6 +537,7 @@ h1 {
   transition: all 0.2s;
 }
 
+.debug-codenames-btn:hover,
 .debug-reset-btn:hover {
   background-color: #dee2e6;
   transform: scale(1.1);

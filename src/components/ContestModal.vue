@@ -6,7 +6,8 @@
         <!-- Заголовок -->
         <div class="contest-header">
           <h2 v-html="getQuestionTitle()"></h2>
-          <!-- Убираем кнопку закрытия до истечения таймера -->
+          <!-- Кнопка закрытия для отдельного режима Code Names -->
+          <button v-if="isStandaloneCodenames" @click="closeModal" class="close-btn">✕</button>
         </div>
 
         <!-- Основной контент -->
@@ -275,8 +276,11 @@
           </div>
         </div>
 
-        <!-- Кнопка завершения игры для Code Names -->
-        <div v-if="questionType === 'codenames'" class="codenames-controls">
+        <!-- Кнопка завершения игры для Code Names (только для обычного режима) -->
+        <div
+          v-if="questionType === 'codenames' && !isStandaloneCodenames"
+          class="codenames-controls"
+        >
           <button class="btn btn-finish-game" @click="finishCodenamesGame">
             🏁 Завершить игру
           </button>
@@ -343,6 +347,7 @@ interface Props {
     | 'competition'
   imageUrl?: string
   videoUrl?: string
+  isStandaloneCodenames?: boolean
   questionData?: {
     type: string
     content?: string
@@ -371,6 +376,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   duration: CONTEST_DURATION,
+  isStandaloneCodenames: false,
 })
 
 // Emits
@@ -547,6 +553,9 @@ const playAnswerVideo = () => {
 
 // Функция для получения заголовка вопроса
 const getQuestionTitle = (): string => {
+  if (props.isStandaloneCodenames) {
+    return 'Code Names 5x5'
+  }
   // Получаем данные карточки из store
   const card = gameStore.getCard(props.cardId)
   return card?.content || `Конкурс ${props.cardId}`
@@ -706,9 +715,9 @@ const generateColors = (
 // Методы для Code Names
 const initializeCodenamesCards = async () => {
   try {
-    // Получаем размеры поля из конфигурации или используем по умолчанию
-    const width = props.codenamesWidth || 3
-    const height = props.codenamesHeight || 3
+    // Для отдельного режима используем 5x5, иначе из конфигурации
+    const width = props.isStandaloneCodenames ? 5 : props.codenamesWidth || 3
+    const height = props.isStandaloneCodenames ? 5 : props.codenamesHeight || 3
     const totalCards = width * height
 
     // Загружаем слова из отдельного файла
