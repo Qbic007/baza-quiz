@@ -235,6 +235,7 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
         :intro-content="
           currentCardId ? gameStore.getCard(currentCardId)?.intro?.content : undefined
         "
+        :intro="currentCardId ? gameStore.getCard(currentCardId)?.intro : undefined"
         :card-content="currentCardId ? gameStore.getCard(currentCardId)?.content : undefined"
         @close="closeRulesModal"
         @start-contest="handleStartContest"

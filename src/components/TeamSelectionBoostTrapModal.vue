@@ -163,10 +163,8 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
 }
 
 .team-btn:hover:not(:disabled) {
-  border-color: #007bff;
-  background-color: #f8f9ff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .team-btn:disabled {
@@ -174,16 +172,26 @@ const selectTeam = (team: 'leftTeam' | 'rightTeam') => {
   cursor: not-allowed;
 }
 
+.team-left {
+  border-color: #6f42c1;
+  color: #6f42c1;
+}
+
 .team-left:hover:not(:disabled) {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+  border-color: #6f42c1;
+  background-color: rgba(111, 66, 193, 0.1);
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+.team-right {
+  border-color: #fd7e14;
+  color: #fd7e14;
 }
 
 .team-right:hover:not(:disabled) {
-  border-color: #007bff;
-  background-color: #f0f8ff;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  border-color: #fd7e14;
+  background-color: rgba(253, 126, 20, 0.1);
+  box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);
 }
 
 .team-icon {

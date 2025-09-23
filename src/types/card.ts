@@ -77,6 +77,7 @@ export interface CompetitionQuestionData extends QuestionData {
 // Тип для интро карточки
 export interface CardIntro {
   content: string
+  fontSize?: 'XL' | 'L' | 'M' | 'S'
 }
 
 // Тип для ответа на вопрос

@@ -11,10 +11,15 @@
         <!-- Содержимое -->
         <div class="modal-body">
           <!-- Интро контент -->
-          <div v-if="displayIntroContent" class="intro-content" v-html="displayIntroContent"></div>
+          <div
+            v-if="displayIntroContent"
+            class="intro-content"
+            :style="{ fontSize: introFontSize }"
+            v-html="displayIntroContent"
+          ></div>
 
           <!-- Fallback контент если нет интро -->
-          <div v-else class="intro-content">
+          <div v-else class="intro-content" :style="{ fontSize: introFontSize }">
             <h3>{{ introContent || '' }}</h3>
           </div>
         </div>
@@ -72,6 +77,10 @@ interface Props {
   }
   introContent?: string
   cardContent?: string
+  intro?: {
+    content: string
+    fontSize?: 'XL' | 'L' | 'M' | 'S'
+  }
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -85,6 +94,25 @@ const emit = defineEmits<{
   activateTrap: [cardId: number, content: string]
   showTeamSelection: [isBoost: boolean, content: string]
 }>()
+
+// Computed для размера шрифта интро
+const introFontSize = computed(() => {
+  const fontSize = props.intro?.fontSize || 'XL'
+  const baseSize = 2.4 // Текущий размер шрифта (XL)
+
+  switch (fontSize) {
+    case 'XL':
+      return `${baseSize}rem`
+    case 'L':
+      return `${baseSize * 0.8}rem` // 20% меньше
+    case 'M':
+      return `${baseSize * 0.64}rem` // 20% меньше от L
+    case 'S':
+      return `${baseSize * 0.512}rem` // 20% меньше от M
+    default:
+      return `${baseSize}rem`
+  }
+})
 
 // Настройка showdown для конвертации Markdown в HTML
 const converter = new showdown.Converter({
