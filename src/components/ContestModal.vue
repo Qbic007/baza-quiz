@@ -125,7 +125,7 @@
             <div class="contest-content">
               <!-- Заголовок -->
               <div class="contest-header">
-                <h2>{{ getQuestionTitle() }}: ответ</h2>
+                <h2 v-html="getQuestionTitle() + ': ответ'"></h2>
               </div>
 
               <!-- Основной контент -->
@@ -172,18 +172,18 @@
 
                 <!-- Отображение аудио ответа -->
                 <div v-else-if="answer?.audioUrl" class="audio-container">
+                  <!-- Скрытый аудио элемент для воспроизведения -->
                   <audio
                     ref="answerAudioRef"
-                    :src="answer.audioUrl"
-                    controls
-                    class="contest-audio"
+                    :src="answer?.audioUrl"
                     @loadeddata="handleAnswerAudioLoaded"
                     @error="handleAnswerAudioError"
+                    style="display: none"
                   >
                     Ваш браузер не поддерживает воспроизведение аудио.
                   </audio>
                   <div v-if="answer?.content" class="audio-description">
-                    <div v-html="formatTextContent(answer.content)"></div>
+                    <div v-html="formatTextContent(answer?.content || '')"></div>
                   </div>
                 </div>
 
@@ -197,7 +197,7 @@
 
               <!-- Кнопки действий -->
               <div class="contest-actions">
-                <button @click="finishAnswer" class="btn btn-finish-answer">✅ Завершить</button>
+                <button @click="finishAnswer" class="btn btn-finish-answer">Завершить</button>
               </div>
             </div>
           </div>
@@ -238,7 +238,7 @@
           <div class="answer-content">
             <h2>Хотите посмотреть ответ?</h2>
             <div class="answer-buttons-container">
-              <button @click="showAnswer" class="btn btn-show-answer">👁️ Показать ответ</button>
+              <button @click="showAnswer" class="btn btn-show-answer">Показать ответ</button>
             </div>
           </div>
         </div>
@@ -329,7 +329,17 @@ const formatTextContent = (content: string): string => {
   if (!content) return ''
   // Заменяем \n на переносы строк для корректного отображения
   const formattedContent = content.replace(/\\n/g, '\n')
-  return converter.makeHtml(formattedContent)
+
+  // Сначала обрабатываем HTML-теги, которые не поддерживаются Markdown
+  let html = formattedContent
+    .replace(/<del>(.*?)<\/del>/g, '<del>$1</del>')
+    .replace(/<strong>(.*?)<\/strong>/g, '<strong>$1</strong>')
+    .replace(/<em>(.*?)<\/em>/g, '<em>$1</em>')
+
+  // Затем конвертируем Markdown в HTML
+  html = converter.makeHtml(html)
+
+  return html
 }
 
 // Интерфейс для карточки Code Names
@@ -521,16 +531,6 @@ const handleAnswerVideoError = () => {
   answerVideoError.value = true
 }
 
-const handleAnswerVideoEnded = () => {
-  console.log('Видео ответа завершено')
-  // Сворачиваем видео с полного экрана при окончании
-  if (document.fullscreenElement) {
-    document.exitFullscreen().catch((error) => {
-      console.log('Не удалось свернуть видео с полного экрана:', error)
-    })
-  }
-}
-
 const playAnswerAudio = () => {
   if (answerAudioRef.value && props.answer?.audioStartTime) {
     answerAudioRef.value.currentTime = props.answer.audioStartTime
@@ -566,7 +566,13 @@ const getQuestionTitle = (): string => {
   }
   // Получаем данные карточки из store
   const card = gameStore.getCard(props.cardId)
-  return card?.content || `Конкурс ${props.cardId}`
+  const content = card?.content || `Конкурс ${props.cardId}`
+
+  // Обрабатываем HTML-теги в заголовке
+  return content
+    .replace(/<del>(.*?)<\/del>/g, '<del>$1</del>')
+    .replace(/<strong>(.*?)<\/strong>/g, '<strong>$1</strong>')
+    .replace(/<em>(.*?)<\/em>/g, '<em>$1</em>')
 }
 
 const handleImageError = () => {
@@ -991,12 +997,11 @@ onUnmounted(() => {
 
 .image-description {
   flex: 1;
-  max-width: 50%;
   box-sizing: border-box;
   padding: 20px;
   text-align: left;
-  font-size: 2.9rem;
-  line-height: 1;
+  font-size: 3.5rem;
+  line-height: 1.2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1011,12 +1016,11 @@ onUnmounted(() => {
 .video-description,
 .audio-description {
   flex: 1;
-  max-width: 50%;
   box-sizing: border-box;
   padding: 20px;
   text-align: left;
-  font-size: 1.2rem;
-  line-height: 1.4;
+  font-size: 3.5rem;
+  line-height: 1.2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1137,11 +1141,10 @@ onUnmounted(() => {
   font-size: 3.5rem;
   font-weight: 500;
   color: #495057;
-  line-height: 0.8;
+  line-height: 1.2;
   margin: 0;
   padding: 20px;
   background-color: #ffffff;
-  white-space: pre-line;
 }
 
 /* Стили для коллажа */
@@ -1429,19 +1432,19 @@ onUnmounted(() => {
 }
 
 .btn-show-answer {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 16px 32px;
-  font-size: 1.1rem;
+  padding: 15px 40px;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
 .btn-show-answer:hover {
-  background: linear-gradient(135deg, #0056b3, #004085);
+  background-color: #0056b3;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
 }
@@ -1502,9 +1505,8 @@ onUnmounted(() => {
   margin-bottom: 32px;
   text-align: left;
   font-size: 1.1rem;
-  line-height: 1.6;
+  line-height: 1.2;
   color: #495057;
-  white-space: pre-line;
 }
 
 .answer-video-container {
@@ -1535,19 +1537,19 @@ onUnmounted(() => {
 }
 
 .btn-finish-answer {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background-color: #28a745;
   color: white;
   border: none;
-  padding: 16px 32px;
-  font-size: 1.1rem;
+  padding: 15px 40px;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .btn-finish-answer:hover {
-  background: linear-gradient(135deg, #218838, #1ea085);
+  background-color: #218838;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
 }
@@ -1594,9 +1596,12 @@ onUnmounted(() => {
 
 .result-buttons-container {
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .btn {
@@ -1607,7 +1612,8 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   border: none;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  min-width: 160px;
+  width: 100%;
+  max-width: 500px;
 }
 
 .btn-left-team {
