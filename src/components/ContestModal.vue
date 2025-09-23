@@ -159,6 +159,7 @@
                     @error="handleAnswerVideoError"
                     @loadeddata="handleAnswerVideoLoaded"
                     @play="playAnswerVideo"
+                    @ended="handleAnswerVideoEnded"
                     controls
                   />
                   <div v-if="answerVideoError" class="video-error">
@@ -583,6 +584,20 @@ const handleAnswerVideoLoaded = () => {
 const handleAnswerVideoError = () => {
   console.error('Ошибка загрузки видео для ответа')
   answerVideoError.value = true
+}
+
+const handleAnswerVideoEnded = () => {
+  console.log('Видео ответа закончилось, сворачиваем с полного экрана')
+
+  // Сворачиваем видео с полного экрана при окончании
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch((error) => {
+      console.log('Не удалось свернуть видео с полного экрана:', error)
+    })
+  }
+
+  // Не показываем модалку ответа, так как мы уже в экране ответа
+  // Просто сворачиваем видео и остаемся в текущем состоянии
 }
 
 const playAnswerAudio = () => {
@@ -1055,6 +1070,7 @@ onUnmounted(() => {
   max-height: 80vh;
   object-fit: contain;
   object-position: center;
+  padding: 45px 0;
 }
 
 .image-description {
@@ -1264,6 +1280,8 @@ onUnmounted(() => {
   padding: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  height: 600px;
+  overflow: hidden;
 }
 
 .collage-image-item:hover {
@@ -1271,9 +1289,9 @@ onUnmounted(() => {
 }
 
 .collage-image {
-  max-width: 100%;
-  max-height: 200px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Стили для состязания */
