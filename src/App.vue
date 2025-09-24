@@ -529,8 +529,8 @@ h1 {
 
 .quiz-title h1 {
   margin: 0;
-  font-size: 2.5rem;
-  font-weight: 300;
+  font-size: 2.8rem;
+  font-weight: 700;
   color: #495057;
 }
 
