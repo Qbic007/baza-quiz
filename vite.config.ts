@@ -12,7 +12,7 @@ export default defineConfig(({ command }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  base: command === 'build' ? '/baza-quiz/' : '/',
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

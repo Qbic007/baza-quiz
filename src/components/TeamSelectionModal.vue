@@ -136,7 +136,7 @@ const bothTeamsConfirmed = computed(() => leftTeamConfirmed.value && rightTeamCo
 const loadTeamNames = async () => {
   try {
     // Определяем базовый путь в зависимости от окружения
-    const basePath = import.meta.env.DEV ? '' : '/baza-quiz'
+    const basePath = ''
     const response = await fetch(`${basePath}/config/team-names.json`)
     const data = await response.json()
     adjectives.value = data.adjectives || []
