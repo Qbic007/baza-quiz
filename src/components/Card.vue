@@ -9,7 +9,21 @@
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
         <div class="card-content">
-          <span class="quiz-title">Baza Quiz</span>
+          <span class="quiz-title">
+            Baza Quiz Baza Quiz Baza Quiz Baza Quiz<br />
+            &nbsp;&nbsp;Baza Quiz Baza Quiz Baza Quiz Baza Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;Baza Quiz Baza Quiz Baza Quiz Baza Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Baza Quiz Baza Quiz Baza Quiz Baza Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Baza Quiz Baza Quiz Baza Quiz Baza
+            Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Baza Quiz Baza Quiz Baza
+            Quiz Baza Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Baza Quiz Baza
+            Quiz Baza Quiz Baza Quiz<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Baza
+            Quiz Baza Quiz Baza Quiz Baza Quiz<br />
+          </span>
+          <span class="card-number">{{ props.cardIndex }}</span>
         </div>
       </div>
 
@@ -35,6 +49,7 @@ defineOptions({
 // Props
 interface Props {
   cardNumber: number
+  cardIndex: number
 }
 
 const props = defineProps<Props>()
@@ -189,9 +204,9 @@ const toggleCard = () => {
 }
 
 .quiz-title {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  color: #495057;
+  color: rgba(73, 80, 87, 0.2);
   text-align: center;
   line-height: 1.2;
   transform: translate(-50%, -50%) rotate(-36.87deg);
@@ -201,6 +216,17 @@ const toggleCard = () => {
   position: absolute;
   top: 50%;
   left: 50%;
+}
+
+.card-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: 800;
+  color: #495057;
+  z-index: 10;
 }
 
 .card-title {

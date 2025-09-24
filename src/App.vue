@@ -215,8 +215,8 @@ const cards = computed(() => gameStore.cards)
       </div>
 
       <div class="grid-container">
-        <div v-for="card in cards" :key="card.id" class="grid-item">
-          <QuizCard :card-number="card.id" @card-flipped="handleCardFlipped" />
+        <div v-for="(card, index) in cards" :key="card.id" class="grid-item">
+          <QuizCard :card-number="card.id" :card-index="index" @card-flipped="handleCardFlipped" />
         </div>
       </div>
 
