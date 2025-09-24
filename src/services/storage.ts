@@ -2,6 +2,16 @@ import type { GameState, Card } from '@/types/card'
 
 const STORAGE_KEY = 'baza-quiz-game-state'
 
+// Функция для перемешивания массива (алгоритм Fisher-Yates)
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 // Создание начального состояния игры
 export async function createInitialGameState(): Promise<GameState> {
   // Загружаем конфигурацию из JSON файла
@@ -18,8 +28,11 @@ export async function createInitialGameState(): Promise<GameState> {
     answer: question.answer,
   }))
 
+  // Перемешиваем карточки для случайного расположения на поле
+  const shuffledCards = shuffleArray(cards)
+
   return {
-    cards,
+    cards: shuffledCards,
     createdAt: Date.now(),
     lastPlayed: Date.now(),
     boostsAndTraps: [],
@@ -72,7 +85,9 @@ async function loadQuestionsConfig(): Promise<
     const data = await response.json()
     console.log('=== ЗАГРУЗКА КОНФИГУРАЦИИ ===')
     console.log('Загруженные вопросы:', data.questions)
-    const codenamesQuestion = data.questions.find((q: any) => q.questionType === 'codenames')
+    const codenamesQuestion = data.questions.find(
+      (q: { questionType: string }) => q.questionType === 'codenames',
+    )
     if (codenamesQuestion) {
       console.log('Code Names вопрос:', codenamesQuestion)
       console.log(

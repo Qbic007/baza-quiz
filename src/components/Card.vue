@@ -9,7 +9,7 @@
       <!-- Рубашка карточки -->
       <div class="card-face card-back">
         <div class="card-content">
-          <span class="card-number">{{ props.cardNumber }}</span>
+          <span class="quiz-title">Baza Quiz</span>
         </div>
       </div>
 
@@ -185,12 +185,22 @@ const toggleCard = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
-.card-number {
-  font-size: 2.5rem;
+.quiz-title {
+  font-size: 1.4rem;
   font-weight: 800;
   color: #495057;
+  text-align: center;
+  line-height: 1.2;
+  transform: translate(-50%, -50%) rotate(-36.87deg);
+  transform-origin: center;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .card-title {

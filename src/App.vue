@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import QuizCard from './components/Card.vue'
 import GameRulesModal from './components/GameRulesModal.vue'
 import ContestModal from './components/ContestModal.vue'
@@ -128,8 +128,8 @@ const adjustScore = (team: 'leftTeam' | 'rightTeam', delta: number) => {
   gameStore.adjustScore(team, delta)
 }
 
-// Создаем массив из 40 элементов для сетки 8x5
-const cards = Array.from({ length: 40 }, (_, index) => index + 1)
+// Используем карточки из store
+const cards = computed(() => gameStore.cards)
 </script>
 
 <template>
@@ -215,8 +215,8 @@ const cards = Array.from({ length: 40 }, (_, index) => index + 1)
       </div>
 
       <div class="grid-container">
-        <div v-for="card in cards" :key="card" class="grid-item">
-          <QuizCard :card-number="card" @card-flipped="handleCardFlipped" />
+        <div v-for="card in cards" :key="card.id" class="grid-item">
+          <QuizCard :card-number="card.id" @card-flipped="handleCardFlipped" />
         </div>
       </div>
 
