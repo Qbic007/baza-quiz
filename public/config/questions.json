@@ -676,7 +676,7 @@
       "questionData": {
         "type": "text",
         "content": "Ћути, много је болесније ћутати\\nБоље је скинути глас, викати!\\n\\nУ срцу на поразу\\nШта сте спори са овом метом?\\nСве сам расипао, мапе су отворене\\nБеј, да постоје снаге и да ћемо квити",
-        "autoStartTimer": false,
+        "autoStartTimer": true,
         "timerLimit": 60
       },
       "intro": {
@@ -695,7 +695,7 @@
       "questionData": {
         "type": "text",
         "content": "Светло жуте наочаре\\nДва срца на привеску за кључеве\\nВеселе зенице\\nТвоје име на руци\\n\\nОкрузи, квартови, стамбене масиве\\nОдлазим, лепо одлазим",
-        "autoStartTimer": false,
+        "autoStartTimer": true,
         "timerLimit": 60
       },
       "intro": {
