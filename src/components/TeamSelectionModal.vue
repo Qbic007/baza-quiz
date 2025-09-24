@@ -93,7 +93,7 @@
         <!-- Кнопка начала игры -->
         <div class="modal-footer">
           <button class="start-game-btn" @click="startGame" :disabled="!bothTeamsConfirmed">
-            🚀 Начать игру
+            Начать игру
           </button>
         </div>
       </div>

@@ -225,7 +225,7 @@
             class="btn btn-finish-game"
             @click="finishCodenamesGame"
           >
-            🏁 Завершить игру
+            Завершить игру
           </button>
 
           <!-- Кнопка запуска таймера (показывается если autoStartTimer = false) -->
@@ -263,7 +263,7 @@
           class="result-overlay"
         >
           <div class="result-content">
-            <h2 v-if="questionType === 'codenames'">🏁 Игра завершена!</h2>
+            <h2 v-if="questionType === 'codenames'">Игра завершена!</h2>
             <h2 v-else-if="questionType === 'competition'">Кто победил в состязании?</h2>
             <h2 v-else>Кто победил в конкурсе?</h2>
             <div class="result-buttons-container">
@@ -272,14 +272,14 @@
                 class="btn btn-left-team"
                 @click="handleContestResult('leftTeam')"
               >
-                🏆 {{ leftTeamName }}
+                {{ leftTeamName }}
               </button>
               <button
                 v-if="rightTeamName"
                 class="btn btn-right-team"
                 @click="handleContestResult('rightTeam')"
               >
-                🏆 {{ rightTeamName }}
+                {{ rightTeamName }}
               </button>
               <button class="btn btn-nobody" @click="handleContestResult('nobody')">
                 ❌ Никто
@@ -1861,28 +1861,43 @@ onUnmounted(() => {
 
 /* Цвета для перевернутых карточек */
 .codenames-card.blue .codenames-card-front {
-  background-color: #e3f2fd;
+  background-color: #007bff;
   border-color: #007bff;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .codenames-card.red .codenames-card-front {
-  background-color: #ffebee;
+  background-color: #dc3545;
   border-color: #dc3545;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .codenames-card.black .codenames-card-front {
-  background-color: #f5f5f5;
+  background-color: #000000;
   border-color: #000000;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .codenames-card.neutral .codenames-card-front {
-  background-color: #f8f9fa;
-  border-color: #6c757d;
+  background-color: #d2b48c;
+  border-color: #d2b48c;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .codenames-card.white .codenames-card-front {
-  background-color: #f5f5dc !important;
+  background-color: #d4af37 !important;
   border-color: #d4af37 !important;
+  color: white !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
 }
 
 /* Кнопка завершения игры для Code Names */

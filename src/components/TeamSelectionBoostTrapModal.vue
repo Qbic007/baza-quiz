@@ -4,7 +4,7 @@
       <div class="modal-content">
         <!-- Заголовок -->
         <div class="modal-header">
-          <h2>{{ roundName || (isBoost ? '🚀 Буст!' : '💀 Ловушка!') }}</h2>
+          <h2>{{ roundName || (isBoost ? 'Буст!' : 'Ловушка!') }}</h2>
         </div>
 
         <!-- Содержимое -->
@@ -25,7 +25,7 @@
               @click="selectTeam('leftTeam')"
               :disabled="!leftTeamName"
             >
-              <div class="team-icon">🏆</div>
+              <div class="team-icon"></div>
               <div class="team-name">{{ leftTeamName || 'Левая команда' }}</div>
             </button>
 
@@ -38,7 +38,7 @@
               @click="selectTeam('rightTeam')"
               :disabled="!rightTeamName"
             >
-              <div class="team-icon">🏆</div>
+              <div class="team-icon"></div>
               <div class="team-name">{{ rightTeamName || 'Правая команда' }}</div>
             </button>
           </div>

@@ -334,6 +334,7 @@ body {
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
+  padding-bottom: 5px;
 }
 
 h1 {
