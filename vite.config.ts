@@ -17,4 +17,9 @@ export default defineConfig(({ command }) => ({
     outDir: 'dist',
     assetsDir: 'assets',
   },
+  preview: {
+    host: '0.0.0.0',
+    port: 10000,
+    allowedHosts: ['baza-quiz.onrender.com', 'localhost']
+  },
 }))
