@@ -1977,3 +1977,12 @@ onUnmounted(() => {
   text-align: left;
 }
 </style>
+
+<style>
+/* Стили для жирного текста в ответах - глобальные */
+.answer-screen strong,
+.answer-screen b {
+  color: #4a90e2 !important;
+  font-weight: 700;
+}
+</style>
